@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+	<!-- Meta -->
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<!-- Page Title -->
+	<title>jQuery Form Validate</title>
+
+	<!-- jQuery -->
+	<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+
+	<!-- jQuery Form Validate -->
+	<script type="text/javascript" src="jquery.formvalidate.js"></script>
+
+	<!-- JavaScript -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('form').formvalidate({
+				validateOnEvent: 'click',
+				validateOnObject: $('#submit'), // Once the submit button is clicked we will run form validation
+				// Let's modiyfy a validation message and add a custom validation method
+				validations: {
+					// Modify error message
+					required: {
+						text: '{0} is required (and error messages can be overwritten!).'
+					},
+					// Custom validation
+					middle_name: {
+						text: 'Your {0} cannot be "{2}" because this is a custom validation method and I said so.',
+						func: function(input, params) {
+							return input.toLowerCase() === params[0].toLowerCase() ? false : true;
+						}
+					}
+				}
+			});
+		});
+	</script>
+
+	<style type="text/css">
+		html {
+			font: 13px/18px "Tahoma", "Verdana", "Arial", sans-serif;
+			color: #333;
+			background-color: #f9f9f9;
+		}
+		fieldset {
+			padding: 0px 15px 15px 15px;
+			margin: 15px;
+			background-color: #efefef;
+			border: 1px solid #999;
+			border-radius: 5px;
+			box-shadow: 1px 1px 0px #fff inset, -1px -1px 0px #fff inset, 0px 0px 10px #cecece;
+		}
+		legend {
+			display: none;
+		}
+		h2 {
+			font: 18px/24px "Myriad Pro", sans-serif;
+			border-bottom: 1px dashed #d8d8d8;
+			color: #445d7a;
+			margin: 15px 0px;
+			padding: 0px 0px 10px 0px;
+		}
+		h2 em {
+			font-style: normal;
+			color: #999;
+		}
+		fieldset > div {
+			margin: 10px 0px;
+		}
+		fieldset > div label:first-child {
+			display: inline-block;
+			width: 120px;
+			vertical-align: top;
+		}
+		label {
+			cursor: pointer;
+			color: #555;
+		}
+		input[type="text"],
+		textarea {
+			border: 1px solid #999;
+			padding: 3px;
+			width: 220px;
+			color: #999;
+			border-radius: 3px;
+		}
+		input[type="text"]:focus,
+		textarea:focus {
+			border-color: #81aa47;
+			color: #333;
+		}
+		span.fv_error {
+			color: #bf4c70;
+		}
+		input.fv_error, textarea.fv_error {
+			border-color: #bf4c70;
+		}
+		#submit {
+			background-color: #445d7a;
+			color: #fff;
+			text-decoration: none;
+			padding: 5px 10px;
+			border: 1px solid #3b516b;
+			box-shadow: 1px 1px 0px #4f6d8e inset, -1px -1px 0px #4f6d8e inset;
+			border-radius: 5px;
+		}
+		#submit em {
+			color: #9eafc1;
+			font-style: normal;
+		}
+	</style>
+
+</head>
+
+<body>
+
+<div>
+	<form method="post" action="">
+		<fieldset>
+			<legend>Inputs</legend>
+			<h2>jQuery Form Validate <em>&rsaquo;</em></h2>
+			<div>
+				<label for="first_name">First Name</label>
+				<input type="text" id="first_name" name="first_name" title="First Name" class="fv_required fv_min_length-5 fv_max_length-128" maxlength="128" />
+			</div>
+			<div>
+				<label for="middle_name">Middle Name</label>
+				<input type="text" id="middle_name" name="middle_name" title="Middle Name" class="fv_middle_name-walch" maxlength="128" />
+			</div>
+			<div>
+				<label for="last_name">Last Name</label>
+				<input type="text" id="last_name" name="last_name" title="Last Name" class="fv_required fv_min_length-5 fv_max_length-128" maxlength="128" />
+			</div>
+			<div>
+				<label for="age">Age</label>
+				<input type="text" id="age" name="age" title="Age" value="234" class="fv_between_numeric-1-100" maxlength="128" />
+			</div>
+			<div>
+				<label for="birth_date">Birth Date</label>
+				<input type="text" id="birth_date" name="birth_date" title="Birth Date" value="2011-11-31" class="fv_date-YYYYMMDD" maxlength="128" />
+			</div>
+			<div>
+				<label for="email">Email</label>
+				<input type="text" id="email" name="email" title="Email" value="asfd" class="fv_required fv_min_length-5 fv_max_length-128 fv_email" maxlength="128" />
+			</div>
+			<div>
+				<label>Are You Cool?</label>
+				<label><input type="radio" name="cool" value="Y" class="fv_required" title="Are you cool?"/> Yes</label>
+				<label><input type="radio" name="cool" value="N" /> No</label>
+			</div>
+			<div>
+				<label>What Do You Like?</label>
+				<label><input type="checkbox" name="like[]" checked="checked" value="ci" title="What do you like?" class="fv_required fv_min_options-2 fv_max_options-3"/> CodeIgniter</label>
+				<label><input type="checkbox" name="like[]" value="fuel" /> Fuel</label>
+				<label><input type="checkbox" name="like[]" value="kohana" /> Kohana</label>
+				<label><input type="checkbox" name="like[]" value="w1" /> W1</label>
+				<label><input type="checkbox" name="like[]" checked="checked" value="zend" /> Zend</label>
+			</div>
+			<div>
+				<label for="life_story">Life Story</label>
+				<textarea id="life_story" name="life_story" class="fv_min_length-4 fv_max_length-128" title="Life Story" cols="64" rows="8">This is some text</textarea>
+			</div>
+			<div>
+				<a href="javascript:void(0);" class="submit" id="submit">Submit <em>&rsaquo;</em></a>
+			</div>
+		</fieldset>
+	</form>
+</div>
+
+</body>
+</html>
