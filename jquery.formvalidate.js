@@ -1,12 +1,10 @@
 /*
  * jQuery Form Validation Plugin 0.1
- * https://github.com/vmichnowicz/jquery.formvalidator
  *
- * Examples: http://www.vmichnowicz.com/examples/formvalidator/index.html
+ * Source: https://github.com/vmichnowicz/jquery.formvalidate
+ * Example: http://www.vmichnowicz.com/examples/formvalidate/index.html
  *
- * Copyright 2011, Victor Michnowicz
- * http://www.vmichnowicz.com/
- *
+ * Copyright (c) 2011, Victor Michnowicz (http://www.vmichnowicz.com/)
  */
 (function($) {
 	/**
