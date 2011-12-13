@@ -18,20 +18,20 @@ If we decided that instead of a minimum length of 5 characters we wanted a minim
 
 ## Filters & Validations
 
-jQuery Form Validate includes two main groups of functions, "filters" and "validations". Filters modify the value of an input before it is validated. The most common filter is `trim`. This function will remove all the leading and trailing white space of a form inputs value. This is most commonly used to make sure that a user auctually entered someting instead of just spaces. The full list of filters is as follows:
+jQuery Form Validate includes two main groups of functions, "filters" and "validations". Filters modify the value of an input before it is validated. The most common filter is `trim`. This function will remove all the leading and trailing white space of a form inputs value. This is most commonly used to make sure that a user actually entered something instead of just spaces. The full list of filters is as follows:
 
 * `trim`: Remove all leading and trailing white space
 * `strtoupper`: Convert text to upper case
-* `strtolower`: Convert text to lowe rcase
+* `strtolower`: Convert text to lower case
 
-After all filters have been processed, then the validations are run. A validation takes the value of the form input, an optional list of paramaters, and then does some processing. If the input is valid it returns `true`, else, if the validation fails, it returns `false`. The full list of validation functions along with their paramater requirements is as follows:
+After all filters have been processed, then the validations are run. A validation takes the value of the form input, an optional list of parameters, and then does some processing. If the input is valid it returns `true`, else, if the validation fails, it returns `false`. The full list of validation functions along with their parameter requirements is as follows:
 
-* `requried`: Make it so a form input value is required
+* `required`: Make it so a form input value is required
 * `between_numeric(minimum value, maximum value)`: See if a value is between a minimum and maximum value
-* `min_length(minimum character length)`: Validate that a string is at least a certian number of characters in length
-* `max_length(maximum character length)`: Validate that a string is no more than a certian number of characters in length
+* `min_length(minimum character length)`: Validate that a string is at least a certain number of characters in length
+* `max_length(maximum character length)`: Validate that a string is no more than a certain number of characters in length
 * `min_options(minimum number of options)`: Make sure a user selects at least a provided number of checkboxes or multi-select form inputs
-* `max_options(aximum number of options)`: Make sure a user selects no more than a provided number of checkboxes or multi-select form inputs
+* `max_options(maximum number of options)`: Make sure a user selects no more than a provided number of checkboxes or multi-select form inputs
 * `email`: Make sure a user entered a valid email
 * `date(date format written as either "YYYYMMDD", "MMDDYYYY", or "DDMMYYYY")`: Make sure the user entered a valid date in a valid date format
 
