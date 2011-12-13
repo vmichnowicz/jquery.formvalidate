@@ -9,7 +9,7 @@
 	<title>jQuery Form Validate</title>
 
 	<!-- jQuery -->
-	<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
 	<!-- jQuery Form Validate -->
 	<script type="text/javascript" src="jquery.formvalidate.js"></script>
@@ -123,7 +123,7 @@
 			<h2>jQuery Form Validate <em>&rsaquo;</em></h2>
 			<div>
 				<label for="first_name">First Name</label>
-				<input type="text" id="first_name" name="first_name" title="First Name" class="fv_required fv_min_length-5 fv_max_length-128" maxlength="128" />
+				<input type="text" id="first_name" name="first_name" title="First Name" class="ff_trim fv_required fv_min_length-5 fv_max_length-128" maxlength="128" />
 			</div>
 			<div>
 				<label for="middle_name">Middle Name</label>
@@ -135,15 +135,15 @@
 			</div>
 			<div>
 				<label for="age">Age</label>
-				<input type="text" id="age" name="age" title="Age" value="234" class="fv_between_numeric-1-100" maxlength="128" />
+				<input type="text" id="age" name="age" title="Age" class="fv_between_numeric-1-100" maxlength="128" />
 			</div>
 			<div>
 				<label for="birth_date">Birth Date</label>
-				<input type="text" id="birth_date" name="birth_date" title="Birth Date" value="2011-11-31" class="fv_date-YYYYMMDD" maxlength="128" />
+				<input type="text" id="birth_date" name="birth_date" title="Birth Date" class="fv_date-YYYYMMDD" maxlength="128" placeholder="YYYY-MM-DD" />
 			</div>
 			<div>
 				<label for="email">Email</label>
-				<input type="text" id="email" name="email" title="Email" value="asfd" class="fv_required fv_min_length-5 fv_max_length-128 fv_email" maxlength="128" />
+				<input type="text" id="email" name="email" title="Email" class="fv_required fv_min_length-5 fv_max_length-128 fv_email" maxlength="128" />
 			</div>
 			<div>
 				<label>Are You Cool?</label>
@@ -152,15 +152,15 @@
 			</div>
 			<div>
 				<label>What Do You Like?</label>
-				<label><input type="checkbox" name="like[]" checked="checked" value="ci" title="What do you like?" class="fv_required fv_min_options-2 fv_max_options-3"/> CodeIgniter</label>
-				<label><input type="checkbox" name="like[]" value="fuel" /> Fuel</label>
+				<label><input type="checkbox" name="like[]" checked="checked" value="ci" title="What do you like?" class="fv_required"/> CodeIgniter</label>
+				<label><input type="checkbox" name="like[]" value="fuel" class="fv_min_options-2 fv_max_options-3" /> Fuel</label>
 				<label><input type="checkbox" name="like[]" value="kohana" /> Kohana</label>
 				<label><input type="checkbox" name="like[]" value="w1" /> W1</label>
 				<label><input type="checkbox" name="like[]" checked="checked" value="zend" /> Zend</label>
 			</div>
 			<div>
 				<label for="life_story">Life Story</label>
-				<textarea id="life_story" name="life_story" class="fv_min_length-4 fv_max_length-128" title="Life Story" cols="64" rows="8">This is some text</textarea>
+				<textarea id="life_story" name="life_story" class="ff_trim fv_min_length-4 fv_max_length-128" title="Life Story" cols="64" rows="8"></textarea>
 			</div>
 			<div>
 				<a href="javascript:void(0);" class="submit" id="submit">Submit <em>&rsaquo;</em></a>

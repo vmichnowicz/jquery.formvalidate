@@ -138,9 +138,36 @@
 			},
 			cssFailureClass: 'fv_error', // CSS class added to inputs that did not pass validation
 			cssSuccessClass: 'fv_success', // CSS class added to inputs that did pass validation
-			cssPrefix: 'fv_', // CSS class prefix to designate validation rules
+			cssFilterPrefix: 'ff_', // CSS class prefix to designate filter rules
+			cssValidationPrefix: 'fv_', // CSS class prefix to designate validation rules
 			cssParamDelimiter: '-', // CSS validation rule delimiter
 			failureWrapper: '<span />',
+			filters: {
+				trim: function(input, parmas) {
+					if (typeof input == 'string') {
+						return $.trim(input) === '' ? null : $.trim(input);
+					}
+					else {
+						return input;
+					}
+				},
+				strtoupper: function(input, params) {
+					if (typeof input == 'string') {
+						return input.toUpperCase();
+					}
+					else {
+						return input;
+					}
+				},
+				strtolower: function(input, params) {
+					if (typeof input == 'string') {
+						return input.toLowerCase();
+					}
+					else {
+						return input;
+					}
+				}
+			},
 			validations: {
 				required: {
 					text: '{0} is required.',
@@ -229,9 +256,22 @@
 
 			// So are we good? We will assume yes, for now...
 			O.result = true;
-
+console.log( O );
 			// Loop through each form element
 			$.each(O.inputs, function(inputName, inputObj) {
+				// If we have some filters
+				if (inputObj.filters) {
+					// Loop through each filter for this input
+					$.each(inputObj.filters, function(filterName, filterParams) {
+						// If this filter exists and this inputs value is not null
+						if ( filterName in settings.filters && inputObj.value !== null ) {
+							inputObj.value = settings.filters[filterName](inputObj.value, filterParams);
+						}
+					});
+				}
+				
+				console.log( O );
+				
 				// If we have some validations
 				if (inputObj.validations) {
 					// Loop through each validation
@@ -308,35 +348,44 @@
 				// All classes of this form input
 				var allClasses = attrClass.split(' ');
 
-				// Input value
-				var value = null;
+				// If input vale had not yet been created for this input
+				if ( ! ('value' in O.inputs[attrName]) )  {
+					// Input value
+					var value = null;
 
-				// Checkbox
-				if ( $(element).attr('type') === 'checkbox' ) {
-					value = []; // This will be an array of values
-					$(':input[name="' + attrName + '"]:checked').each(function(checkbox_index, checkbox_element) {
-						value[checkbox_index] = $(checkbox_element).val();
-					});
-				}
-				// Radio
-				else if ( $(element).attr('type') === 'radio' ) {
-					// Get checked radio input
-					var radio = $(':input[name="' + attrName + '"]:checked');
-					// If user checked a radio input
-					if (radio.length) {
-						value = $(radio).val();
+					// Checkbox
+					if ( $(element).attr('type') === 'checkbox' ) {
+						value = []; // This will be an array of values
+						$(':input[name="' + attrName + '"]:checked').each(function(checkbox_index, checkbox_element) {
+							value[checkbox_index] = $(checkbox_element).val();
+						});
 					}
-				}
-				// All others
-				else {
-					value = $(element).val() === '' ? null : $(element).val();
-				}
+					// Radio
+					else if ( $(element).attr('type') === 'radio' ) {
+						// Get checked radio input
+						var radio = $(':input[name="' + attrName + '"]:checked');
+						// If user checked a radio input
+						if (radio.length) {
+							value = $(radio).val();
+						}
+					}
+					// All others
+					else {
+						value = $(element).val() === '' ? null : $(element).val();
+					}
 
-				// Set title in object (if title attribute cannot be found, use element name attribute)
-				O.inputs[attrName].title = $(element).attr('title') ? $(element).attr('title') : attrName;
+					// Set value in object
+					O.inputs[attrName].value = value;
+				}
+				
+				// If title had not yet been created for this input
+				if ( ! ('title' in O.inputs[attrName]) ) {
+					// Look for the first input that has this same name attribe and a title attribute and grab its title
+					var attrTitleFirst = $(':input[name="' + attrName + '"][title!=""]:first').attr('title');
 
-				// Set value in object
-				O.inputs[attrName].value = value;
+					// If no title attribute is found, use the inputs name attribute
+					O.inputs[attrName].title = attrTitleFirst ? attrTitleFirst : attrName;
+				}
 
 				// Set success and failure in object
 				O.inputs[attrName].success = null;
@@ -346,24 +395,24 @@
 				O.inputs[attrName].errors = [];
 
 				// Validations object for this input
-				O.inputs[attrName].validations = {}
+				if ( ! ('validations' in O.inputs[attrName]) )  { O.inputs[attrName].validations = {}; }
 
 				// Filters object for this input
-				O.inputs[attrName].filters = {}
+				if ( ! ('filters' in O.inputs[attrName]) )  { O.inputs[attrName].filters = {}; }
 
 				// Loop through each class on this form element
 				$.each(allClasses, function(classIndex, className) {
-
+					
 					// If this classes has our form validation CSS prefix
-					if ( className.indexOf(settings.cssPrefix) === 0 ) {
-						// Form validation class
-						var validationClass = '';
+					if ( className.indexOf(settings.cssFilterPrefix) === 0 ) {
+						// Form filter class
+						var filterClass = '';
 
 						// Params will start out as an empty array
 						var params = [];
 
 						// Get position of paramater start location
-						var paramStartLocation = className.indexOf(settings.cssParamDelimiter, settings.cssPrefix.length);
+						var paramStartLocation = className.indexOf(settings.cssParamDelimiter, settings.cssFilterPrefix.length);
 
 						// If we have some paramaters
 						if ( paramStartLocation >= 0 ) {
@@ -371,12 +420,40 @@
 							var params = className.substr(paramStartLocation + 1).split( settings.cssParamDelimiter );
 
 							// Get form validation function name
-							validationClass = className.substr( settings.cssPrefix.length, paramStartLocation - settings.cssPrefix.length );
+							filterClass = className.substr( settings.cssFilterPrefix.length, paramStartLocation - settings.cssFilterPrefix.length );
 						}
 						// If we do not have any paramaters
 						else {
 							// Get form validation function name
-							validationClass = className.substr(settings.cssPrefix.length);
+							filterClass = className.substr(settings.cssFilterPrefix.length);
+						}
+
+						O.inputs[attrName].filters[ filterClass ] = params;
+					}
+
+					// If this classes has our form validation CSS prefix
+					if ( className.indexOf(settings.cssValidationPrefix) === 0 ) {
+						// Form validation class
+						var validationClass = '';
+
+						// Params will start out as an empty array
+						var params = [];
+
+						// Get position of paramater start location
+						var paramStartLocation = className.indexOf(settings.cssParamDelimiter, settings.cssValidationPrefix.length);
+
+						// If we have some paramaters
+						if ( paramStartLocation >= 0 ) {
+							// Get array of paramaters
+							var params = className.substr(paramStartLocation + 1).split( settings.cssParamDelimiter );
+
+							// Get form validation function name
+							validationClass = className.substr( settings.cssValidationPrefix.length, paramStartLocation - settings.cssValidationPrefix.length );
+						}
+						// If we do not have any paramaters
+						else {
+							// Get form validation function name
+							validationClass = className.substr(settings.cssValidationPrefix.length);
 						}
 
 						O.inputs[attrName].validations[ validationClass ] = params;
