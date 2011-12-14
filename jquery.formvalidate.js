@@ -47,24 +47,40 @@
 
 		// Make sure we have exactly three parts to our date
 		if ( dateArray.length === 3 ) {
+
+			// Loop through each date segment
+			for ( var dateSegment in dateArray ) {
+				// If date segment is not an integer
+				if ( dateArray[dateSegment] % 1 != 0 ) {
+					return false;
+				}
+				// If date segment is an integer
+				else {
+					dateArray[dateSegment] = parseInt( dateArray[dateSegment] );
+				}
+			}
+			
+			// Date variables
+			var year, month, day;
+
 			switch (format) {
 				// YYYY-MM-DD
 				case 'YYYYMMDD':
-					var year = parseInt( dateArray[0] );
-					var month = parseInt( dateArray[1] ) - 1;
-					var day = parseInt( dateArray[2] );
+					year = dateArray[0];
+					month = dateArray[1] - 1;
+					day = dateArray[2];
 					break;
 				// DD-MM-YYYY
 				case 'DDMMYYYY':
-					var year = parseInt( dateArray[2] );
-					var month = parseInt( dateArray[1] ) - 1;
-					var day = parseInt( dateArray[0] );
+					year = dateArray[2];
+					month = dateArray[1] - 1;
+					day = dateArray[0];
 					break;
 				// MM-DD-YYYY
 				default:
-					var year = parseInt( dateArray[2] );
-					var month = parseInt( dateArray[0] ) - 1;
-					var day = parseInt( dateArray[1] );
+					year = dateArray[2];
+					month = dateArray[0] - 1;
+					day = dateArray[1];
 					break;
 			}
 
@@ -76,12 +92,11 @@
 				date.setFullYear(year, month, day); // Set year, month, and day
 
 				/**
-				 * Compare year, month, and day of new date object to
-				 * day, month and day properties. We do this because we
-				 * could set a day of 31 in a month that does not have
-				 * 31 days. JavaScript would then silently set the day
-				 * of the object to 1. We want this to report as an
-				 * invalid date.
+				 * Compare year, month, and day of new date object to day, month
+				 * and day properties. We do this because we could set a day of
+				 * 31 in a month that does not have 31 days. JavaScript would
+				 * then silently set the day of the object to 1. We want this to
+				 * report as an invalid date.
 				 */
 				if ( date.getFullYear() === year && date.getMonth() === month && date.getDate() === day ) {
 					this.setFullYear(year, month, day); // Set year, month, and day
@@ -105,13 +120,15 @@
 		var settings = $.extend(true, {
 			validateOnEvent: 'submit', // Events such as "click", "hover", "focus", etc...
 			validateOnObject: null, // jQuery object that we will attach our event listiner to
-			// Processing before everything else takes place
-			preProcess: function() {
+			// Processing before everything else takes place (be sure to return form validation object!)
+			preProcess: function(O) {
 				// Remove failure class from inputs
 				$(':input.' + settings.cssFailureClass).removeClass(settings.cssFailureClass);
 
 				// Remove all error messages
 				$('.' + settings.cssFailureClass).remove();
+
+				return O;
 			},
 			// Processing after form validation (be sure to return form validation object!)
 			postProcess: function(O) {
@@ -169,25 +186,30 @@
 				}
 			},
 			validations: {
-				required: {
-					text: '{0} is required.',
-					func: function(input, params) {
-						// If this is an array
-						if (input instanceof Array) {
-							return input.length > 0 ? true : false;
-						}
-						// If this is not an array
-						else {
-							// Make sure input is not an empty string, null, or false
-							return input === '' || input === null || input === false ? false : true;
-						}
-					}
-				},
 				between_numeric: {
 					text: '{0} must be between {2} and {3}.',
 					func: function(input, params) {
 						// Make sure our input is greater than or equal to first paramater and less than or equal to our second paramater
 						return ( parseFloat(input) >= parseFloat(params[0]) && parseFloat(input) <= parseFloat(params[1]) ) ? true : false;
+					}
+				},
+				date: {
+					text: '{0} must be a valid date.',
+					func: function(input, params) {
+
+						var date = new Date();
+						var now = new Date( date.getTime() );
+
+						date.createFromFormat(input, params[0]);
+
+						// If our date created from our format is the same as our cloned date it is invalid
+						return date.getTime() === now.getTime() ? false : true;
+					}
+				},
+				email: {
+					text: '{1} is not a valid email.',
+					func: function(input, params) {
+						return input.search(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i) == -1 ? false : true;
 					}
 				},
 				min_length: {
@@ -224,23 +246,43 @@
 						}
 					}
 				},
-				email: {
-					text: '{1} is not a valid email.',
+				// http://stackoverflow.com/questions/3885817/how-to-check-if-a-number-is-float-or-integer#answer-3886106
+				'int': {
+					text: '{0} must be a whole number (integer).',
 					func: function(input, params) {
-						return input.search(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i) == -1 ? false : true;
+						 return input % 1 == 0;
 					}
 				},
-				date: {
-					text: '{0} must be a valid date.',
+				'float': {
+					text: '{0} must be a valid number.',
 					func: function(input, params) {
-
-						var date = new Date();
-						var now = new Date( date.getTime() );
-
-						date.createFromFormat(input, params[0]);
-
-						// If our date created from our format is the same as our cloned date it is invalid
-						return date.getTime() === now.getTime() ? false : true;
+						return input % 1 !== 0 ? true : false; // @todo this needs work...
+					}
+				},
+				required: {
+					text: '{0} is required.',
+					func: function(input, params) {
+						// If this is an array
+						if (input instanceof Array) {
+							return input.length > 0 ? true : false;
+						}
+						// If this is not an array
+						else {
+							// Make sure input is not an empty string, null, or false
+							return input === '' || input === null || input === false ? false : true;
+						}
+					}
+				},
+				less_than: {
+					text: '{0} must be less than {2}.',
+					func: function(input, params) {
+						return parseFloat(input) < params[0];
+					}
+				},
+				greater_than: {
+					text: '{0} must be greater than {2}.',
+					func: function(input, params) {
+						return parseFloat(input) > params[0];
 					}
 				}
 			}
@@ -256,7 +298,7 @@
 
 			// So are we good? We will assume yes, for now...
 			O.result = true;
-console.log( O );
+
 			// Loop through each form element
 			$.each(O.inputs, function(inputName, inputObj) {
 				// If we have some filters
@@ -269,8 +311,6 @@ console.log( O );
 						}
 					});
 				}
-				
-				console.log( O );
 				
 				// If we have some validations
 				if (inputObj.validations) {
@@ -316,10 +356,7 @@ console.log( O );
 		 * @param object	jQuery object containing our form that we will attempt to process
 		 * @return object	Validation object containing form input data
 		 */
-		var process = function(form) {
-
-			// Form validation super-awesome-object (SAO)
-			var O = {};
+		var process = function(O) {
 
 			// Inputs object
 			O.inputs = {};
@@ -328,7 +365,7 @@ console.log( O );
 			O.result = null;
 
 			// Loop through each input inside this form
-			$(form).find(':input').each(function(index, element) {
+			$(O.form).find(':input').each(function(index, element) {
 
 				// Form validation rules will be applied to elements grouped by their name attribute
 				var attrName = $(element).attr('name');
@@ -469,26 +506,23 @@ console.log( O );
 		// Loop through each selected element
 		return this.each(function() {
 
+			// Main form validation object
+			var O = {};
+
 			// Our form
-			var form = this;
+			O.form = this;
 
 			// By defaiult we will run validation on the submission of the form, the user can change this, however
-			var validateOnObject = settings.validateOnObject !== null ? settings.validateOnObject : form;
+			var validateOnObject = settings.validateOnObject !== null ? settings.validateOnObject : O.form;
 
 			// Attach event handler to object
 			validateOnObject.live(settings.validateOnEvent, function(e) {
 
-				// Main form validation object
-				var O = {};
-
-				/**
-				 * Run preProcess function
-				 * @todo pass the form validatoin object to our preprocessor and then merge the object in our process function
-				 */
-				settings.preProcess();
+				// Run preProcess function
+				O = settings.preProcess(O);
 
 				// Process form an populate our main object
-				O = process(form);
+				O = process(O);
 
 				// Validate form get back another object that includes a bunch of new post-data validation info
 				O = validate(O);
