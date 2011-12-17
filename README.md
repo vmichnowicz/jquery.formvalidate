@@ -20,9 +20,9 @@ If we decided that instead of a minimum length of 5 characters we wanted a minim
 
 jQuery Form Validate includes two main groups of functions, "filters" and "validations". Filters modify the value of an input before it is validated. The most common filter is `trim`. This function will remove all the leading and trailing white space of a form inputs value. This is most commonly used to make sure that a user actually entered something instead of just spaces. The full list of filters is as follows:
 
-* `trim`: Remove all leading and trailing white space
-* `strtoupper`: Convert text to upper case
-* `strtolower`: Convert text to lower case
+* *trim*(): Remove all leading and trailing white space
+* *strtoupper*()`: Convert text to upper case
+* *strtolower*(): Convert text to lower case
 
 After all filters have been processed, then the validations are run. A validation takes the value of the form input, an optional list of parameters, and then does some processing. If the input is valid it returns `true`, else, if the validation fails, it returns `false`. The full list of validation functions along with their parameter requirements is as follows:
 
@@ -37,7 +37,28 @@ After all filters have been processed, then the validations are run. A validatio
 
 ## Breaking Down The CSS Classes
 
-Coming soon...
+jQuery Form Validate uses the CSS classes assigned to your input elements to figure out which form validations to run. Because of this you may want to prefix your CSS validation classes. By default the validation prefix for all filter functions is `ff_` and the prefix for all form validation functions is `fv_`. With these defaults you must prefix all functions that you want to run. So, for example, if you want to make an element required it would look similar to this:
+
+````
+<input type="text" name="age" class="fv_required" />
+````
+
+If you want to change the prefix (or even remove it) you can do that in that during the initialization of the plugin:
+
+````
+$(document).ready(function() {
+  $('form').formvalidate({
+		cssFilterPrefix: 'new_filter_prefix_', // Add prefix of "new_filter_prefix_" for all filter functions
+		cssValidationPrefix: '', // Remove prefix
+	});
+});
+````
+
+With these filters in place making an element required and running the trim filter would look like this:
+
+````
+<input type="text" name="middle_name" class="new_filter_prefix_trim required" />
+````
 
 ## Demo / Example
 
