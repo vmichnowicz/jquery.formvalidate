@@ -167,7 +167,27 @@ By default all error messages are wrapped in `<span />` tags. This results in er
 <span class="fv_error">First Name is required.</span>
 ````
 
-### filters [ object *between_numberic*, object *date*, object *email*, object *min_length*, object *max_length*, object *min_options*, object *max_options*, object *int*, object *float*, object *required*, object *less_than*, object *greater_than* ]
+### filters [ object *trim*, object *strtoupper*, object *strtolower* ]
+
+All filters are run before validation functions. Filter function modify the input data and return the new data. Each function accepts two parameters, the form input, and an array of parameters. Even though no parameters are used for the default filter function, if you decided to create your own filter you can take advantage of this feature.
+
+#### trim [ function *function(input, params)* ]
+
+The trim function removes all leading and trailing whitespace.
+
+#### strtoupper [ function *function(input, params)* ]
+
+This function converts all text to uppercase.
+
+#### strtolower [ function *function(input, params)* ]
+
+This function converts all text to lowercase.
+
+### validations [ object *between_numberic*, object *date*, object *email*, object *min_length*, object *max_length*, object *min_options*, object *max_options*, object *int*, object *float*, object *required*, object *less_than*, object *greater_than* ]
+
+Validation functions simply check to see if an input is valid. They can the boolean `true` or `false`. Each function accepts two parameters, the form input, and an array of parameters. Each validation function has an associated error message template. The error message is built using the `title` attribute of the form input, the value of the form input, and/or the parameters passed to each validation function.
+
+---
 
 #### between_numeric [ object *text*, object *func* ]
 
@@ -181,4 +201,148 @@ This function is used to determine if the input value is between two provided nu
 
 ##### func [ function *function(input, params)* ]
 
-*-- more coming soon --*
+*Please reference source for validation function code*
+
+---
+
+#### date [ object *text*, object *func* ]
+
+This function checks to see if a valid date was submitted. Dates are accepted in one of three formats: "YYYY-MM-DD", "DD-MM-YYYY", "MM-DD-YYYY". Date parameter must be passed as either "YYYYMMDD", "DDMMYYYY", or "MMDDYYYY". The date string being validated may use a delimiter of either `-`, `/`, `,`, or `.`. 
+
+##### text [ string "*{0} must be a valid date.*" ]
+
+* **{0}** Input `title` attribute
+
+##### func [ function *function(input, params)* ]
+
+*Please reference source for validation function code*
+
+---
+
+#### email [ object *text*, object *func* ]
+
+This function checks to see if a valid email was submitted. Email is validated using the regular expression `/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i`.
+
+##### text [ string "*{1} is not a valid email.*" ]
+
+* **{1}** Invalid user-provided email
+
+##### func [ function *function(input, params)* ]
+
+*Please reference source for validation function code*
+
+---
+
+#### min_length [ object *text*, object *func* ]
+
+This function checks to see if an input is at least of a provided length.
+
+##### text [ string "*{0} must be at least {2} characters.*" ]
+
+* **{0}** Input `title` attribute
+* **{2}** Minimum character length
+
+##### func [ function *function(input, params)* ]
+
+*Please reference source for validation function code*
+
+---
+
+#### max_length [ object *text*, object *func* ]
+
+This function checks to see if an input is no longer than the provided number of characters.
+
+##### text [ string "*{0} cannot be more than {2} characters.*" ]
+
+* **{0}** Input `title` attribute
+* **{2}** Maximum character length
+
+##### func [ function *function(input, params)* ]
+
+*Please reference source for validation function code*
+
+---
+
+#### min_options [ object *text*, object *func* ]
+
+This function checks to see if multi-select or checkbox inputs have at least a provided number of selections.
+
+##### text [ string "*Must select at least {2} options.*" ]
+
+* **{2}** Minimum number of options
+
+##### func [ function *function(input, params)* ]
+
+*Please reference source for validation function code*
+
+---
+
+#### max_options [ object *text*, object *func* ]
+
+This function checks to see if multi-select or checkbox inputs have no more than a provided number of selections.
+
+##### text [ string "*Cannot select more than {2} options.*" ]
+
+* **{2}** Maximum number of options
+
+##### func [ function *function(input, params)* ]
+
+*Please reference source for validation function code*
+
+---
+
+#### int [ object *text*, object *func* ]
+
+This function checks to see if a valid integer was provided.
+
+##### text [ string "*{0} must be a whole number (integer).*" ]
+
+* **{0}** Input `title` attribute
+
+##### func [ function *function(input, params)* ]
+
+*Please reference source for validation function code*
+
+---
+
+#### required [ object *text*, object *func* ]
+
+This function checks to see if any value was provided and the input is not blank.
+
+##### text [ string "*{0} is required.*" ]
+
+* **{0}** Input `title` attribute
+
+##### func [ function *function(input, params)* ]
+
+*Please reference source for validation function code*
+
+---
+
+#### less_than [ object *text*, object *func* ]
+
+This function checks to see if a value is less than the provided number.
+
+##### text [ string "*{0} must be less than {2}.*" ]
+
+* **{0}** Input `title` attribute
+* **{2}** Number input must be less than
+
+##### func [ function *function(input, params)* ]
+
+*Please reference source for validation function code*
+
+---
+
+#### greater_than [ object *text*, object *func* ]
+
+This function checks to see if a value is greater than the provided number.
+
+##### text [ string "*{0} must be greater than {2}.*" ]
+
+* **{0}** Input `title` attribute
+* **{2}** Number input must be greater than
+
+##### func [ function *function(input, params)* ]
+
+*Please reference source for validation function code*
