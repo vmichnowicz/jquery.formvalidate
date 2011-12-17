@@ -533,8 +533,7 @@
 				// On form validation success
 				if (O.result === true) {
 					// Run success method and pass form validation object along for the ride
-					settings.onSuccess(O);
-					return true;
+					return settings.onSuccess(O);
 				}
 				// On form validation error
 				else {
