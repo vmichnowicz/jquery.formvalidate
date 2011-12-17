@@ -54,7 +54,7 @@ $(document).ready(function() {
 });
 ````
 
-With these filters in place making an element required and running the trim filter would look like this:
+With these new prefixes in place making an element required and running the trim filter would look like this:
 
 ````
 <input type="text" name="middle_name" class="new_filter_prefix_trim required" />
