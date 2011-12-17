@@ -26,9 +26,8 @@ jQuery Form Validate includes two main groups of functions, "filters" and "valid
 
 After all filters have been processed, then the validations are run. A validation takes the value of the form input, an optional list of parameters, and then does some processing. If the input is valid it returns `true`, else, if the validation fails, it returns `false`. The full list of validation functions along with their parameter requirements is as follows:
 
-*   required()
-    Make it so form input is required.
-* `*between_numeric*( int **minimum**, int **maximum** )`: See if a value is between a minimum and maximum value.
+* required() -- Make it so form input is required.
+* *between_numeric*( int **minimum**, int **maximum** ) -- See if a value is between a minimum and maximum value.
 * `*min_length*( int **minimum** )`: Validate that a string is at least a certain number of characters in length.
 * `*max_length*( int **maximum** )`: Validate that a string is no more than a certain number of characters in length.
 * `*min_options*( int **minimum** )`: Make sure a user selects at least a provided number of checkboxes or multi-select form inputs.
