@@ -68,4 +68,4 @@ With these new prefixes in place making an element required and running the trim
 
 When you initialize the plugin you can pass an object to override all of the default plugin settings. You can even add or replace all existing form validation functions.
 
-### *validateOnEvent* string **submit**
+### validateOnEvent [ string *submit* ]
