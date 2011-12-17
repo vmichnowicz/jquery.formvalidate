@@ -32,8 +32,8 @@ After all filters have been processed, then the validations are run. A validatio
 * *max_length*( int **maximum** ) -- Validate that a string is no more than a certain number of characters in length.
 * *min_options*( int **minimum** ) -- Make sure a user selects at least a provided number of checkboxes or multi-select form inputs.
 * *max_options*( int **maximum** ) -- Make sure a user selects no more than a provided number of checkboxes or multi-select form inputs.
-* email()`: Make sure a user entered a valid email
-* date( string **format** ) -- Make sure the user entered a valid date in a valid date format. Format must be written as either "YYYYMMDD", "MMDDYYYY", or "DDMMYYYY".
+* *email*()`: Make sure a user entered a valid email
+* *date*( string **format** ) -- Make sure the user entered a valid date in a valid date format. Format must be written as either "YYYYMMDD", "MMDDYYYY", or "DDMMYYYY".
 
 ## Breaking Down The CSS Classes
 
