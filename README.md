@@ -16,6 +16,10 @@ Our HTML input element would look like this:
 
 If we decided that instead of a minimum length of 5 characters we wanted a minimum length of 4 characters, our CSS class would instead be `fv_min_length-4`.
 
+## Demo / Example
+
+Access a [live demo](http://www.vmichnowicz.com/examples/formvalidate/index.html).
+
 ## Filters & Validations
 
 jQuery Form Validate includes two main groups of functions, "filters" and "validations". Filters modify the value of an input before it is validated. The most common filter is `trim`. This function will remove all the leading and trailing white space of a form inputs value. This is most commonly used to make sure that a user actually entered something instead of just spaces. The full list of filters is as follows:
@@ -60,6 +64,8 @@ With these new prefixes in place making an element required and running the trim
 <input type="text" name="middle_name" class="new_filter_prefix_trim required" />
 ````
 
-## Demo / Example
+## Complete Object Reference
 
-Access a [live demo](http://www.vmichnowicz.com/examples/formvalidate/index.html).
+When you initialize the plugin you can pass an object to override all of the default plugin settings. You can even add or replace all existing form validation functions.
+
+*** *validateOnEvent* string **submit**
