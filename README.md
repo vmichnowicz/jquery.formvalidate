@@ -69,3 +69,27 @@ With these new prefixes in place making an element required and running the trim
 When you initialize the plugin you can pass an object to override all of the default plugin settings. You can even add or replace all existing form validation functions.
 
 ### validateOnEvent [ string "*submit*" ]
+
+### validateOnObject [ object *null* ]
+
+### preProcess [ function *function(O)* ]
+
+### postProcess [ function *function(O)* ]
+
+### onSuccess [ function *function(O)* ]
+
+### onFailure [ function *function(O)* ]
+
+### cssFailureClass [ string "*fv_error*" ]
+
+### cssSuccessClass [ string "*fv_success*" ]
+
+### cssFilterPrefix [ string "*ff_*" ]
+
+### cssValidationPrefix [ string "*fv_*" ]
+
+### cssParamDelimiter [ string "*-*" ]
+
+### failureWrapper [ string "*<span />*" ]
+
+### filters [ object ]
