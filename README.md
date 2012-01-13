@@ -4,17 +4,17 @@
 
 jQuery Form Validate is a jQuery plugin that helps validate your HTML forms. It takes validation rules from the CSS styles that you apply to each input. For example, let's assume we have a `first_name` text input in our form. We want our first name field to be required, have a length of at least 5 characters and a maximum length of 128 characters. The CSS classes that would would apply to this input would be as follows:
 
-* **Required**: `fv_required`
-* **Minimum length of 5 characters**: `fv_min_length-5`
-* **Maximum length of 128 characters**: `fv_max_length-128`
+* **Required**: `required`
+* **Minimum length of 5 characters**: `min_length-5`
+* **Maximum length of 128 characters**: `max_length-128`
 
 Our HTML input element would look like this:
 
 ````
-<input type="text" name="first_name" class="fv_required fv_min_length-5 fv_max_length-128" />
+<input type="text" name="first_name" class="required min_length-5 max_length-128" />
 ````
 
-If we decided that instead of a minimum length of 5 characters we wanted a minimum length of 4 characters, our CSS class would instead be `fv_min_length-4`.
+If we decided that instead of a minimum length of 5 characters we wanted a minimum length of 4 characters, our CSS class would instead be `min_length-4`.
 
 ## Demo / Example
 
@@ -41,24 +41,18 @@ After all filters have been processed, then the validations are run. A validatio
 
 ## Breaking Down The CSS Classes
 
-jQuery Form Validate uses the CSS classes assigned to your input elements to figure out which form validations to run. Because of this you may want to prefix your CSS validation classes. By default the validation prefix for all filter functions is `ff_` and the prefix for all form validation functions is `fv_`. With these defaults you must prefix all functions that you want to run. So, for example, if you want to make an element required it would look similar to this:
-
-````
-<input type="text" name="age" class="fv_required" />
-````
-
-If you want to change the prefix (or even remove it) you can do that in that during the initialization of the plugin:
+jQuery Form Validate uses the CSS classes assigned to your input elements to figure out which form validations to run. If you wish to prefix your form filter and validation CSS prefixes you may with the `cssFilterPrefix` and `cssValidationPrefix` properties:
 
 ````
 $(document).ready(function() {
   $('form').formvalidate({
 		cssFilterPrefix: 'new_filter_prefix_', // Add prefix of "new_filter_prefix_" for all filter functions
-		cssValidationPrefix: '', // Remove prefix
+		cssValidationPrefix: '', // No CSS prefix (default setting)
 	});
 });
 ````
 
-With these new prefixes in place making an element required and running the trim filter would look like this:
+With these new prefixes defined above in place making an element required and running the trim filter would look like this:
 
 ````
 <input type="text" name="middle_name" class="new_filter_prefix_trim required" />
@@ -118,8 +112,8 @@ This function is run after a form fails validation. By default we loop through e
 ````
 <div>
 	<label for="name">
-	<input name="name" class="fv_required" title="Name" />
-	<!--<span class="fv_error">Error messages get appended at the end of the container DIV elements</span>-->
+	<input name="name" class="required" title="Name" />
+	<!--<span class="error">Error messages get appended at the end of the container DIV elements</span>-->
 </div>
 ````
 
@@ -139,32 +133,32 @@ $.each(O.inputs, function(inputIndex, inputObj) {
 });
 ````
 
-### cssFailureClass [ string "*fv_error*" ]
+### cssFailureClass [ string "*error*" ]
 
 CSS class that gets added to all invalid form inputs and error messages.
 
-### cssSuccessClass [ string "*fv_success*" ]
+### cssSuccessClass [ string "*success*" ]
 
-Not used at this time.
+CSS class that gets added to all form elements that pass validation.
 
-### cssFilterPrefix [ string "*ff_*" ]
+### cssFilterPrefix [ string "*{empty string}*" ]
 
 Prefix for form filters.
 
-### cssValidationPrefix [ string "*fv_*" ]
+### cssValidationPrefix [ string "*{empty string}*" ]
 
 Prefix for form validation functions.
 
 ### cssParamDelimiter [ string "*-*" ]
 
-Used to designate parameters from within our CSS form validation functions. By default this is the `-` character. If we want to run the `between_numeric` validation function and have a minimum value of 5 and a maximum value of 10 the our CSS class would be `fv_between_numeric-5-10`. Here we can see that the `-` character designates the start of the parameters and also serves to delimit each parameter.
+Used to designate parameters from within our CSS form validation functions. By default this is the `-` character. If we want to run the `between_numeric` validation function and have a minimum value of 5 and a maximum value of 10 the our CSS class would be `between_numeric-5-10`. Here we can see that the `-` character designates the start of the parameters and also serves to delimit each parameter.
 
 ### failureWrapper [ string "*\<span /\>*" ]
 
 By default all error messages are wrapped in `<span />` tags. This results in error messages looking something like this:
 
 ````
-<span class="fv_error">First Name is required.</span>
+<span class="error">First Name is required.</span>
 ````
 
 ### filters [ object *trim*, object *strtoupper*, object *strtolower* ]
