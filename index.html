@@ -17,6 +17,7 @@
 	<!-- JavaScript -->
 	<script type="text/javascript">
 		$(document).ready(function() {
+			
 			$('form').formvalidate({
 				validateOnEvent: 'click',
 				validateOnObject: $('#submit'), // Once the submit button is clicked we will run form validation
@@ -26,7 +27,7 @@
 					required: {
 						text: '{0} is required (and error messages can be overwritten!).'
 					},
-					// Custom validation
+					// Add a custom validation
 					middle_name: {
 						text: 'Your {0} cannot be "{2}" because this is a custom validation method and I said so.',
 						func: function(input, params) {
@@ -79,6 +80,7 @@
 			color: #555;
 		}
 		input[type="text"],
+		select,
 		textarea {
 			border: 1px solid #999;
 			padding: 3px;
@@ -86,16 +88,21 @@
 			color: #999;
 			border-radius: 3px;
 		}
+		select { width: 228px; }
 		input[type="text"]:focus,
+		select:focus,
 		textarea:focus {
 			border-color: #81aa47;
 			color: #333;
 		}
-		span.fv_error {
+		span.error {
 			color: #bf4c70;
 		}
-		input.fv_error, textarea.fv_error {
+		input.error, textarea.error {
 			border-color: #bf4c70;
+		}
+		input.success, textarea.success {
+			border-color: #95bc4b;
 		}
 		#submit {
 			background-color: #445d7a;
@@ -123,44 +130,57 @@
 			<h2>jQuery Form Validate <em>&rsaquo;</em></h2>
 			<div>
 				<label for="first_name">First Name</label>
-				<input type="text" id="first_name" name="first_name" title="First Name" class="ff_trim fv_required fv_min_length-5 fv_max_length-128" maxlength="128" />
+				<input type="text" id="first_name" name="first_name" title="First Name" class="trim required min_length-5 max_length-128" maxlength="128" />
 			</div>
 			<div>
 				<label for="middle_name">Middle Name</label>
-				<input type="text" id="middle_name" name="middle_name" title="Middle Name" class="fv_middle_name-walch" maxlength="128" />
+				<input type="text" id="middle_name" name="middle_name" title="Middle Name" class="middle_name-walch" maxlength="128" />
 			</div>
 			<div>
 				<label for="last_name">Last Name</label>
-				<input type="text" id="last_name" name="last_name" title="Last Name" class="fv_required fv_min_length-5 fv_max_length-128" maxlength="128" />
+				<input type="text" id="last_name" name="last_name" title="Last Name" class="trim required min_length-5 max_length-128" maxlength="128" />
 			</div>
 			<div>
 				<label for="age">Age</label>
-				<input type="text" id="age" name="age" title="Age" class="fv_int fv_between_numeric-1-101" maxlength="128" />
+				<input type="text" id="age" name="age" title="Age" class="int between_numeric-1-101" maxlength="128" />
 			</div>
 			<div>
 				<label for="birth_date">Birth Date</label>
-				<input type="text" id="birth_date" name="birth_date" title="Birth Date" class="fv_date-YYYYMMDD" maxlength="128" placeholder="YYYY-MM-DD" />
+				<input type="text" id="birth_date" name="birth_date" title="Birth Date" class="date-YYYYMMDD" maxlength="128" placeholder="YYYY-MM-DD" />
 			</div>
 			<div>
 				<label for="email">Email</label>
-				<input type="text" id="email" name="email" title="Email" class="fv_required fv_min_length-5 fv_max_length-128 fv_email" maxlength="128" />
+				<input type="text" id="email" name="email" title="Email" class="required min_length-5 max_length-128 email" maxlength="128" />
+			</div>
+			<div>
+				<label for="continent">Continent</label>
+				<select id="continent" name="continent" title="Continent" class="required">
+					<option value="">&mdash; Please Select &mdash;</option>
+					<option value="na">North America</option>
+					<option value="sa">South America</option>
+					<option value="an">Antarctica</option>
+					<option value="af">Africa</option>
+					<option value="eu">Europe</option>
+					<option value="as">Asia</option>
+					<option value="au">Australia</option>
+				</select>
 			</div>
 			<div>
 				<label>Are You Cool?</label>
-				<label><input type="radio" name="cool" value="Y" class="fv_required" title="Are you cool?"/> Yes</label>
+				<label><input type="radio" name="cool" value="Y" class="required" title="Are you cool?"/> Yes</label>
 				<label><input type="radio" name="cool" value="N" /> No</label>
 			</div>
 			<div>
 				<label>What Do You Like?</label>
-				<label><input type="checkbox" name="like[]" checked="checked" value="ci" title="What do you like?" class="fv_required"/> CodeIgniter</label>
-				<label><input type="checkbox" name="like[]" value="fuel" class="fv_min_options-2 fv_max_options-3" /> Fuel</label>
+				<label><input type="checkbox" name="like[]" checked="checked" value="ci" title="What do you like?" class="required"/> CodeIgniter</label>
+				<label><input type="checkbox" name="like[]" value="fuel" class="min_options-2 max_options-3" /> Fuel</label>
 				<label><input type="checkbox" name="like[]" value="kohana" /> Kohana</label>
 				<label><input type="checkbox" name="like[]" value="w1" /> W1</label>
 				<label><input type="checkbox" name="like[]" checked="checked" value="zend" /> Zend</label>
 			</div>
 			<div>
 				<label for="life_story">Life Story</label>
-				<textarea id="life_story" name="life_story" class="ff_trim fv_min_length-4 fv_max_length-128" title="Life Story" cols="64" rows="8"></textarea>
+				<textarea id="life_story" name="life_story" class="trim min_length-4 max_length-128" title="Life Story" cols="64" rows="8"></textarea>
 			</div>
 			<div>
 				<a href="javascript:void(0);" class="submit" id="submit">Submit <em>&rsaquo;</em></a>

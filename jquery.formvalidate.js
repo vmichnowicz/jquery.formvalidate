@@ -122,11 +122,11 @@
 			validateOnObject: null, // jQuery object that we will attach our event listiner to
 			// Processing before everything else takes place (be sure to return form validation object!)
 			preProcess: function(O) {
-				// Remove failure class from inputs
-				$(':input.' + settings.cssFailureClass).removeClass(settings.cssFailureClass);
+				// Remove success and failure classes from inputs
+				$(O.form).find(':input.' + settings.cssFailureClass + ', :input.' + settings.cssSuccessClass).removeClass(settings.cssFailureClass + ' ' + settings.cssSuccessClass);
 
 				// Remove all error messages
-				$('.' + settings.cssFailureClass).remove();
+				$(O.form).find('.' + settings.cssFailureClass).remove();
 
 				return O;
 			},
@@ -146,17 +146,20 @@
 					// If this input did not pass validation
 					if (inputObj.failure === true) {
 						// Add failure class to input(s)
-						$(':input[name="' + inputIndex + '"]').addClass( settings.cssFailureClass );
+						$(O.form).find(':input[name="' + inputIndex + '"]').addClass( settings.cssFailureClass );
 						// New error message element
 						var el = $( settings.failureWrapper ).addClass( settings.cssFailureClass ).text( inputObj.errors[0] );
-						$(':input[name="' + inputIndex + '"]:last').closest('div').append(el);
+						$(O.form).find(':input[name="' + inputIndex + '"]:last').closest('div').append(el);
+					}
+					else {
+						$(O.form).find(':input[name="' + inputIndex + '"]').addClass( settings.cssSuccessClass );
 					}
 				});
 			},
-			cssFailureClass: 'fv_error', // CSS class added to inputs that did not pass validation
-			cssSuccessClass: 'fv_success', // CSS class added to inputs that did pass validation
-			cssFilterPrefix: 'ff_', // CSS class prefix to designate filter rules
-			cssValidationPrefix: 'fv_', // CSS class prefix to designate validation rules
+			cssFailureClass: 'error', // CSS class added to inputs that did not pass validation
+			cssSuccessClass: 'success', // CSS class added to inputs that did pass validation
+			cssFilterPrefix: '', // CSS class prefix to designate filter rules
+			cssValidationPrefix: '', // CSS class prefix to designate validation rules
 			cssParamDelimiter: '-', // CSS validation rule delimiter
 			failureWrapper: '<span />',
 			filters: {
@@ -334,10 +337,6 @@
 									inputObj.errors.push(errorMessage); // Add error to errors array
 								}
 							}
-							// If this validation method is not defined
-							else {
-								throw new Error('Validation method "' + validationName + '" is not defined.');
-							}
 						}
 					});
 				}
@@ -350,8 +349,8 @@
 		/**
 		 * Process the form
 		 *
-		 * This function will process our form and grab all input data
-		 * such as input name, value, and all associated validations.
+		 * This function will process our form and grab all input data such as
+		 * input name, value, and all associated validations.
 		 *
 		 * @param object	jQuery object containing our form that we will attempt to process
 		 * @return object	Validation object containing form input data
@@ -439,9 +438,10 @@
 
 				// Loop through each class on this form element
 				$.each(allClasses, function(classIndex, className) {
-					
-					// If this classes has our form validation CSS prefix
+
+					// If this classes has our form validation CSS prefix (this is always be true if we have no CSS filter prefix)
 					if ( className.indexOf(settings.cssFilterPrefix) === 0 ) {
+	
 						// Form filter class
 						var filterClass = '';
 
@@ -464,12 +464,16 @@
 							// Get form validation function name
 							filterClass = className.substr(settings.cssFilterPrefix.length);
 						}
-
-						O.inputs[attrName].filters[ filterClass ] = params;
+						
+						// If this class name is found in our filters add it to our form validation object
+						if (filterClass in settings.filters) {
+							O.inputs[attrName].filters[ filterClass ] = params;
+						}
 					}
 
-					// If this classes has our form validation CSS prefix
+					// If this classes has our form validation CSS prefix (this is always be true if we have no CSS validation prefix)
 					if ( className.indexOf(settings.cssValidationPrefix) === 0 ) {
+
 						// Form validation class
 						var validationClass = '';
 
@@ -493,9 +497,11 @@
 							validationClass = className.substr(settings.cssValidationPrefix.length);
 						}
 
-						O.inputs[attrName].validations[ validationClass ] = params;
+						// If this class name is found in our validations add it to our form validation object
+						if (validationClass in settings.validations) {
+							O.inputs[attrName].validations[ validationClass ] = params;
+						}
 					}
-
 
 				});
 			});
