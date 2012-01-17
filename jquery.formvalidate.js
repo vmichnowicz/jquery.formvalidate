@@ -118,8 +118,6 @@
 
 		// Create some defaults, extending them with any options that were provided
 		var settings = $.extend(true, {
-			validateOnEvent: 'submit', // Events such as "click", "hover", "focus", etc...
-			validateOnObject: null, // jQuery object that we will attach our event listiner to
 			// Processing before everything else takes place (be sure to return form validation object!)
 			preProcess: function(O) {
 				// Remove success and failure classes from inputs
@@ -518,36 +516,20 @@
 			// Our form
 			O.form = this;
 
-			// By defaiult we will run validation on the submission of the form, the user can change this, however
-			var validateOnObject = settings.validateOnObject !== null ? settings.validateOnObject : O.form;
+			// Run preProcess function
+			O = settings.preProcess(O);
 
-			// Attach event handler to object
-			validateOnObject.live(settings.validateOnEvent, function(e) {
+			// Process form an populate our main object
+			O = process(O);
 
-				// Run preProcess function
-				O = settings.preProcess(O);
+			// Validate form get back another object that includes a bunch of new post-data validation info
+			O = validate(O);
 
-				// Process form an populate our main object
-				O = process(O);
+			// Run postProcess function
+			O = settings.postProcess(O);
 
-				// Validate form get back another object that includes a bunch of new post-data validation info
-				O = validate(O);
-
-				// Run postProcess function
-				O = settings.postProcess(O);
-
-				// On form validation success
-				if (O.result === true) {
-					// Run success method and pass form validation object along for the ride
-					return settings.onSuccess(O);
-				}
-				// On form validation error
-				else {
-					// Run failure method and pass form validation object along for the ride
-					settings.onFailure(O);
-					e.preventDefault();
-				}
-			});
+			// On form validation success
+			O.result === true ? settings.onSuccess(O) : settings.onFailure(O);
 
 		});
 	}

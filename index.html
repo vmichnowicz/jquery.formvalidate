@@ -17,25 +17,46 @@
 	<!-- JavaScript -->
 	<script type="text/javascript">
 		$(document).ready(function() {
-			
-			$('form').formvalidate({
-				validateOnEvent: 'click',
-				validateOnObject: $('#submit'), // Once the submit button is clicked we will run form validation
-				// Let's modiyfy a validation message and add a custom validation method
-				validations: {
-					// Modify error message
-					required: {
-						text: '{0} is required (and error messages can be overwritten!).'
-					},
-					// Add a custom validation
-					middle_name: {
-						text: 'Your {0} cannot be "{2}" because this is a custom validation method and I said so.',
-						func: function(input, params) {
-							return input.toLowerCase() === params[0].toLowerCase() ? false : true;
+
+			// Validate form #1 on form submission
+			$('#form_1').submit(function(e) {
+				e.preventDefault();
+				$(this).formvalidate({
+					onSuccess: function(O) {
+						alert('Form #1 is valid!');
+					}
+				});
+			});
+
+			// Validate form #2 when the submit button is clicked
+			$('#submit_2').click(function(e) {
+				e.preventDefault();
+
+				// From the anchor element find the closest form element
+				$(this).closest('form').formvalidate({
+					// Let's modiyfy a validation message and add a custom validation method
+					validations: {
+						// Modify error message
+						required: {
+							text: '{0} is required (and error messages can be overwritten!).'
+						},
+						// Add a custom validation
+						middle_name: {
+							text: 'Your {0} cannot be "{2}" because this is a custom validation method and I said so.',
+							func: function(input, params) {
+								return input.toLowerCase() === params[0].toLowerCase() ? false : true;
+							}
 						}
 					}
-				}
+				});
 			});
+
+			// Toggle code
+			$('h2 a').click(function(e) {
+				e.preventDefault();
+				$( $(this).attr('href') ).toggle();
+			})
+
 		});
 	</script>
 
@@ -46,7 +67,7 @@
 			background-color: #f9f9f9;
 		}
 		fieldset {
-			padding: 0px 15px 15px 15px;
+			padding: 0px 15px 5px 15px;
 			margin: 15px;
 			background-color: #efefef;
 			border: 1px solid #999;
@@ -66,6 +87,28 @@
 		h2 em {
 			font-style: normal;
 			color: #999;
+		}
+		h2 a {
+			float: right;
+			font: 12px/20px "Tahoma", "Verdana", "Arial", sans-serif;
+			color: #555;
+			background-color: #d6d6d6;
+			padding: 0px 5px;
+			border: 1px solid #aaa;
+			box-shadow: 1px 1px 0px #e8e8e8 inset, -1px -1px 0px #e8e8e8 inset;
+			text-shadow: 0px 1px 0px #e8e8e8;
+			text-decoration: none;
+			border-radius: 3px;
+		}
+		pre {
+			display: none;
+			margin: 10px 0px;
+			font: 12px/18px monospace;
+			color: #555;
+			background-color: #fff;
+			padding: 10px;
+			border: 1px solid #ddd;
+			border-radius: 3px;
 		}
 		fieldset > div {
 			margin: 10px 0px;
@@ -104,16 +147,19 @@
 		input.success, textarea.success {
 			border-color: #95bc4b;
 		}
-		#submit {
+		.submit {
 			background-color: #445d7a;
 			color: #fff;
 			text-decoration: none;
 			padding: 5px 10px;
+			margin: 5px 0px;
+			display: inline-block;
 			border: 1px solid #3b516b;
 			box-shadow: 1px 1px 0px #4f6d8e inset, -1px -1px 0px #4f6d8e inset;
 			border-radius: 5px;
+			cursor: pointer;
 		}
-		#submit em {
+		.submit em {
 			color: #9eafc1;
 			font-style: normal;
 		}
@@ -124,10 +170,35 @@
 <body>
 
 <div>
-	<form method="post" action="">
+
+	<form id="form_1" method="post" action="">
 		<fieldset>
-			<legend>Inputs</legend>
-			<h2>jQuery Form Validate <em>&rsaquo;</em></h2>
+			<legend>jQuery Form Validate (Example #1)</legend>
+			<h2>jQuery Form Validate (Example #1)<em>&rsaquo;</em> <a href="#example_1">Show / Hide Code</a></h2>
+			<div>
+				<label for="required">Anything</label>
+				<input type="text" id="required" name="required" title="Anything" class="trim required" maxlength="128" />
+			</div>
+			<div>
+				<button type="submit" class="submit" id="submit_1">Submit <em>&rsaquo;</em></button>
+			</div>
+<pre id="example_1">
+// Validate form #1 on form submission
+$(&#39;#form_1&#39;).submit(function(e) {
+	e.preventDefault();
+	$(this).formvalidate({
+		onSuccess: function(O) {
+			alert(&#39;Form #1 is valid!&#39;);
+		}
+	});
+});</pre>
+		</fieldset>
+	</form>
+
+	<form id="form_2" method="post" action="">
+		<fieldset>
+			<legend>jQuery Form Validate (Example #2)</legend>
+			<h2>jQuery Form Validate (Example #2)<em>&rsaquo;</em> <a href="#example_2">Show / Hide Code</a></h2>
 			<div>
 				<label for="first_name">First Name</label>
 				<input type="text" id="first_name" name="first_name" title="First Name" class="trim required min_length-5 max_length-128" maxlength="128" />
@@ -183,8 +254,32 @@
 				<textarea id="life_story" name="life_story" class="trim min_length-4 max_length-128" title="Life Story" cols="64" rows="8"></textarea>
 			</div>
 			<div>
-				<a href="javascript:void(0);" class="submit" id="submit">Submit <em>&rsaquo;</em></a>
+				<a href="javascript:void(0);" class="submit" id="submit_2">Submit <em>&rsaquo;</em></a>
 			</div>
+<pre id="example_2">
+// Validate form #2 when the submit button is clicked
+$(&#39;#submit_2&#39;).click(function(e) {
+	e.preventDefault();
+
+	// From the anchor element find the closest form element
+	$(this).closest(&#39;form&#39;).formvalidate({
+		// Let&#39;s modiyfy a validation message and add a custom validation method
+		validations: {
+			// Modify error message
+			required: {
+				text: &#39;{0} is required (and error messages can be overwritten!).&#39;
+			},
+			// Add a custom validation
+			middle_name: {
+				text: &#39;Your {0} cannot be &quot;{2}&quot; because this is a custom validation method and I said so.&#39;,
+				func: function(input, params) {
+					return input.toLowerCase() === params[0].toLowerCase() ? false : true;
+				}
+			}
+		}
+	});
+});
+</pre>
 		</fieldset>
 	</form>
 </div>
