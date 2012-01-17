@@ -60,20 +60,6 @@ With these new prefixes defined above in place making an element required and ru
 
 ## Complete Object Reference
 
-When you initialize the plugin you can pass an object to override all of the default plugin settings. You can even add or replace all existing form validation functions.
-
-### validateOnEvent [ string "*submit*" ]
-
-Typically form validation is run after one submits a form or clicks a "submt" button. But default jQuery Form Validate will run form validation on submission of a form. However, if you would like form validation to run after a user clicks a button than you would want this event to be `click`. Then in the next property, `validateOnObject` you would pass a jQuery object containing that button.
-
-### validateOnObject [ object *null* ]
-
-But default this object is null and the form itself it used as the "validate on object". When our `validateOnEvent` is `submit` (the default) this works perfectly fine. However, if we want to run validation on the press of a button we would pass a jQuery object with our submit button to this property. Code for this would look something like:
-
-````
-$('a.my_submit_button')
-````
-
 ### preProcess [ function *function(O)* ]
 
 This function is fun before any form validation processing. By default this function removes all error classes, removes all error messages, and returns the main form validation object, `O`.
