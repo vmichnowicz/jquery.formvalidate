@@ -344,7 +344,7 @@
 								// If this validation method is defined
 								if (validationName in settings.validations) {
 									// If the form input is null we will skip validations UNLESS the current validation is checking that this inputs required status has been met
-									if (inputObj.value === null && validationName !== 'required') {
+									if (inputObj.value === null && validationName !== 'required' && validationName !== 'required_if') {
 										return true; // Skip current validation and continue with $.each()
 									}
 									// If validation did not pass
@@ -435,6 +435,7 @@
 					}
 				}
 			},
+			addFilters: {},
 			validations: {
 				between_numeric: {
 					text: '{0} must be between {2} and {3}.',
@@ -460,6 +461,12 @@
 					text: '{1} is not a valid email.',
 					func: function(input, params) {
 						return input.search(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i) == -1 ? false : true;
+					}
+				},
+				length: {
+					text: '{0} must be exactly {2} characters.',
+					func: function(input, params) {
+						return input.length === parseInt(params[0]);
 					}
 				},
 				min_length: {
@@ -523,6 +530,26 @@
 						}
 					}
 				},
+				required_if: {
+					text: '{0} is required.',
+					func: function(input, params) {
+						
+						// Dependent element
+						var el = $('#' + params[0]);
+						
+						var dependent = null;
+						
+						// If dependent element is a checkbox or radio
+						if ( $(el).is(':checkbox') || $(el).is(':radio') ) {
+							 // If dependent checkbox or radio is checked set value to TRUE, else NULL
+							 dependent = $(el).is(':checked') ? true : null;
+						}
+						else {
+							dependent = $.trim( $(el).val() ) === '' ? null : $.trim( $(el).val() );
+						}
+						return (dependent !== null || dependent === []) && input === null ? false : true;
+					}
+				},
 				less_than: {
 					text: '{0} must be less than {2}.',
 					func: function(input, params) {
@@ -535,7 +562,8 @@
 						return parseFloat(input) > params[0];
 					}
 				}
-			}
+			},
+			addValidations: {}
 		}, options);
 
 		// Loop through each selected element

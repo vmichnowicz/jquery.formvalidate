@@ -50,13 +50,29 @@
 					}
 				});
 			});
+			
+			// Toggle "Why So Cool?"
+			(function () {
+				var cool = $('input[name="cool"]');
+				var whyCool = $('#why_cool').closest('div');
+				
+				// Toggle "Why So Cool?" question
+				var toggle = function toggle() {;
+					$(cool).filter(':checked').val() === 'Y' ? $(whyCool).show() : $(whyCool).hide();
+					return toggle;
+				}();
+				
+				// Run toggle function on change
+				$(cool).live('change', function() {
+					toggle();
+				});
+			})();
 
 			// Toggle code
 			$('h2 a').click(function(e) {
 				e.preventDefault();
 				$( $(this).attr('href') ).toggle();
-			})
-
+			});
 		});
 	</script>
 
@@ -238,8 +254,23 @@ $(&#39;#form_1&#39;).submit(function(e) {
 			</div>
 			<div>
 				<label>Are You Cool?</label>
-				<label><input type="radio" name="cool" value="Y" class="required" title="Are you cool?"/> Yes</label>
-				<label><input type="radio" name="cool" value="N" /> No</label>
+				<label><input type="radio" name="cool" value="Y" id="cool_yes" class="required" title="Are you cool?"/> Yes</label>
+				<label><input type="radio" name="cool" value="N" id="cool_no" /> No</label>
+			</div>
+			<div>
+				<label for="why_cool">Why So Cool?</label>
+				<textarea id="why_cool" name="why_cool" class="trim min_length-4 max_length-512 required_if-cool_yes" title="Why So Cool?" cols="64" rows="8"></textarea>
+			</div>
+			<div>
+				<label>What colors do you like?</label>
+				<select multiple="multiple" id="colors" name="colors[]" title="Colors" class="required min_options-2">
+					<option value="red">Red</option>
+					<option value="orange">Orange</option>
+					<option value="yellow">Yellow</option>
+					<option value="green">Green</option>
+					<option value="blue">Blue</option>
+					<option value="purple">Purple</option>
+				</select>
 			</div>
 			<div>
 				<label>What Do You Like?</label>
@@ -248,10 +279,6 @@ $(&#39;#form_1&#39;).submit(function(e) {
 				<label><input type="checkbox" name="like[]" value="kohana" /> Kohana</label>
 				<label><input type="checkbox" name="like[]" value="w1" /> W1</label>
 				<label><input type="checkbox" name="like[]" checked="checked" value="zend" /> Zend</label>
-			</div>
-			<div>
-				<label for="life_story">Life Story</label>
-				<textarea id="life_story" name="life_story" class="trim min_length-4 max_length-128" title="Life Story" cols="64" rows="8"></textarea>
 			</div>
 			<div>
 				<a href="javascript:void(0);" class="submit" id="submit_2">Submit <em>&rsaquo;</em></a>
