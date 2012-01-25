@@ -481,11 +481,22 @@
 						return input.length < parseInt(params[0]);
 					}
 				},
+				options: {
+					text: 'Must select exactly {2} options.',
+					func: function(input, params) {
+						if (input instanceof Array) {
+							return input.length === parseInt(params[0]) ? true : false;
+						}
+						else {
+							return false;
+						}
+					}
+				},
 				min_options: {
 					text: 'Must select at least {2} options.',
 					func: function(input, params) {
 						if (input instanceof Array) {
-							return input.length >= params[0] ? true : false;
+							return input.length >= parseInt(params[0]) ? true : false;
 						}
 						else {
 							return false;
@@ -496,7 +507,7 @@
 					text: 'Cannot select more than {2} options.',
 					func: function(input, params) {
 						if (input instanceof Array) {
-							return input.length > params[0] ? false : true;
+							return input.length > parseInt(params[0]) ? false : true;
 						}
 						else {
 							return false;
@@ -553,13 +564,13 @@
 				less_than: {
 					text: '{0} must be less than {2}.',
 					func: function(input, params) {
-						return parseFloat(input) < params[0];
+						return parseFloat(input) < parseFloat(params[0]);
 					}
 				},
 				greater_than: {
 					text: '{0} must be greater than {2}.',
 					func: function(input, params) {
-						return parseFloat(input) > params[0];
+						return parseFloat(input) > parseFloat(params[0]);
 					}
 				}
 			},

@@ -1,5 +1,9 @@
 # jQuery Form Validate
 
+## License
+
+jQuery Form Validate is licensed under [Creative Commons Attribution-NonCommercial 3.0](http://creativecommons.org/licenses/by-nc/3.) license. You are free to use jQuery Form Validate for your personal or non-profit website projects. You can get my permission to use jQuery Form Validate for commercial websites by paying a fee.
+
 ## Introduction
 
 jQuery Form Validate is a jQuery plugin that helps validate your HTML forms. It takes validation rules from the CSS styles that you apply to each input. For example, let's assume we have a `first_name` text input in our form. We want our first name field to be required, have a length of at least 5 characters and a maximum length of 128 characters. The CSS classes that would would apply to this input would be as follows:
@@ -31,9 +35,12 @@ jQuery Form Validate includes two main groups of functions, "filters" and "valid
 After all filters have been processed, then the validations are run. A validation takes the value of the form input, an optional list of parameters, and then does some processing. If the input is valid it returns `true`, else, if the validation fails, it returns `false`. The full list of validation functions along with their parameter requirements is as follows:
 
 * *required*() -- Make it so form input is required.
+* *required_if*( string **element id** ) -- Require an input only if a dependent element has a value.
 * *between_numeric*( float **minimum**, float **maximum** ) -- See if a value is between a minimum and maximum value.
+* *length*( int **length** ) -- Validate that a string is exactly a certain number of characters in length.
 * *min_length*( int **minimum** ) -- Validate that a string is at least a certain number of characters in length.
 * *max_length*( int **maximum** ) -- Validate that a string is no more than a certain number of characters in length.
+* *options*( int **minimum** ) -- Make sure a user selects exactly the provided number of checkboxes or multi-select form inputs.
 * *min_options*( int **minimum** ) -- Make sure a user selects at least a provided number of checkboxes or multi-select form inputs.
 * *max_options*( int **maximum** ) -- Make sure a user selects no more than a provided number of checkboxes or multi-select form inputs.
 * *email*()`: Make sure a user entered a valid email
@@ -93,7 +100,7 @@ return true;
 
 ### onFailure [ function *function(O)* ]
 
-This function is run after a form fails validation. By default we loop through each input and find all the errors that were gathered. Then we append the error message inside the container DIV. Depending on how you layout your HTML forms this may need modification. This default code works best if you have one container DIV for each form element:
+This function is run after a form fails validation. By default we loop through each input and find all the errors that were gathered. Then we append the error message inside the container DIV. Depending on how you layout your HTML forms this may need modification (**This is *very* important. Because the HTML of every form is different there is no one solution to placing error messages. Some tweaking may be needed in order to get the error messages displaying correctly**). This default code works best if you have one container DIV for each form element:
 
 ````
 <div>
@@ -163,7 +170,7 @@ This function converts all text to uppercase.
 
 This function converts all text to lowercase.
 
-### validations [ object *between_numberic*, object *date*, object *email*, object *min_length*, object *max_length*, object *min_options*, object *max_options*, object *int*, object *float*, object *required*, object *less_than*, object *greater_than* ]
+### validations [ object *between_numberic*, object *date*, object *email*, object *length*, object *min_length*, object *max_length*, object *options*, object *min_options*, object *max_options*, object *int*, object *float*, object *required_if*, object *required*, object *less_than*, object *greater_than* ]
 
 Validation functions simply check to see if an input is valid. They can the boolean `true` or `false`. Each function accepts two parameters, the form input, and an array of parameters. Each validation function has an associated error message template. The error message is built using the `title` attribute of the form input, the value of the form input, and/or the parameters passed to each validation function.
 
@@ -213,6 +220,21 @@ This function checks to see if a valid email was submitted. Email is validated u
 
 ---
 
+#### length [ object *text*, object *func* ]
+
+This function checks to see if an input is exactly the provided length.
+
+##### text [ string "*{0} must be exactly {2} characters.*" ]
+
+* **{0}** Input `title` attribute
+* **{2}** Minimum character length
+
+##### func [ function *function(input, params)* ]
+
+*Please reference source for validation function code*
+
+---
+
 #### min_length [ object *text*, object *func* ]
 
 This function checks to see if an input is at least of a provided length.
@@ -236,6 +258,20 @@ This function checks to see if an input is no longer than the provided number of
 
 * **{0}** Input `title` attribute
 * **{2}** Maximum character length
+
+##### func [ function *function(input, params)* ]
+
+*Please reference source for validation function code*
+
+---
+
+#### options [ object *text*, object *func* ]
+
+This function checks to see if multi-select or checkbox inputs have exactly the provided number of selections.
+
+##### text [ string "*Must select exactly {2} options.*" ]
+
+* **{2}** Exact number of options
 
 ##### func [ function *function(input, params)* ]
 
@@ -288,6 +324,20 @@ This function checks to see if a valid integer was provided.
 #### required [ object *text*, object *func* ]
 
 This function checks to see if any value was provided and the input is not blank.
+
+##### text [ string "*{0} is required.*" ]
+
+* **{0}** Input `title` attribute
+
+##### func [ function *function(input, params)* ]
+
+*Please reference source for validation function code*
+
+---
+
+#### required_if [ object *text*, object *func* ]
+
+This function checks to see if any value was provided and the input is not blank *only* if the dependent input has a value.
 
 ##### text [ string "*{0} is required.*" ]
 
