@@ -12,6 +12,7 @@
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
 	<!-- jQuery Form Validate -->
+	<script type="text/javascript" src="localization/de.js"></script>
 	<script type="text/javascript" src="jquery.formvalidate.js"></script>
 
 	<!-- JavaScript -->
@@ -24,7 +25,8 @@
 				$(this).formvalidate({
 					onSuccess: function(O) {
 						alert('Form #1 is valid!');
-					}
+					},
+					language: 'DE'
 				});
 			});
 
@@ -194,6 +196,10 @@
 			<div>
 				<label for="required">Anything</label>
 				<input type="text" id="required" name="required" title="Anything" class="trim required" maxlength="128" />
+			</div>
+			<div>
+				<label for="optional">Optional</label>
+				<input type="text" id="optional" name="optional" title="Optional" maxlength="128" />
 			</div>
 			<div>
 				<button type="submit" class="submit" id="submit_1">Submit <em>&rsaquo;</em></button>

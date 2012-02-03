@@ -1,4 +1,4 @@
-/*
+/**
  * jQuery Form Validation Plugin 0.1
  *
  * Source: https://github.com/vmichnowicz/jquery.formvalidate
@@ -59,7 +59,7 @@
 					dateArray[dateSegment] = parseInt( dateArray[dateSegment] );
 				}
 			}
-			
+
 			// Date variables
 			var year, month, day;
 
@@ -118,6 +118,18 @@
 
 		// Create some defaults, extending them with any options that were provided
 		var settings = $.extend(true, {
+			// @todo refactor language objects
+			languages: {
+				en: {
+					between_numeric: '{0} must be between {2} and {3}.',
+					date: '{0} must be a valid date.'
+				},
+				de: {
+					between_numeric: '{0} must be between {2} and {3}.',
+					date: '{0} must be a valid date.'
+				}
+			},
+			language: 'EN', // English error messages by default
 			/**
 			 * Processing before everything else takes place
 			 *
@@ -585,6 +597,17 @@
 
 			// Our form
 			O.form = this;
+
+			// If selected language is not English
+			if (settings.language.toUpperCase() !== 'EN') {
+				var language = settings.language.toLowerCase();
+				try {
+					$.extend(true, settings.validations, window.formvalidate.languages[language].validations);
+				}
+				catch(exception) {
+					throw new Error('Could not load "' + language + '" form validate language object.');
+				}
+			}
 
 			// Run preProcess function
 			settings.preProcess(O.form, settings.cssFailureClass, settings.cssSuccessClass, settings.cssFilterPrefix, settings.cssValidationPrefix, settings.cssParamDelimiter, settings.failureWrapper);
