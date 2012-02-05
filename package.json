@@ -1,6 +1,6 @@
 {
 	"name": "formvalidate",
-	"version": "0",
+	"version": "0.1",
 	"title": "jQuery Form Validate",
 	"author": {
 		"name": "Victor Michnowicz",
@@ -32,6 +32,7 @@
 		"index.html",
 		"jquery.formvalidate.js",
 		"LICENSE.txt",
-		"README.md"
+		"localization/de.js",
+		"README.md",
 	]
 }

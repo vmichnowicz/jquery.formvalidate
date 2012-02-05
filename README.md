@@ -4,6 +4,10 @@
 
 jQuery Form Validate is licensed under [Creative Commons Attribution-NonCommercial 3.0](http://creativecommons.org/licenses/by-nc/3.) license. You are free to use jQuery Form Validate for your personal or non-profit website projects. You can get my permission to use jQuery Form Validate for commercial websites by paying a fee.
 
+## Demo / Example
+
+Access a [live demo](http://www.vmichnowicz.com/examples/formvalidate/index.html).
+
 ## Introduction
 
 jQuery Form Validate is a jQuery plugin that helps validate your HTML forms. It takes validation rules from the CSS styles that you apply to each input. For example, let's assume we have a `first_name` text input in our form. We want our first name field to be required, have a length of at least 5 characters and a maximum length of 128 characters. The CSS classes that would would apply to this input would be as follows:
@@ -19,10 +23,6 @@ Our HTML input element would look like this:
 ````
 
 If we decided that instead of a minimum length of 5 characters we wanted a minimum length of 4 characters, our CSS class would instead be `min_length-4`.
-
-## Demo / Example
-
-Access a [live demo](http://www.vmichnowicz.com/examples/formvalidate/index.html).
 
 ## Filters & Validations
 
@@ -67,21 +67,19 @@ With these new prefixes defined above in place making an element required and ru
 
 ## Complete Object Reference
 
-### preProcess [ function *function(O)* ]
+### preProcess [ function *function(form, cssFailureClass, cssSuccessClass, cssFilterPrefix, cssValidationPrefix, cssParamDelimiter, failureWrapper )* ]
 
-This function is fun before any form validation processing. By default this function removes all error classes, removes all error messages, and returns the main form validation object, `O`.
+This function is fun before any form validation processing. By default this function removes all error and success classes and removes all error messages.
 
 ````
-// Remove failure class from inputs
-$(':input.' + settings.cssFailureClass).removeClass(settings.cssFailureClass);
+// Remove success and failure classes from inputs
+$(form).find(':input.' + cssFailureClass + ', :input.' + cssSuccessClass).removeClass(cssFailureClass + ' ' + cssSuccessClass);
 
 // Remove all error messages
-$('.' + settings.cssFailureClass).remove();
-
-return O;
+$(form).find('.' + cssFailureClass).remove()
 ````
 
-### postProcess [ function *function(O)* ]
+### postProcess [ function *function(form, inputs, O)* ]
 
 This function is run after all form filter and validation rules are gathered. By default nothing is run in this function. However, the main form validation object must be returned.
 
@@ -89,7 +87,7 @@ This function is run after all form filter and validation rules are gathered. By
 return O;
 ````
 
-### onSuccess [ function *function(O)* ]
+### onSuccess [ function *function(form, inputs, O)* ]
 
 This function is run after a form has successfully been validated. By default an alert message pops up. If you wanted to AJAX your form data this would be the place to add that logic.
 
@@ -98,7 +96,7 @@ alert('Great Success!');
 return true;
 ````
 
-### onFailure [ function *function(O)* ]
+### onFailure [ function *function(form, inputs, O)* ]
 
 This function is run after a form fails validation. By default we loop through each input and find all the errors that were gathered. Then we append the error message inside the container DIV. Depending on how you layout your HTML forms this may need modification (**This is *very* important. Because the HTML of every form is different there is no one solution to placing error messages. Some tweaking may be needed in order to get the error messages displaying correctly**). This default code works best if you have one container DIV for each form element:
 
@@ -114,14 +112,17 @@ The default `onFailure` function is below:
 
 ````
 // Loop through each form input form our validation object
-$.each(O.inputs, function(inputIndex, inputObj) {
+$.each(inputs, function(inputIndex, inputObj) {
 	// If this input did not pass validation
 	if (inputObj.failure === true) {
 		// Add failure class to input(s)
-		$(':input[name="' + inputIndex + '"]').addClass( settings.cssFailureClass );
+		$(form).find(':input[name="' + inputIndex + '"]').addClass( settings.cssFailureClass );
 		// New error message element
 		var el = $( settings.failureWrapper ).addClass( settings.cssFailureClass ).text( inputObj.errors[0] );
-		$(':input[name="' + inputIndex + '"]:last').closest('div').append(el);
+		$(form).find(':input[name="' + inputIndex + '"]:last').closest('div').append(el);
+	}
+	else {
+		$(form).find(':input[name="' + inputIndex + '"]').addClass( settings.cssSuccessClass );
 	}
 });
 ````
@@ -170,209 +171,88 @@ This function converts all text to uppercase.
 
 This function converts all text to lowercase.
 
-### validations [ object *between_numberic*, object *date*, object *email*, object *length*, object *min_length*, object *max_length*, object *options*, object *min_options*, object *max_options*, object *int*, object *float*, object *required_if*, object *required*, object *less_than*, object *greater_than* ]
+### validations [ object *between_numeric*, object *date*, object *email*, object *length*, object *min_length*, object *max_length*, object *options*, object *min_options*, object *max_options*, object *int*, object *float*, object *required_if*, object *required*, object *less_than*, object *greater_than* ]
 
-Validation functions simply check to see if an input is valid. They can the boolean `true` or `false`. Each function accepts two parameters, the form input, and an array of parameters. Each validation function has an associated error message template. The error message is built using the `title` attribute of the form input, the value of the form input, and/or the parameters passed to each validation function.
+Validation functions simply check to see if an input is valid. They can the boolean `true` or `false`. Each function accepts two parameters, the form input, and an array of parameters. Each validation function references an associated error message in the main form validation object. The error message is built using the `title` attribute of the form input, the value of the form input, and/or the parameters passed to each validation function.
 
 ---
 
-#### between_numeric [ object *text*, object *func* ]
+#### between_numeric [ function *function(input, params)* ]
 
 This function is used to determine if the input value is between two provided numbers.
 
-##### text [ string "*{0} must be between {2} and {3}.*" ]
-
-* **{0}** Input `title` attribute
-* **{2}** Minimum amount
-* **{3}** Maximum amount
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
-
 ---
 
-#### date [ object *text*, object *func* ]
+#### date [ function *function(input, params)* ]
 
 This function checks to see if a valid date was submitted. Dates are accepted in one of three formats: "YYYY-MM-DD", "DD-MM-YYYY", "MM-DD-YYYY". Date parameter must be passed as either "YYYYMMDD", "DDMMYYYY", or "MMDDYYYY". The date string being validated may use a delimiter of either `-`, `/`, `,`, or `.`. 
 
-##### text [ string "*{0} must be a valid date.*" ]
-
-* **{0}** Input `title` attribute
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
-
 ---
 
-#### email [ object *text*, object *func* ]
+#### email [ function *function(input, params)* ]
 
 This function checks to see if a valid email was submitted. Email is validated using the regular expression `/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i`.
 
-##### text [ string "*{1} is not a valid email.*" ]
-
-* **{1}** Invalid user-provided email
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
-
 ---
 
-#### length [ object *text*, object *func* ]
+#### length [ function *function(input, params)* ]
 
 This function checks to see if an input is exactly the provided length.
 
-##### text [ string "*{0} must be exactly {2} characters.*" ]
-
-* **{0}** Input `title` attribute
-* **{2}** Minimum character length
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
-
 ---
 
-#### min_length [ object *text*, object *func* ]
+#### min_length [ function *function(input, params)* ]
 
 This function checks to see if an input is at least of a provided length.
 
-##### text [ string "*{0} must be at least {2} characters.*" ]
-
-* **{0}** Input `title` attribute
-* **{2}** Minimum character length
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
-
 ---
 
-#### max_length [ object *text*, object *func* ]
+#### max_length [ function *function(input, params)* ]
 
 This function checks to see if an input is no longer than the provided number of characters.
 
-##### text [ string "*{0} cannot be more than {2} characters.*" ]
+---
 
-* **{0}** Input `title` attribute
-* **{2}** Maximum character length
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
+#### options [ function *function(input, params)* ]
 
 ---
 
-#### options [ object *text*, object *func* ]
-
-This function checks to see if multi-select or checkbox inputs have exactly the provided number of selections.
-
-##### text [ string "*Must select exactly {2} options.*" ]
-
-* **{2}** Exact number of options
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
-
----
-
-#### min_options [ object *text*, object *func* ]
+#### min_options [ function *function(input, params)* ]
 
 This function checks to see if multi-select or checkbox inputs have at least a provided number of selections.
 
-##### text [ string "*Must select at least {2} options.*" ]
-
-* **{2}** Minimum number of options
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
-
 ---
 
-#### max_options [ object *text*, object *func* ]
+#### max_options [ function *function(input, params)* ]
 
 This function checks to see if multi-select or checkbox inputs have no more than a provided number of selections.
 
-##### text [ string "*Cannot select more than {2} options.*" ]
-
-* **{2}** Maximum number of options
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
-
 ---
 
-#### int [ object *text*, object *func* ]
+#### int [ function *function(input, params)* ]
 
 This function checks to see if a valid integer was provided.
 
-##### text [ string "*{0} must be a whole number (integer).*" ]
-
-* **{0}** Input `title` attribute
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
-
 ---
 
-#### required [ object *text*, object *func* ]
+#### required [ function *function(input, params)* ]
 
 This function checks to see if any value was provided and the input is not blank.
 
-##### text [ string "*{0} is required.*" ]
-
-* **{0}** Input `title` attribute
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
-
 ---
 
-#### required_if [ object *text*, object *func* ]
+#### required_if [ function *function(input, params)* ]
 
 This function checks to see if any value was provided and the input is not blank *only* if the dependent input has a value.
 
-##### text [ string "*{0} is required.*" ]
-
-* **{0}** Input `title` attribute
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
-
 ---
 
-#### less_than [ object *text*, object *func* ]
+#### less_than [ function *function(input, params)* ]
 
 This function checks to see if a value is less than the provided number.
 
-##### text [ string "*{0} must be less than {2}.*" ]
-
-* **{0}** Input `title` attribute
-* **{2}** Number input must be less than
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
-
 ---
 
-#### greater_than [ object *text*, object *func* ]
+#### greater_than [ function *function(input, params)* ]
 
 This function checks to see if a value is greater than the provided number.
-
-##### text [ string "*{0} must be greater than {2}.*" ]
-
-* **{0}** Input `title` attribute
-* **{2}** Number input must be greater than
-
-##### func [ function *function(input, params)* ]
-
-*Please reference source for validation function code*
