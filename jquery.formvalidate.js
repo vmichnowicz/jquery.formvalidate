@@ -19,7 +19,6 @@
 	 * Array: ["Victor", "dinos"]
 	 * Return: "My name is Victor and I like dinos."
 	 *
-	 * @author Victor Michnowicz
 	 * @param array		Array of stirngs to replace in target string
 	 * @return object	JavaScript string object
 	 */
@@ -36,13 +35,17 @@
 	 *
 	 * This method will create a date object based on the date string
 	 * and format provided. If an invalid date is provided it will
-	 * simply leave the date object alone.
+	 * thow an exception.
 	 *
 	 * @param string	Date string such as "2011-11-11"
 	 * @param string	Date format such as "YYYYMMDD"
 	 * @return object	JavaScript date object
 	 */
 	Date.prototype.createFromFormat = function(input, format) {
+
+		// Create a new date object representing the date & time for right now
+		var now = new Date();
+
 		// Split date string by ".", "," "/", and "-"
 		var dateArray = input.split(/[.,\/ -]/);
 
@@ -53,6 +56,7 @@
 			for ( var dateSegment in dateArray ) {
 				// If date segment is not an integer
 				if ( dateArray[dateSegment] % 1 != 0 ) {
+					throw new Error('Invalid date segment provided.');
 					return false;
 				}
 				// If date segment is an integer
@@ -87,8 +91,8 @@
 
 			// Make sure date is greater than 0, month between 0 and 11, and day between 1 and 31
 			if (year >= 1 && month >= 0 && month <= 11 && day >= 1 && day <= 31) {
-				// Create new date object
-				var date = new Date();
+				// Create new date object as a clone from our "now" date object
+				var date = new Date( now.getTime() );
 				date.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and miliseconds all to 0
 				date.setFullYear(year, month, day); // Set year, month, and day
 
@@ -104,6 +108,11 @@
 					this.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and miliseconds all to 0
 				}
 			}
+		}
+
+		// If our date created from our format is the same as our cloned date it is invalid
+		if ( this.getTime() === now.getTime() ) {
+			throw new Error('Invalid date provided.');
 		}
 
 		return this;
@@ -163,13 +172,16 @@
 				return ( parseFloat(input) >= parseFloat(params[0]) && parseFloat(input) <= parseFloat(params[1]) ) ? true : false;
 			},
 			date: function(input, params) {
-				var date = new Date();
-				var now = new Date( date.getTime() );
-
-				date.createFromFormat(input, params[0]);
-
-				// If our date created from our format is the same as our cloned date it is invalid
-				return date.getTime() === now.getTime() ? false : true;
+				// Attempt to create a new date object from provided input & format
+				try {
+					var date = new Date();
+					date.createFromFormat(input, params[0]);
+					return true;
+				}
+				// Return false if any errors are thrown
+				catch(e) {
+					return false;
+				}
 			},
 			email: function(input, params) {
 				return input.search(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i) == -1 ? false : true;
@@ -212,7 +224,7 @@
 				return input % 1 == 0;
 			},
 			'float': function(input, params) {
-				return input % 1 !== 0 ? true : false; // @todo this needs work...
+				return input % 1 !== 0 ? true : false; // @todo this needs (to) work...
 			},
 			required: function(input, params) {
 				// If this is an array
@@ -253,7 +265,10 @@
 	/**
 	 * jQuery form validation plugin
 	 *
-	 * $('form').submit(function() { $(this).formvalidate(); });
+	 * $('form').submit(function(e) {
+	 *     e.preventDefault();
+	 *     $(this).formvalidate();
+	 * });
 	 *
 	 * @param object	Object with user-submitted overrides and validation methods
 	 * @return object	Return the jQuery object so we can method chain this bad-boy
@@ -273,7 +288,7 @@
 			 * @param string	CSS class prefix to designate filter rules
 			 * @param string	CSS class prefix to designate validation rules
 			 * @param string	CSS validation rule delimiter
-			 * @param string	Wrap error messages inside
+			 * @param string	HTML element to wrap error messages
 			 * @return object 
 			 */
 			preProcess: function(form, cssFailureClass, cssSuccessClass, cssFilterPrefix, cssValidationPrefix, cssParamDelimiter, failureWrapper) {
@@ -376,25 +391,25 @@
 					// Loop through each class on this form element
 					$.each(allClasses, function(classIndex, className) {
 
-						// If this classes has our form validation CSS prefix (this is always be true if we have no CSS filter prefix)
+						// If this classes has our form validation CSS prefix (this is always true if we have no CSS filter prefix)
 						if ( className.indexOf(settings.cssFilterPrefix) === 0 ) {
 
 							// Form filter class
 							var filterClass = '';
 
 							// Params will start out as an empty array
-							var params = [];
+							var filterParams = [];
 
 							// Get position of paramater start location
-							var paramStartLocation = className.indexOf(settings.cssParamDelimiter, settings.cssFilterPrefix.length);
+							filterParamStartLocation = className.indexOf(settings.cssParamDelimiter, settings.cssFilterPrefix.length);
 
 							// If we have some paramaters
-							if ( paramStartLocation >= 0 ) {
+							if ( filterParamStartLocation >= 0 ) {
 								// Get array of paramaters
-								var params = className.substr(paramStartLocation + 1).split( settings.cssParamDelimiter );
+								filterParams = className.substr(filterParamStartLocation + 1).split( settings.cssParamDelimiter );
 
 								// Get form validation function name
-								filterClass = className.substr( settings.cssFilterPrefix.length, paramStartLocation - settings.cssFilterPrefix.length );
+								filterClass = className.substr( settings.cssFilterPrefix.length, filterParamStartLocation - settings.cssFilterPrefix.length );
 							}
 							// If we do not have any paramaters
 							else {
@@ -404,29 +419,29 @@
 
 							// If this class name is found in our filters add it to our form validation object
 							if (filterClass in settings.filters) {
-								O.inputs[attrName].filters[ filterClass ] = params;
+								O.inputs[attrName].filters[ filterClass ] = filterParams;
 							}
 						}
 
-						// If this classes has our form validation CSS prefix (this is always be true if we have no CSS validation prefix)
+						// If this classes has our form validation CSS prefix (this is always true if we have no CSS validation prefix)
 						if ( className.indexOf(settings.cssValidationPrefix) === 0 ) {
 
 							// Form validation class
 							var validationClass = '';
 
 							// Params will start out as an empty array
-							var params = [];
+							var validationParams = [];
 
 							// Get position of paramater start location
-							var paramStartLocation = className.indexOf(settings.cssParamDelimiter, settings.cssValidationPrefix.length);
+							var validationParamStartLocation = className.indexOf(settings.cssParamDelimiter, settings.cssValidationPrefix.length);
 
 							// If we have some paramaters
-							if ( paramStartLocation >= 0 ) {
+							if ( validationParamStartLocation >= 0 ) {
 								// Get array of paramaters
-								var params = className.substr(paramStartLocation + 1).split( settings.cssParamDelimiter );
+								validationParams = className.substr(validationParamStartLocation + 1).split( settings.cssParamDelimiter );
 
 								// Get form validation function name
-								validationClass = className.substr( settings.cssValidationPrefix.length, paramStartLocation - settings.cssValidationPrefix.length );
+								validationClass = className.substr( settings.cssValidationPrefix.length, validationParamStartLocation - settings.cssValidationPrefix.length );
 							}
 							// If we do not have any paramaters
 							else {
@@ -436,10 +451,9 @@
 
 							// If this class name is found in our validations add it to our form validation object
 							if (validationClass in settings.validations) {
-								O.inputs[attrName].validations[ validationClass ] = params;
+								O.inputs[attrName].validations[ validationClass ] = validationParams;
 							}
 						}
-
 					});
 				});
 
@@ -450,10 +464,12 @@
 			 * validation object!)
 			 * 
 			 * @access public
-			 * @param object	Form validation object
+			 * @param object	jQuery object of form element
+			 * @param object	Object containing all form inputs
+			 * @param object	Complete form object
 			 * @return object	Form validation object
 			 */
-			postProcess: function(O) {
+			postProcess: function(form, inputs, O) {
 				return O;
 			},
 			/**
@@ -496,8 +512,21 @@
 									if ( settings.validations[ validationName ](inputObj.value, validationParams) !== true ) {
 										validationParams.unshift(inputObj.title, inputObj.value); // Add title and value(s) to beginning of array
 
-										// Get error message from localized language file
-										var errorMessage =	validationName in $.formvalidate.localization[ settings.language ] ? $.formvalidate.localization[ settings.language ][ validationName ].sprintf(validationParams) : settings.validations[ validationName ]['default'].sprintf(validationParams);
+										var errorMessage = null;
+
+										// If error message is in localized language object
+										if ( validationName in settings.localization[ settings.language ] ) {
+											errorMessage = settings.localization[ settings.language ][ validationName ].sprintf(validationParams);
+										}
+										// Else if default localized error message is available
+										else if ( 'default' in settings.localization[ settings.language ] ) {
+											errorMessage = settings.localization[ settings.language ][ 'default' ].sprintf(validationParams);
+										}
+										// Else throw an error
+										else {
+											throw new Error('No error message available for validation method "' + validationName + '" with language "' + settings.language + '".');
+										}
+
 										//var errorMessage = settings.validations[ validationName ].text.sprintf(validationParams);
 										O.result = false; // We are no longer good, we found an error!
 										inputObj.success = false; // This form input is no longer valid
@@ -557,12 +586,11 @@
 			cssValidationPrefix: '', // CSS class prefix to designate validation rules
 			cssParamDelimiter: '-', // CSS validation rule delimiter
 			failureWrapper: '<span />', // Wrap error messages inside
-			filters: {},
-			addFilters: {},
-			validations: {}
+			filters: {}, // Merged in from $.formvalidate later
+			validations: {} // Merged in from $.formvalidate later
 		}, options);
 
-		// Merge objects
+		// Merge everything into settings object
 		$.extend(true, settings, $.formvalidate);
 
 		// Loop through each selected element
@@ -587,7 +615,7 @@
 			O = settings._validate(O);
 
 			// Run postProcess function
-			O = settings.postProcess(O);
+			O = settings.postProcess(O.form, O.inputs, O);
 
 			// On form validation success
 			O.result === true ? settings.onSuccess(O.form, O.inputs, O) : settings.onFailure(O.form, O.inputs, O);
