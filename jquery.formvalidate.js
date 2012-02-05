@@ -7,6 +7,7 @@
  * Copyright (c) 2011, Victor Michnowicz (http://www.vmichnowicz.com/)
  */
 (function($) {
+
 	/**
 	 * Super simple JavaScript sprintf method
 	 *
@@ -108,8 +109,151 @@
 		return this;
 	}
 
+	// Form validate object
+	$.formvalidate = {
+		localization: {
+			en: {
+				'default': '{0} is invalid.',
+				between_numeric: '{0} must be between {2} and {3}.',
+				date: '{0} must be a valid date.',
+				email: '{1} is not a valid email.',
+				length: '{0} must be exactly {2} characters.',
+				min_length: '{0} must be at least {2} characters.',
+				max_length: '{0} cannot be more than {2} characters.',
+				options: 'Must select exactly {2} options.',
+				min_options: 'Must select at least {2} options.',
+				max_options: 'Cannot select more than {2} options.',
+				'int': '{0} must be a whole number (integer).',
+				'float': '{0} must be a valid number.',
+				required: '{0} is required.',
+				required_if: '{0} is required.',
+				less_than: '{0} must be less than {2}.',
+				greater_than: '{0} must be greater than {2}.'
+			}
+		},
+		filters: {
+			trim: function(input, parmas) {
+				if (typeof input == 'string') {
+					return $.trim(input) === '' ? null : $.trim(input);
+				}
+				else {
+					return input;
+				}
+			},
+			strtoupper: function(input, params) {
+				if (typeof input == 'string') {
+					return input.toUpperCase();
+				}
+				else {
+					return input;
+				}
+			},
+			strtolower: function(input, params) {
+				if (typeof input == 'string') {
+					return input.toLowerCase();
+				}
+				else {
+					return input;
+				}
+			}
+		},
+		validations: {
+			between_numeric: function(input, params) {
+				// Make sure our input is greater than or equal to first paramater and less than or equal to our second paramater
+				return ( parseFloat(input) >= parseFloat(params[0]) && parseFloat(input) <= parseFloat(params[1]) ) ? true : false;
+			},
+			date: function(input, params) {
+				var date = new Date();
+				var now = new Date( date.getTime() );
+
+				date.createFromFormat(input, params[0]);
+
+				// If our date created from our format is the same as our cloned date it is invalid
+				return date.getTime() === now.getTime() ? false : true;
+			},
+			email: function(input, params) {
+				return input.search(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i) == -1 ? false : true;
+			},
+			length: function(input, params) {
+				return input.length === parseInt(params[0]);
+			},
+			min_length: function(input, params) {
+				return input.length >= parseInt(params[0]);
+			},
+			max_length: function(input, params) {
+				return input.length < parseInt(params[0]);
+			},
+			options: function(input, params) {
+				if (input instanceof Array) {
+					return input.length === parseInt(params[0]) ? true : false;
+				}
+				else {
+					return false;
+				}
+			},
+			min_options: function(input, params) {
+				if (input instanceof Array) {
+					return input.length >= parseInt(params[0]) ? true : false;
+				}
+				else {
+					return false;
+				}
+			},
+			max_options: function(input, params) {
+				if (input instanceof Array) {
+					return input.length > parseInt(params[0]) ? false : true;
+				}
+				else {
+					return false;
+				}
+			},
+			// http://stackoverflow.com/questions/3885817/how-to-check-if-a-number-is-float-or-integer#answer-3886106
+			'int': function(input, params) {
+				return input % 1 == 0;
+			},
+			'float': function(input, params) {
+				return input % 1 !== 0 ? true : false; // @todo this needs work...
+			},
+			required: function(input, params) {
+				// If this is an array
+				if (input instanceof Array) {
+					return input.length > 0 ? true : false;
+				}
+				// If this is not an array
+				else {
+					// Make sure input is not an empty string, null, or false
+					return input === '' || input === null || input === false ? false : true;
+				}
+			},
+			required_if: function(input, params) {
+				// Dependent element
+				var el = $('#' + params[0]);
+
+				var dependent = null;
+
+				// If dependent element is a checkbox or radio
+				if ( $(el).is(':checkbox') || $(el).is(':radio') ) {
+						// If dependent checkbox or radio is checked set value to TRUE, else NULL
+						dependent = $(el).is(':checked') ? true : null;
+				}
+				else {
+					dependent = $.trim( $(el).val() ) === '' ? null : $.trim( $(el).val() );
+				}
+				return (dependent !== null || dependent === []) && input === null ? false : true;
+			},
+			less_than: function(input, params) {
+				return parseFloat(input) < parseFloat(params[0]);
+			},
+			greater_than: function(input, params) {
+				return parseFloat(input) > parseFloat(params[0]);
+			}
+		}
+	};
+
 	/**
 	 * jQuery form validation plugin
+	 *
+	 * $('form').submit(function() { $(this).formvalidate(); });
 	 *
 	 * @param object	Object with user-submitted overrides and validation methods
 	 * @return object	Return the jQuery object so we can method chain this bad-boy
@@ -118,18 +262,7 @@
 
 		// Create some defaults, extending them with any options that were provided
 		var settings = $.extend(true, {
-			// @todo refactor language objects
-			languages: {
-				en: {
-					between_numeric: '{0} must be between {2} and {3}.',
-					date: '{0} must be a valid date.'
-				},
-				de: {
-					between_numeric: '{0} must be between {2} and {3}.',
-					date: '{0} must be a valid date.'
-				}
-			},
-			language: 'EN', // English error messages by default
+			language: 'en', // English error messages by default
 			/**
 			 * Processing before everything else takes place
 			 *
@@ -194,14 +327,14 @@
 						var value = null;
 
 						// Checkbox
-						if ( $(element).attr('type') === 'checkbox' ) {
+						if ( $(element).is(':checkbox') ) {
 							value = []; // This will be an array of values
 							$(':input[name="' + attrName + '"]:checked').each(function(checkbox_index, checkbox_element) {
 								value[checkbox_index] = $(checkbox_element).val();
 							});
 						}
 						// Radio
-						else if ( $(element).attr('type') === 'radio' ) {
+						else if ( $(element).is(':radio') ) {
 							// Get checked radio input
 							var radio = $(':input[name="' + attrName + '"]:checked');
 							// If user checked a radio input
@@ -360,9 +493,12 @@
 										return true; // Skip current validation and continue with $.each()
 									}
 									// If validation did not pass
-									if ( settings.validations[ validationName ].func(inputObj.value, validationParams) !== true ) {
+									if ( settings.validations[ validationName ](inputObj.value, validationParams) !== true ) {
 										validationParams.unshift(inputObj.title, inputObj.value); // Add title and value(s) to beginning of array
-										var errorMessage = settings.validations[ validationName ].text.sprintf(validationParams);
+
+										// Get error message from localized language file
+										var errorMessage =	validationName in $.formvalidate.localization[ settings.language ] ? $.formvalidate.localization[ settings.language ][ validationName ].sprintf(validationParams) : settings.validations[ validationName ]['default'].sprintf(validationParams);
+										//var errorMessage = settings.validations[ validationName ].text.sprintf(validationParams);
 										O.result = false; // We are no longer good, we found an error!
 										inputObj.success = false; // This form input is no longer valid
 										inputObj.failure = true; // Epic fail
@@ -421,173 +557,13 @@
 			cssValidationPrefix: '', // CSS class prefix to designate validation rules
 			cssParamDelimiter: '-', // CSS validation rule delimiter
 			failureWrapper: '<span />', // Wrap error messages inside
-			filters: {
-				trim: function(input, parmas) {
-					if (typeof input == 'string') {
-						return $.trim(input) === '' ? null : $.trim(input);
-					}
-					else {
-						return input;
-					}
-				},
-				strtoupper: function(input, params) {
-					if (typeof input == 'string') {
-						return input.toUpperCase();
-					}
-					else {
-						return input;
-					}
-				},
-				strtolower: function(input, params) {
-					if (typeof input == 'string') {
-						return input.toLowerCase();
-					}
-					else {
-						return input;
-					}
-				}
-			},
+			filters: {},
 			addFilters: {},
-			validations: {
-				between_numeric: {
-					text: '{0} must be between {2} and {3}.',
-					func: function(input, params) {
-						// Make sure our input is greater than or equal to first paramater and less than or equal to our second paramater
-						return ( parseFloat(input) >= parseFloat(params[0]) && parseFloat(input) <= parseFloat(params[1]) ) ? true : false;
-					}
-				},
-				date: {
-					text: '{0} must be a valid date.',
-					func: function(input, params) {
-
-						var date = new Date();
-						var now = new Date( date.getTime() );
-
-						date.createFromFormat(input, params[0]);
-
-						// If our date created from our format is the same as our cloned date it is invalid
-						return date.getTime() === now.getTime() ? false : true;
-					}
-				},
-				email: {
-					text: '{1} is not a valid email.',
-					func: function(input, params) {
-						return input.search(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i) == -1 ? false : true;
-					}
-				},
-				length: {
-					text: '{0} must be exactly {2} characters.',
-					func: function(input, params) {
-						return input.length === parseInt(params[0]);
-					}
-				},
-				min_length: {
-					text: '{0} must be at least {2} characters.',
-					func: function(input, params) {
-						return input.length >= parseInt(params[0]);
-					}
-				},
-				max_length: {
-					text: '{0} cannot be more than {2} characters.',
-					func: function(input, params) {
-						return input.length < parseInt(params[0]);
-					}
-				},
-				options: {
-					text: 'Must select exactly {2} options.',
-					func: function(input, params) {
-						if (input instanceof Array) {
-							return input.length === parseInt(params[0]) ? true : false;
-						}
-						else {
-							return false;
-						}
-					}
-				},
-				min_options: {
-					text: 'Must select at least {2} options.',
-					func: function(input, params) {
-						if (input instanceof Array) {
-							return input.length >= parseInt(params[0]) ? true : false;
-						}
-						else {
-							return false;
-						}
-					}
-				},
-				max_options: {
-					text: 'Cannot select more than {2} options.',
-					func: function(input, params) {
-						if (input instanceof Array) {
-							return input.length > parseInt(params[0]) ? false : true;
-						}
-						else {
-							return false;
-						}
-					}
-				},
-				// http://stackoverflow.com/questions/3885817/how-to-check-if-a-number-is-float-or-integer#answer-3886106
-				'int': {
-					text: '{0} must be a whole number (integer).',
-					func: function(input, params) {
-						 return input % 1 == 0;
-					}
-				},
-				'float': {
-					text: '{0} must be a valid number.',
-					func: function(input, params) {
-						return input % 1 !== 0 ? true : false; // @todo this needs work...
-					}
-				},
-				required: {
-					text: '{0} is required.',
-					func: function(input, params) {
-						// If this is an array
-						if (input instanceof Array) {
-							return input.length > 0 ? true : false;
-						}
-						// If this is not an array
-						else {
-							// Make sure input is not an empty string, null, or false
-							return input === '' || input === null || input === false ? false : true;
-						}
-					}
-				},
-				required_if: {
-					text: '{0} is required.',
-					func: function(input, params) {
-						
-						// Dependent element
-						var el = $('#' + params[0]);
-						
-						var dependent = null;
-						
-						// If dependent element is a checkbox or radio
-						if ( $(el).is(':checkbox') || $(el).is(':radio') ) {
-							 // If dependent checkbox or radio is checked set value to TRUE, else NULL
-							 dependent = $(el).is(':checked') ? true : null;
-						}
-						else {
-							dependent = $.trim( $(el).val() ) === '' ? null : $.trim( $(el).val() );
-						}
-						return (dependent !== null || dependent === []) && input === null ? false : true;
-					}
-				},
-				less_than: {
-					text: '{0} must be less than {2}.',
-					func: function(input, params) {
-						return parseFloat(input) < parseFloat(params[0]);
-					}
-				},
-				greater_than: {
-					text: '{0} must be greater than {2}.',
-					func: function(input, params) {
-						return parseFloat(input) > parseFloat(params[0]);
-					}
-				}
-			},
-			addValidations: {}
+			validations: {}
 		}, options);
+
+		// Merge objects
+		$.extend(true, settings, $.formvalidate);
 
 		// Loop through each selected element
 		return this.each(function() {
@@ -598,16 +574,8 @@
 			// Our form
 			O.form = this;
 
-			// If selected language is not English
-			if (settings.language.toUpperCase() !== 'EN') {
-				var language = settings.language.toLowerCase();
-				try {
-					$.extend(true, settings.validations, window.formvalidate.languages[language].validations);
-				}
-				catch(exception) {
-					throw new Error('Could not load "' + language + '" form validate language object.');
-				}
-			}
+			// If a language code was provided make sure its lowercase, if no language code provided default to "en"
+			settings.language = settings.language ? settings.language.toLowerCase() : 'en';
 
 			// Run preProcess function
 			settings.preProcess(O.form, settings.cssFailureClass, settings.cssSuccessClass, settings.cssFilterPrefix, settings.cssValidationPrefix, settings.cssParamDelimiter, settings.failureWrapper);
@@ -625,4 +593,5 @@
 			O.result === true ? settings.onSuccess(O.form, O.inputs, O) : settings.onFailure(O.form, O.inputs, O);
 		});
 	}
+
 })(jQuery);

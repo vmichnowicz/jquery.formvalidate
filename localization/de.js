@@ -1,15 +1,11 @@
 /**
  * jQuery Form Validate German error message translations (Mein Deutsch ist nicht gut)
  */
-jQuery.extend(true, window, {
-	formvalidate: {
-		languages: {
-			de: {
-				validations: {
-					required: { text: 'Das ist needed.' },
-					email: { text: 'Wir brauchen eine Email Addresse.' }
-				}
-			}
+jQuery.extend(true, jQuery.formvalidate, {
+	localization: {
+		de: {
+			required: 'Das ist needed.',
+			email: 'Wir brauchen eine Email Addresse.'
 		}
 	}
 });

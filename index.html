@@ -12,9 +12,10 @@
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
 	<!-- jQuery Form Validate -->
-	<script type="text/javascript" src="localization/de.js"></script>
+	
 	<script type="text/javascript" src="jquery.formvalidate.js"></script>
-
+	<script type="text/javascript" src="localization/de.js"></script>
+	
 	<!-- JavaScript -->
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -26,7 +27,7 @@
 					onSuccess: function(O) {
 						alert('Form #1 is valid!');
 					},
-					language: 'DE'
+					language: 'de'
 				});
 			});
 
@@ -36,18 +37,14 @@
 
 				// From the anchor element find the closest form element
 				$(this).closest('form').formvalidate({
-					// Let's modiyfy a validation message and add a custom validation method
 					validations: {
-						// Modify error message
-						required: {
-							text: '{0} is required (and error messages can be overwritten!).'
-						},
-						// Add a custom validation
-						middle_name: {
-							text: 'Your {0} cannot be "{2}" because this is a custom validation method and I said so.',
-							func: function(input, params) {
-								return input.toLowerCase() === params[0].toLowerCase() ? false : true;
-							}
+						/**
+						 * Add a custom validation
+						 *
+						 * @todo  'Your {0} cannot be "{2}" because this is a custom validation method and I said so.'
+						 */
+						middle_name: function(input, params) {
+							return input.toLowerCase() === params[0].toLowerCase() ? false : true;
 						}
 					}
 				});
