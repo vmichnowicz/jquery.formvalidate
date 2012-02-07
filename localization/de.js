@@ -8,7 +8,7 @@ jQuery.extend(true, jQuery.formvalidate, {
 		de: {
 			'default': '{0} ist ungültig.',
 			between_numeric: '{0} muss zwischen {2} und {3} liegen.',
-			date: '{0} ist kein gültiges Datum.'
+			date: '{0} ist kein gültiges Datum.',
 			email: '{1} ist keine gültige Email Adresse.',
 			length: '{0} muss aus genau {2} Zeichen bestehen.',
 			min_length: '{0} muss aus mindestens {2} Zeichen bestehen.',

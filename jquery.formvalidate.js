@@ -1,5 +1,5 @@
 /**
- * jQuery Form Validation Plugin 0.1
+ * jQuery Form Validation Plugin 0.1.1
  *
  * Source: https://github.com/vmichnowicz/jquery.formvalidate
  * Example: http://www.vmichnowicz.com/examples/formvalidate/index.html
