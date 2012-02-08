@@ -1,5 +1,5 @@
 /**
- * jQuery Form Validate German error message translations (translation by https://github.com/ajannasch)
+ * jQuery Form Validate German error message translations (translation by https://github.com/rmondragon)
  *
  * Include this file *after* the jquery.formvalidate.js in document <head>
  */
