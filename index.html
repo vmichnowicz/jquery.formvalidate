@@ -25,8 +25,7 @@
 				$(this).formvalidate({
 					onSuccess: function(O) {
 						alert('Form #1 is valid!');
-					},
-					language: 'de'
+					}
 				});
 			});
 
@@ -36,16 +35,29 @@
 
 				// From the anchor element find the closest form element
 				$(this).closest('form').formvalidate({
+					// Add a custom validation method error message
+					localization: {
+						en: {
+							name: 'Your {0} cannot be "{2}" because this is a custom validation method and I said so.'
+						}
+					},
 					validations: {
-						/**
-						 * Add a custom validation
-						 *
-						 * @todo  'Your {0} cannot be "{2}" because this is a custom validation method and I said so.'
-						 */
-						middle_name: function(input, params) {
+						// Add a custom validation method
+						name: function(input, params) {
 							return input.toLowerCase() === params[0].toLowerCase() ? false : true;
 						}
 					}
+				});
+			});
+
+			// Validate on form submission
+			$('#form_3').submit(function(e) {
+				e.preventDefault();
+				$(this).formvalidate({
+					onSuccess: function(O) {
+						alert('Sehr Gut!');
+					},
+					language: 'de'
 				});
 			});
 
@@ -188,8 +200,7 @@ $(&#39;#form_1&#39;).submit(function(e) {
 	$(this).formvalidate({
 		onSuccess: function(O) {
 			alert(&#39;Form #1 is valid!&#39;);
-		},
-		language: &#39;de&#39;
+		}
 	});
 });</pre>
 		</fieldset>
@@ -201,7 +212,7 @@ $(&#39;#form_1&#39;).submit(function(e) {
 			<h2>Example Form Number Two <a href="#example_2">Code</a></h2>
 			<div>
 				<label for="name">Name</label>
-				<input type="text" id="name" name="name" title="Name" class="trim required min_length-5 max_length-128" maxlength="128" />
+				<input type="text" id="name" name="name" title="Name" class="trim required name-victor min_length-5 max_length-128" maxlength="128" />
 			</div>
 			<div>
 				<label for="age">Age</label>
@@ -266,9 +277,15 @@ $(&#39;#submit_2&#39;).click(function(e) {
 
 	// From the anchor element find the closest form element
 	$(this).closest(&#39;form&#39;).formvalidate({
+		// Add a custom validation method error message
+		localization: {
+			en: {
+				name: &#39;Your {0} cannot be &quot;{2}&quot; because this is a custom validation method and I said so.&#39;
+			}
+		},
 		validations: {
-			// Add a custom validation
-			middle_name: function(input, params) {
+			// Add a custom validation method
+			name: function(input, params) {
 				return input.toLowerCase() === params[0].toLowerCase() ? false : true;
 			}
 		}
@@ -276,6 +293,36 @@ $(&#39;#submit_2&#39;).click(function(e) {
 });</pre>
 		</fieldset>
 	</form>
+
+		<form id="form_3" method="post" action="">
+		<fieldset>
+			<legend>Example Form Number Three (German)</legend>
+			<h2>Example Form Number Three (German) <a href="#example_3">Code</a></h2>
+			<div>
+				<label for="erste_name">Erste Name</label>
+				<input type="text" id="erste_name" name="erste_name" title="Erste Name" class="trim required min_length-4" maxlength="128" />
+			</div>
+			<div>
+				<label for="email_addresse">Email Addresse</label>
+				<input type="text" id="email_addresse" name="email_addresse" title="Email Addresse" class="required email" maxlength="128" />
+			</div>
+			<div>
+				<input type="submit" class="submit" id="submit_3" value="Einreichen" />
+			</div>
+<pre id="example_3">
+// Validate on form submission
+$(&#39;#form_3&#39;).submit(function(e) {
+	e.preventDefault();
+	$(this).formvalidate({
+		onSuccess: function(O) {
+			alert(&#39;Sehr Gut!&#39;);
+		},
+		language: &#39;de&#39;
+	});
+});</pre>
+		</fieldset>
+	</form>
+
 </div>
 
 </body>
