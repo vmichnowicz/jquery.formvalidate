@@ -420,7 +420,7 @@
 						var prefixed = validation.replace('_', '-');
 						var params = $(element).data(prefixed);
 						if (typeof params !== 'undefined') {
-							
+
 							// Params will start out as an empty array
 							var validationParams = [attrName];
 
@@ -430,39 +430,17 @@
 						}
 					});
 
-					// Loop through each class on this form element
-					$.each(allClasses, function(classIndex, className) {
-
-						// If this classes has our form validation CSS prefix (this is always true if we have no CSS filter prefix)
-						if ( className.indexOf(settings.cssFilterPrefix) === 0 ) {
-
-							// Form filter class
-							var filterClass = '';
+					$.each(settings.filters, function(filter, method) {
+						var prefixed = filter.replace('_', '-');
+						var params = $(element).data(prefixed);
+						if (typeof params !== 'undefined') {
 
 							// Params will start out as an empty array
-							var filterParams = [];
+							var filterParams = [attrName];
 
-							// Get position of paramater start location
-							filterParamStartLocation = className.indexOf(settings.cssParamDelimiter, settings.cssFilterPrefix.length);
+							filterParams.push(typeof param === 'string' ? params.split(' ') : null);
 
-							// If we have some paramaters
-							if ( filterParamStartLocation >= 0 ) {
-								// Get array of paramaters
-								filterParams = className.substr(filterParamStartLocation + 1).split( settings.cssParamDelimiter );
-
-								// Get form validation function name
-								filterClass = className.substr( settings.cssFilterPrefix.length, filterParamStartLocation - settings.cssFilterPrefix.length );
-							}
-							// If we do not have any paramaters
-							else {
-								// Get form validation function name
-								filterClass = className.substr(settings.cssFilterPrefix.length);
-							}
-
-							// If this class name is found in our filters add it to our form validation object
-							if (filterClass in settings.filters) {
-								O.inputs[attrName].filters[ filterClass ] = filterParams;
-							}
+							O.inputs[attrName].filters[ filter ] = filterParams;
 						}
 					});
 				});
@@ -606,7 +584,7 @@
 
 		// Loop through each selected element
 		return this.each(function() {
-
+;
 			// Main form validation object
 			var O = {};
 
