@@ -330,14 +330,14 @@
 			 * @return object	Validation object containing form input data
 			 */
 			_process: function(O) {
-				// Inputs object
-				O.inputs = {};
 
-				// Validation result (default to null)
-				O.result = null;
+				var form = this;
+
+				// Inputs object
+				var inputs = {};
 
 				// Loop through each input inside this form
-				$(O.form).find(':input').each(function(index, element) {
+				$(form).find(':input').each(function(index, element) {
 
 					// Form validation rules will be applied to elements grouped by their name attribute
 					var attrName = $(element).attr('name');
@@ -346,7 +346,7 @@
 					if ( ! attrName ) { return; }
 
 					// If this does not exist yet create new validation object
-					if ( ! (attrName in O.inputs) )  { O.inputs[attrName] = {}; }
+					if ( ! (attrName in inputs) )  { inputs[attrName] = {}; }
 
 					// Check CSS class and then data-required attribute
 					var required = $(element).hasClass('required') || typeof $(element).data('required') === 'string';
@@ -361,7 +361,7 @@
 					var allClasses = attrClass.split(' ');
 
 					// If input value had not yet been created for this input
-					if ( ! ('value' in O.inputs[attrName]) )  {
+					if ( ! ('value' in inputs[attrName]) )  {
 						// Input value
 						var value = null;
 
@@ -387,34 +387,34 @@
 						}
 
 						// Set value in object
-						O.inputs[attrName].value = value;
+						inputs[attrName].value = value;
 					}
 
 					// If title had not yet been created for this input
-					if ( ! ('title' in O.inputs[attrName]) ) {
+					if ( ! ('title' in inputs[attrName]) ) {
 						// Check for title data-title attribute
 						if ( $(element).data('title') ) {
-							O.inputs[attrName].title = $(element).data('title');
+							inputs[attrName].title = $(element).data('title');
 						}
 						// If no title data-title attribute is found, use the inputs name attribute
 						else {
 							// Look for the first input that has this same name attribe and a title attribute and grab its title
-							O.inputs[attrName].title = $(':input[name="' + attrName + '"][title!=""]:first').attr('title');
+							inputs[attrName].title = $(':input[name="' + attrName + '"][title!=""]:first').attr('title');
 						}
 					}
 
 					// Set success and failure in object
-					O.inputs[attrName].success = null;
-					O.inputs[attrName].failure = null;
+					inputs[attrName].success = null;
+					inputs[attrName].failure = null;
 
 					// Set value in object
-					O.inputs[attrName].errors = [];
+					inputs[attrName].errors = [];
 
 					// Validations object for this input
-					if ( ! ('validations' in O.inputs[attrName]) )  { O.inputs[attrName].validations = {}; }
+					if ( ! ('validations' in inputs[attrName]) )  { inputs[attrName].validations = {}; }
 
 					// Filters object for this input
-					if ( ! ('filters' in O.inputs[attrName]) )  { O.inputs[attrName].filters = {}; }
+					if ( ! ('filters' in inputs[attrName]) )  { inputs[attrName].filters = {}; }
 
 					$.each(settings.validations, function(validation, method) {
 						var prefixed = validation.replace('_', '-');
@@ -426,7 +426,7 @@
 
 							validationParams.push(typeof param === 'string' ? params.split(' ') : null);
 
-							O.inputs[attrName].validations[ validation ] = validationParams;
+							inputs[attrName].validations[ validation ] = validationParams;
 						}
 					});
 
@@ -440,12 +440,15 @@
 
 							filterParams.push(typeof param === 'string' ? params.split(' ') : null);
 
-							O.inputs[attrName].filters[ filter ] = filterParams;
+							inputs[attrName].filters[ filter ] = filterParams;
 						}
 					});
 				});
 
-				return O;
+				this.inputs = inputs;
+				this.result = null; // Validation result (default to null)
+
+				return this;
 			},
 			/**
 			 * Processing after form validation (be sure to return form
@@ -458,7 +461,7 @@
 			 * @return object	Form validation object
 			 */
 			postProcess: function(form, inputs, O) {
-				return O;
+				return form;
 			},
 			/**
 			 * Validate the form!
@@ -469,10 +472,10 @@
 			 */
 			_validate: function(O) {
 				// So are we good? We will assume yes, for now...
-				O.result = true;
-
+				var result = true;
+				var form = this;
 				// Loop through each form element
-				$.each(O.inputs, function(inputName, inputObj) {
+				$.each(form.inputs, function(inputName, inputObj) {
 
 					// If we have some filters
 					if (inputObj.filters) {
@@ -517,7 +520,7 @@
 										}
 
 										//var errorMessage = settings.validations[ validationName ].text.sprintf(validationParams);
-										O.result = false; // We are no longer good, we found an error!
+										result = false; // We are no longer good, we found an error!
 										inputObj.success = false; // This form input is no longer valid
 										inputObj.failure = true; // Epic fail
 										inputObj.errors.push(errorMessage); // Add error to errors array
@@ -528,6 +531,8 @@
 					}
 
 				});
+
+				this.result = result;
 
 				return O;
 			},
@@ -584,30 +589,24 @@
 
 		// Loop through each selected element
 		return this.each(function() {
-;
-			// Main form validation object
-			var O = {};
-
-			// Our form
-			O.form = this;
 
 			// If a language code was provided make sure its lowercase, if no language code provided default to "en"
 			settings.language = settings.language ? settings.language.toLowerCase() : 'en';
 
-			// Run preProcess function
-			settings.preProcess(O.form, settings.cssFailureClass, settings.cssSuccessClass, settings.cssFilterPrefix, settings.cssValidationPrefix, settings.cssParamDelimiter, settings.failureWrapper);
+			// Run preProcess function (can be overwritten by user)
+			settings.preProcess(this, settings.cssFailureClass, settings.cssSuccessClass, settings.cssFilterPrefix, settings.cssValidationPrefix, settings.cssParamDelimiter, settings.failureWrapper);
 
-			// Process form an populate our main object
-			O = settings._process(O);
+			// Process form inputs
+			settings._process.call(this);
 
-			// Validate form get back another object that includes a bunch of new post-data validation info
-			O = settings._validate(O);
+			// Validate form
+			settings._validate.call(this);
 
 			// Run postProcess function
-			O = settings.postProcess(O.form, O.inputs, O);
+			settings.postProcess(this, this.inputs);
 
 			// On form validation success
-			O.result === true ? settings.onSuccess(O.form, O.inputs, O) : settings.onFailure(O.form, O.inputs, O);
+			this.result === true ? settings.onSuccess(this, this.inputs) : settings.onFailure(this, this.inputs);
 		});
 	}
 
