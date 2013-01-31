@@ -4,9 +4,24 @@
  * Source: https://github.com/vmichnowicz/jquery.formvalidate
  * Example: http://www.vmichnowicz.com/examples/formvalidate/index.html
  *
- * Copyright (c) 2011, Victor Michnowicz (http://www.vmichnowicz.com/)
+ * Copyright (c) 2011 - 2013, Victor Michnowicz (http://www.vmichnowicz.com/)
  */
 (function($) {
+
+	// Create fake console object if not defined
+	if ( ! window.console ) {
+		(function() {
+			var names = ["log", "debug", "info", "warn", "error", "assert",
+			"dir", "dirxml", "group", "groupEnd", "time", "timeEnd", "count",
+			"trace", "profile", "profileEnd"], i, l = names.length;
+
+			window.console = {};
+
+			for ( i = 0; i < l; i++ ) {
+				window.console[ names[i] ] = function() {};
+			}
+		}());
+	}
 
 	/**
 	 * Super simple JavaScript sprintf method
@@ -70,13 +85,13 @@
 
 			switch (format) {
 				// YYYY-MM-DD
-				case 'YYYYMMDD':
+				case 'YYYY-MM-DD':
 					year = dateArray[0];
 					month = dateArray[1] - 1;
 					day = dateArray[2];
 					break;
 				// DD-MM-YYYY
-				case 'DDMMYYYY':
+				case 'DD-MM-YYYY':
 					year = dateArray[2];
 					month = dateArray[1] - 1;
 					day = dateArray[0];
@@ -183,19 +198,25 @@
 					return false;
 				}
 			},
+			date_after: function(input, params) {
+				
+			},
+			date_before: function(input, params) {
+				
+			},
 			email: function(input, params) {
 				return input.search(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i) == -1 ? false : true;
 			},
-			length: function(input, params) {
+			num_chars: function(input, params) {
 				return input.length === parseInt(params[0]);
 			},
-			min_length: function(input, params) {
+			min_chars: function(input, params) {
 				return input.length >= parseInt(params[0]);
 			},
-			max_length: function(input, params) {
+			max_chars: function(input, params) {
 				return input.length < parseInt(params[0]);
 			},
-			options: function(input, params) {
+			num_options: function(input, params) {
 				if (input instanceof Array) {
 					return input.length === parseInt(params[0]) ? true : false;
 				}
@@ -327,6 +348,9 @@
 					// If this does not exist yet create new validation object
 					if ( ! (attrName in O.inputs) )  { O.inputs[attrName] = {}; }
 
+					// Check CSS class and then data-required attribute
+					var required = $(element).hasClass('required') || typeof $(element).data('required') === 'string';
+
 					// Class attribute
 					var attrClass = $(element).attr('class');
 
@@ -368,11 +392,15 @@
 
 					// If title had not yet been created for this input
 					if ( ! ('title' in O.inputs[attrName]) ) {
-						// Look for the first input that has this same name attribe and a title attribute and grab its title
-						var attrTitleFirst = $(':input[name="' + attrName + '"][title!=""]:first').attr('title');
-
-						// If no title attribute is found, use the inputs name attribute
-						O.inputs[attrName].title = attrTitleFirst ? attrTitleFirst : attrName;
+						// Check for title data-title attribute
+						if ( $(element).data('title') ) {
+							O.inputs[attrName].title = $(element).data('title');
+						}
+						// If no title data-title attribute is found, use the inputs name attribute
+						else {
+							// Look for the first input that has this same name attribe and a title attribute and grab its title
+							O.inputs[attrName].title = $(':input[name="' + attrName + '"][title!=""]:first').attr('title');
+						}
 					}
 
 					// Set success and failure in object
@@ -387,6 +415,20 @@
 
 					// Filters object for this input
 					if ( ! ('filters' in O.inputs[attrName]) )  { O.inputs[attrName].filters = {}; }
+
+					$.each(settings.validations, function(validation, method) {
+						var prefixed = validation.replace('_', '-');
+						var params = $(element).data(prefixed);
+						if (typeof params !== 'undefined') {
+							
+							// Params will start out as an empty array
+							var validationParams = [attrName];
+
+							validationParams.push(typeof param === 'string' ? params.split(' ') : null);
+
+							O.inputs[attrName].validations[ validation ] = validationParams;
+						}
+					});
 
 					// Loop through each class on this form element
 					$.each(allClasses, function(classIndex, className) {
@@ -422,38 +464,6 @@
 								O.inputs[attrName].filters[ filterClass ] = filterParams;
 							}
 						}
-
-						// If this classes has our form validation CSS prefix (this is always true if we have no CSS validation prefix)
-						if ( className.indexOf(settings.cssValidationPrefix) === 0 ) {
-
-							// Form validation class
-							var validationClass = '';
-
-							// Params will start out as an empty array
-							var validationParams = [];
-
-							// Get position of paramater start location
-							var validationParamStartLocation = className.indexOf(settings.cssParamDelimiter, settings.cssValidationPrefix.length);
-
-							// If we have some paramaters
-							if ( validationParamStartLocation >= 0 ) {
-								// Get array of paramaters
-								validationParams = className.substr(validationParamStartLocation + 1).split( settings.cssParamDelimiter );
-
-								// Get form validation function name
-								validationClass = className.substr( settings.cssValidationPrefix.length, validationParamStartLocation - settings.cssValidationPrefix.length );
-							}
-							// If we do not have any paramaters
-							else {
-								// Get form validation function name
-								validationClass = className.substr(settings.cssValidationPrefix.length);
-							}
-
-							// If this class name is found in our validations add it to our form validation object
-							if (validationClass in settings.validations) {
-								O.inputs[attrName].validations[ validationClass ] = validationParams;
-							}
-						}
 					});
 				});
 
@@ -485,6 +495,7 @@
 
 				// Loop through each form element
 				$.each(O.inputs, function(inputName, inputObj) {
+
 					// If we have some filters
 					if (inputObj.filters) {
 						// Loop through each filter for this input
