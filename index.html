@@ -1,21 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-
-	<!-- Meta -->
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
-	<!-- Page Title -->
+	<meta charset="utf-8">
 	<title>jQuery Form Validate</title>
-
-	<!-- jQuery -->
+	<link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-
-	<!-- jQuery Form Validate -->
 	<script type="text/javascript" src="jquery.formvalidate.js"></script>
 	<script type="text/javascript" src="localization/de.js"></script>
-
-	<!-- JavaScript -->
 	<script type="text/javascript">
 		$(document).ready(function() {
 
@@ -23,6 +14,7 @@
 			$('#form_1').submit(function(e) {
 				e.preventDefault();
 				$(this).formvalidate({
+					failureWrapper: '<span class="inline-help" />',
 					onSuccess: function(O) {
 						alert('Form #1 is valid!');
 					},
@@ -73,91 +65,19 @@
 			});
 		});
 	</script>
-
+	
 	<style type="text/css">
-		html {
-			font: 12px/16px "Tahoma", "Verdana", "Arial", sans-serif;
-			color: #797979;
-			background-color: #fff;
-		}
-		fieldset {
-			padding: 0px 15px 5px 15px;
+		form {
+			position: relative;
 			margin: 15px;
-			background-color: #f1f1f1;
-			border: 1px solid #eaeaea;
+			padding: 5px 15px 5px 15px;
+			background-color: #fff;
+			border: 1px solid #ddd;
+			-webkit-border-radius: 4px;
+			-moz-border-radius: 4px;
+			border-radius: 4px;
 		}
-		legend {
-			display: none;
-		}
-		h2 {
-			font: normal 18px/24px "DejaVu Sans", "Myriad Pro", sans-serif;
-			color: #545454;
-			margin: 15px 0px;
-			padding: 0px;
-		}
-		h2 a {
-			float: right;
-			font: 12px/20px "Tahoma", "Verdana", "Arial", sans-serif;
-			color: #b9b9b9;
-			text-transform: uppercase;
-			text-decoration: none;
-		}
-		pre {
-			display: none;
-			margin: 10px 0px;
-			font: 11px/18px "DejaVu Sans Mono", monospace;
-			color: #fff;
-			background-color: #3e3e3e;
-			padding: 10px;
-			border: 1px solid #313131;
-		}
-		fieldset > div {
-			margin: 10px 0px;
-		}
-		fieldset > div label:first-child {
-			display: inline-block;
-			width: 120px;
-			vertical-align: top;
-			line-height: 26px;
-		}
-		label {
-			cursor: pointer;
-			color: #555;
-		}
-		input[type="text"],
-		select,
-		textarea {
-			border: 1px solid #dfdfdf;
-			padding: 3px;
-			width: 220px;
-			color: #999;
-		}
-		select { width: 228px; }
-		input[type="text"]:focus,
-		select:focus,
-		textarea:focus {
-			border-color: #dfdfdf;
-			color: #333;
-		}
-		span.error {
-			color: #bf4c70;
-		}
-		input.error, textarea.error {
-			border-color: #bf4c70;
-		}
-		input.success, textarea.success {
-			border-color: #95bc4b;
-		}
-		.submit {
-			background-color: #7f7f7f;
-			color: #fff;
-			text-decoration: none;
-			padding: 5px 15px;
-			margin: 5px 0px;
-			display: inline-block;
-			cursor: pointer;
-			border: 0px solid transparent;
-		}
+		
 	</style>
 
 </head>
@@ -166,31 +86,39 @@
 
 <div>
 
-	<form id="form_1" method="post" action="">
+	<form id="form_1" method="post" action="" class="form-horizontal">
 		<fieldset>
-			<legend>Example Form Number One</legend>
-			<h2>Example Form Number One <a href="#example_1">Code</a></h2>
-			<div>
-				<label for="required">Anything</label>
-				<input type="text" id="required" name="required" data-required data-email data-strtoupper data-date-after="2001-01-01" data-min-length="2" title="Anything" class="trim required" maxlength="128" />
+			<legend>Example Form Number One <a href="#example_1">Code</a></legend>
+
+			<div class="control-group">
+				<label for="required" class="control-label">Anything</label>
+				<div class="controls">
+					<input type="text" id="required" name="required" data-trim data-min-length="2" title="Anything" class="required" maxlength="128">
+				</div>
 			</div>
-			<div>
-				<label for="optional">Optional</label>
-				<input type="text" id="optional" name="optional" title="Optional" maxlength="128" />
+
+			<div class="control-group">
+				<label for="optional" class="control-label">Optional</label>
+				<div class="controls">
+					<input type="text" id="optional" name="optional" title="Optional" maxlength="128">
+				</div>
 			</div>
-			<div>
-				<button type="submit" class="submit" id="submit_1">Submit</button>
+
+			<div class="control-group">
+				<div class="controls">
+					<button type="submit" class="btn btn-primary" id="submit_1">Submit</button>
+				</div>
 			</div>
 <pre id="example_1">
 // Validate on form submission
 $(&#39;#form_1&#39;).submit(function(e) {
-	e.preventDefault();
-	$(this).formvalidate({
-		onSuccess: function(O) {
-			alert(&#39;Form #1 is valid!&#39;);
-		},
-		language: &#39;de&#39;
-	});
+  e.preventDefault();
+    $(this).formvalidate({
+      onSuccess: function(O) {
+        alert(&#39;Form #1 is valid!&#39;);
+      },
+      language: &#39;de&#39;
+  });
 });</pre>
 		</fieldset>
 	</form>
@@ -201,19 +129,19 @@ $(&#39;#form_1&#39;).submit(function(e) {
 			<h2>Example Form Number Two <a href="#example_2">Code</a></h2>
 			<div>
 				<label for="name">Name</label>
-				<input type="text" id="name" name="name" title="Name" class="trim required min_length-5 max_length-128" maxlength="128" />
+				<input type="text" id="name" name="name" title="Name" data-trim data-min-chars="5" data-max-length="128" class="required" maxlength="128">
 			</div>
 			<div>
 				<label for="age">Age</label>
-				<input type="text" id="age" name="age" title="Age" class="int between_numeric-1-101" maxlength="128" />
+				<input type="text" id="age" name="age" title="Age" class="int between_numeric-1-101" maxlength="128">
 			</div>
 			<div>
 				<label for="birth_date">Birth Date</label>
-				<input type="text" id="birth_date" name="birth_date" title="Birth Date" class="date-YYYYMMDD" maxlength="128" placeholder="YYYY-MM-DD" />
+				<input type="text" id="birth_date" name="birth_date" title="Birth Date" data-date="YYYY-MM-DD" maxlength="128" placeholder="YYYY-MM-DD">
 			</div>
 			<div>
 				<label for="email">Email</label>
-				<input type="text" id="email" name="email" title="Email" class="required min_length-5 max_length-128 email" maxlength="128" />
+				<input type="text" id="email" name="email" title="Email" data-min-chars="5" data-email class="required" maxlength="128">
 			</div>
 			<div>
 				<label for="continent">Continent</label>
@@ -230,8 +158,8 @@ $(&#39;#form_1&#39;).submit(function(e) {
 			</div>
 			<div>
 				<label>Are You Cool?</label>
-				<label><input type="radio" name="cool" value="Y" id="cool_yes" class="required" title="Are you cool?"/> Yes</label>
-				<label><input type="radio" name="cool" value="N" id="cool_no" /> No</label>
+				<label><input type="radio" name="cool" value="Y" id="cool_yes" class="required" title="Are you cool?"> Yes</label>
+				<label><input type="radio" name="cool" value="N" id="cool_no"> No</label>
 			</div>
 			<div>
 				<label for="why_cool">Why So Cool?</label>
@@ -250,11 +178,11 @@ $(&#39;#form_1&#39;).submit(function(e) {
 			</div>
 			<div>
 				<label>What Do You Like?</label>
-				<label><input type="checkbox" name="like[]" value="ci" title="What do you like?" class="required"/> CodeIgniter</label>
-				<label><input type="checkbox" name="like[]" value="fuel" class="min_options-2 max_options-3" /> Fuel</label>
-				<label><input type="checkbox" name="like[]" value="kohana" /> Kohana</label>
-				<label><input type="checkbox" name="like[]" value="w1" /> W1</label>
-				<label><input type="checkbox" name="like[]" value="zend" /> Zend</label>
+				<label><input type="checkbox" name="like[]" value="ci" title="What do you like?" class="required"> CodeIgniter</label>
+				<label><input type="checkbox" name="like[]" value="fuel" class="min_options-2 max_options-3"> Fuel</label>
+				<label><input type="checkbox" name="like[]" value="kohana"> Kohana</label>
+				<label><input type="checkbox" name="like[]" value="laravel"> Laravel</label>
+				<label><input type="checkbox" name="like[]" value="zend"> Zend</label>
 			</div>
 			<div>
 				<a href="javascript:void(0);" class="submit" id="submit_2">Submit</a>

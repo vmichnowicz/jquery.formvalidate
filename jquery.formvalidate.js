@@ -8,7 +8,12 @@
  */
 (function($) {
 
-	// Create fake console object if not defined
+	/**
+	 * Create fake console object if not defined
+	 * 
+	 * @author Joseph Silber
+	 * @url http://stackoverflow.com/a/7585409
+	 */
 	if ( ! window.console ) {
 		(function() {
 			var names = ["log", "debug", "info", "warn", "error", "assert",
@@ -21,6 +26,16 @@
 				window.console[ names[i] ] = function() {};
 			}
 		}());
+	}
+
+	/**
+	 * Find an element and include current element in selection
+	 *
+	 * @author Jeoff Wilks
+	 * @url http://stackoverflow.com/a/3742019
+	 */
+	$.fn.findAndSelf = function(selector) {
+		return this.find(selector).add(this.filter(selector))
 	}
 
 	/**
@@ -53,7 +68,7 @@
 	 * thow an exception.
 	 *
 	 * @param string	Date string such as "2011-11-11"
-	 * @param string	Date format such as "YYYYMMDD"
+	 * @param string	Date format such as "YYYY-MM-DD"
 	 * @return object	JavaScript date object
 	 */
 	Date.prototype.createFromFormat = function(input, format) {
@@ -141,9 +156,9 @@
 				between_numeric: '{0} must be between {2} and {3}.',
 				date: '{0} must be a valid date.',
 				email: '{1} is not a valid email.',
-				length: '{0} must be exactly {2} characters.',
-				min_length: '{0} must be at least {2} characters.',
-				max_length: '{0} cannot be more than {2} characters.',
+				num_chars: '{0} must be exactly {2} characters.',
+				min_chars: '{0} must be at least {2} characters.',
+				max_chars: '{0} cannot be more than {2} characters.',
 				options: 'Must select exactly {2} options.',
 				min_options: 'Must select at least {2} options.',
 				max_options: 'Cannot select more than {2} options.',
@@ -313,11 +328,13 @@
 			 * @return object 
 			 */
 			preProcess: function(form, cssFailureClass, cssSuccessClass, cssFilterPrefix, cssValidationPrefix, cssParamDelimiter, failureWrapper) {
+				var cssFailureClassString = typeof cssFailureClass === 'object' ? cssFailureClass.join('.') : cssFailureClass;
+				
 				// Remove success and failure classes from inputs
-				$(form).find(':input.' + cssFailureClass + ', :input.' + cssSuccessClass).removeClass(cssFailureClass + ' ' + cssSuccessClass);
+				$(form).find(':input.' + cssFailureClassString + ', :input.' + cssSuccessClass).removeClass(cssFailureClass + ' ' + cssSuccessClass);
 
 				// Remove all error messages
-				$(form).find('.' + cssFailureClass).remove();
+				$(form).find('.' + cssFailureClassString).remove();
 			},
 			/**
 			 * Process the form
@@ -329,7 +346,7 @@
 			 * @param object	jQuery object containing our form that we will attempt to process
 			 * @return object	Validation object containing form input data
 			 */
-			_process: function(O) {
+			_process: function() {
 
 				var form = this;
 
@@ -349,16 +366,9 @@
 					if ( ! (attrName in inputs) )  { inputs[attrName] = {}; }
 
 					// Check CSS class and then data-required attribute
-					var required = $(element).hasClass('required') || typeof $(element).data('required') === 'string';
-
-					// Class attribute
-					var attrClass = $(element).attr('class');
-
-					// If element does not have a class attribute
-					if ( ! attrClass ) { return; }
-
-					// All classes of this form input
-					var allClasses = attrClass.split(' ');
+					if ( ! ('required' in inputs[attrName]) || inputs[attrName].required === false )  {
+						inputs[attrName].required = $(element).hasClass('required') || typeof $(element).data('required') === 'string';
+					}
 
 					// If input value had not yet been created for this input
 					if ( ! ('value' in inputs[attrName]) )  {
@@ -417,17 +427,23 @@
 					if ( ! ('filters' in inputs[attrName]) )  { inputs[attrName].filters = {}; }
 
 					$.each(settings.validations, function(validation, method) {
-						var prefixed = validation.replace('_', '-');
-						var params = $(element).data(prefixed);
-						if (typeof params !== 'undefined') {
-
-							// Params will start out as an empty array
-							var validationParams = [attrName];
-
-							validationParams.push(typeof param === 'string' ? params.split(' ') : null);
-
-							inputs[attrName].validations[ validation ] = validationParams;
+						var params = $(element).data( validation.replace('_', '-') );
+						// If this is the required validation
+						if (validation === 'required') {
+							var required = $(element).hasClass('required') || typeof $(element).data('required') === 'string';
+							if (required === true) {
+								inputs[attrName].validations.required = [true];
+							}
 						}
+						// If this is the required_if validation
+						else if (validation === 'required_if') {
+							
+						}
+						// Default validation, if set by user
+						else if (typeof params !== 'undefined') {
+							inputs[attrName].validations[ validation ] = params.toString().split(' ');
+						}
+						
 					});
 
 					$.each(settings.filters, function(filter, method) {
@@ -470,7 +486,7 @@
 			 * @param object	Form validation object
 			 * @return object	Form validation object with a bunch of additional properties
 			 */
-			_validate: function(O) {
+			_validate: function() {
 				// So are we good? We will assume yes, for now...
 				var result = true;
 				var form = this;
@@ -496,6 +512,7 @@
 							if (inputObj.failure === null) {
 								// If this validation method is defined
 								if (validationName in settings.validations) {
+
 									// If the form input is null we will skip validations UNLESS the current validation is checking that this inputs required status has been met
 									if (inputObj.value === null && validationName !== 'required' && validationName !== 'required_if') {
 										return true; // Skip current validation and continue with $.each()
@@ -534,7 +551,7 @@
 
 				this.result = result;
 
-				return O;
+				return this;
 			},
 			/**
 			 * Run after succussful form validation
