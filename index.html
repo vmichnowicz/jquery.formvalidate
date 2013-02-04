@@ -11,7 +11,7 @@
 		$(document).ready(function() {
 
 			// Validate on form submission
-			$('#form_1').submit(function(e) {
+			$('#form-1').submit(function(e) {
 				e.preventDefault();
 				$(this).formvalidate({
 					failureWrapper: '<span class="inline-help" />',
@@ -23,7 +23,7 @@
 			});
 
 			// Validate when the submit button is clicked
-			$('#submit_2').click(function(e) {
+			$('#submit-2').click(function(e) {
 				e.preventDefault();
 
 				// From the anchor element find the closest form element
@@ -44,7 +44,7 @@
 			// Toggle "Why So Cool?"
 			(function () {
 				var cool = $('input[name="cool"]');
-				var whyCool = $('#why_cool').closest('div');
+				var whyCool = $('#why_cool').closest('.control-group');
 
 				// Toggle "Why So Cool?" question
 				var toggle = function toggle() {;
@@ -59,13 +59,13 @@
 			})();
 
 			// Toggle code
-			$('h2 a').click(function(e) {
+			$('legend a').click(function(e) {
 				e.preventDefault();
 				$( $(this).attr('href') ).toggle();
 			});
 		});
 	</script>
-	
+
 	<style type="text/css">
 		form {
 			position: relative;
@@ -77,7 +77,13 @@
 			-moz-border-radius: 4px;
 			border-radius: 4px;
 		}
-		
+		legend a {
+			float: right;
+			margin-top: 6px;
+		}
+		pre {
+			display: none;
+		}
 	</style>
 
 </head>
@@ -86,9 +92,9 @@
 
 <div>
 
-	<form id="form_1" method="post" action="" class="form-horizontal">
+	<form id="form-1" method="post" action="" class="form-horizontal">
 		<fieldset>
-			<legend>Example Form Number One <a href="#example_1">Code</a></legend>
+			<legend>Example Form Number One <a href="#example-1" class="btn btn-mini"><i class="icon-eye-close"></i> Code</a></legend>
 
 			<div class="control-group">
 				<label for="required" class="control-label">Anything</label>
@@ -106,10 +112,10 @@
 
 			<div class="control-group">
 				<div class="controls">
-					<button type="submit" class="btn btn-primary" id="submit_1">Submit</button>
+					<input type="submit" class="btn btn-small btn-primary" id="submit-1" value="Submit">
 				</div>
 			</div>
-<pre id="example_1">
+<pre id="example-1">
 // Validate on form submission
 $(&#39;#form_1&#39;).submit(function(e) {
   e.preventDefault();
@@ -123,71 +129,90 @@ $(&#39;#form_1&#39;).submit(function(e) {
 		</fieldset>
 	</form>
 
-	<form id="form_2" method="post" action="">
+	<form id="form-2" method="post" action="" class="form-horizontal">
 		<fieldset>
-			<legend>Example Form Number Two</legend>
-			<h2>Example Form Number Two <a href="#example_2">Code</a></h2>
-			<div>
-				<label for="name">Name</label>
-				<input type="text" id="name" name="name" title="Name" data-trim data-min-chars="5" data-max-length="128" class="required" maxlength="128">
+			<legend>Example Form Number Two <a href="#example-2" class="btn btn-mini"><i class="icon-eye-close"></i> Code</a></legend>
+			<div class="control-group">
+				<label class="control-label" for="name">Name</label>
+				<div class="controls">
+					<input type="text" id="name" name="name" title="Name" data-trim data-min-chars="5" data-max-length="128" class="required" maxlength="128">
+				</div>
 			</div>
-			<div>
-				<label for="age">Age</label>
-				<input type="text" id="age" name="age" title="Age" class="int between_numeric-1-101" maxlength="128">
+			<div class="control-group">
+				<label class="control-label"  for="age">Age</label>
+				<div class="controls">
+					<input type="text" id="age" name="age" title="Age" class="int between_numeric-1-101" maxlength="128">
+				</div>
 			</div>
-			<div>
-				<label for="birth_date">Birth Date</label>
-				<input type="text" id="birth_date" name="birth_date" title="Birth Date" data-date="YYYY-MM-DD" maxlength="128" placeholder="YYYY-MM-DD">
+			<div class="control-group">
+				<label class="control-label"  for="birth_date">Birth Date</label>
+				<div class="controls">
+					<input type="text" id="birth_date" name="birth_date" title="Birth Date" data-date="YYYY-MM-DD" maxlength="128" placeholder="YYYY-MM-DD">
+				</div>
 			</div>
-			<div>
-				<label for="email">Email</label>
-				<input type="text" id="email" name="email" title="Email" data-min-chars="5" data-email class="required" maxlength="128">
+			<div class="control-group">
+				<label class="control-label"  for="email">Email</label>
+				<div class="controls">
+					<input type="text" id="email" name="email" title="Email" data-min-chars="5" data-email class="required" maxlength="128">
+				</div>
 			</div>
-			<div>
-				<label for="continent">Continent</label>
-				<select id="continent" name="continent" title="Continent" class="required">
-					<option value="">&mdash; Please Select &mdash;</option>
-					<option value="na">North America</option>
-					<option value="sa">South America</option>
-					<option value="an">Antarctica</option>
-					<option value="af">Africa</option>
-					<option value="eu">Europe</option>
-					<option value="as">Asia</option>
-					<option value="au">Australia</option>
-				</select>
+			<div class="control-group">
+				<label class="control-label"  for="continent">Continent</label>
+				<div class="controls">
+					<select id="continent" name="continent" title="Continent" class="required">
+						<option value="">&mdash; Please Select &mdash;</option>
+						<option value="na">North America</option>
+						<option value="sa">South America</option>
+						<option value="an">Antarctica</option>
+						<option value="af">Africa</option>
+						<option value="eu">Europe</option>
+						<option value="as">Asia</option>
+						<option value="au">Australia</option>
+					</select>
+				</div>
 			</div>
-			<div>
-				<label>Are You Cool?</label>
-				<label><input type="radio" name="cool" value="Y" id="cool_yes" class="required" title="Are you cool?"> Yes</label>
-				<label><input type="radio" name="cool" value="N" id="cool_no"> No</label>
+			<div class="control-group">
+				<label class="control-label">Are You Cool?</label>
+				<div class="controls">
+					<label><input type="radio" name="cool" value="Y" id="cool_yes" class="required" title="Are you cool?"> Yes</label>
+					<label><input type="radio" name="cool" value="N" id="cool_no"> No</label>
+				</div>
 			</div>
-			<div>
-				<label for="why_cool">Why So Cool?</label>
-				<textarea id="why_cool" name="why_cool" class="trim min_length-4 max_length-512 required_if-cool_yes" title="Why So Cool?" cols="64" rows="8"></textarea>
+			<div class="control-group">
+				<label class="control-label" for="why_cool">Why So Cool?</label>
+				<div class="controls">
+					<textarea id="why_cool" name="why_cool" class="trim min_length-4 max_length-512 required_if-cool_yes" title="Why So Cool?" cols="64" rows="8"></textarea>
+				</div>
 			</div>
-			<div>
-				<label>What 2 colors do you like?</label>
-				<select multiple="multiple" id="colors" name="colors[]" title="Colors" class="required options-2">
-					<option value="red">Red</option>
-					<option value="orange">Orange</option>
-					<option value="yellow">Yellow</option>
-					<option value="green">Green</option>
-					<option value="blue">Blue</option>
-					<option value="purple">Purple</option>
-				</select>
+			<div class="control-group">
+				<label class="control-label">What 2 colors do you like?</label>
+				<div class="controls">
+					<select multiple="multiple" id="colors" name="colors[]" title="Colors" class="required options-2">
+						<option value="red">Red</option>
+						<option value="orange">Orange</option>
+						<option value="yellow">Yellow</option>
+						<option value="green">Green</option>
+						<option value="blue">Blue</option>
+						<option value="purple">Purple</option>
+					</select>
+				</div>
 			</div>
-			<div>
-				<label>What Do You Like?</label>
-				<label><input type="checkbox" name="like[]" value="ci" title="What do you like?" class="required"> CodeIgniter</label>
-				<label><input type="checkbox" name="like[]" value="fuel" class="min_options-2 max_options-3"> Fuel</label>
-				<label><input type="checkbox" name="like[]" value="kohana"> Kohana</label>
-				<label><input type="checkbox" name="like[]" value="laravel"> Laravel</label>
-				<label><input type="checkbox" name="like[]" value="zend"> Zend</label>
+			<div class="control-group">
+				<label class="control-label">What Do You Like?</label>
+				<div class="controls">
+					<label><input type="checkbox" name="like[]" value="ci" title="What do you like?" class="required"> CodeIgniter</label>
+					<label><input type="checkbox" name="like[]" value="fuel" class="min_options-2 max_options-3"> Fuel</label>
+					<label><input type="checkbox" name="like[]" value="kohana"> Kohana</label>
+					<label><input type="checkbox" name="like[]" value="laravel"> Laravel</label>
+					<label><input type="checkbox" name="like[]" value="zend"> Zend</label>
+				</div>
 			</div>
-			<div>
-				<a href="javascript:void(0);" class="submit" id="submit_2">Submit</a>
+			<div class="control-group">
+				<div class="controls">
+					<input type="submit" class="btn btn-small btn-primary" id="submit-2" value="Submit">
+				</div>
 			</div>
-<pre id="example_2">
+<pre id="example-2">
 // Validate when the submit button is clicked
 $(&#39;#submit_2&#39;).click(function(e) {
 	e.preventDefault();
