@@ -7,64 +7,6 @@
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	<script type="text/javascript" src="jquery.formvalidate.js"></script>
 	<script type="text/javascript" src="localization/de.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function() {
-
-			// Validate on form submission
-			$('#form-1').submit(function(e) {
-				e.preventDefault();
-				$(this).formvalidate({
-					failureWrapper: '<span class="inline-help" />',
-					onSuccess: function(O) {
-						alert('Form #1 is valid!');
-					},
-					language: 'de'
-				});
-			});
-
-			// Validate when the submit button is clicked
-			$('#submit-2').click(function(e) {
-				e.preventDefault();
-
-				// From the anchor element find the closest form element
-				$(this).closest('form').formvalidate({
-					validations: {
-						/**
-						 * Add a custom validation
-						 *
-						 * @todo  'Your {0} cannot be "{2}" because this is a custom validation method and I said so.'
-						 */
-						middle_name: function(input, params) {
-							return input.toLowerCase() === params[0].toLowerCase() ? false : true;
-						}
-					}
-				});
-			});
-
-			// Toggle "Why So Cool?"
-			(function () {
-				var cool = $('input[name="cool"]');
-				var whyCool = $('#why_cool').closest('.control-group');
-
-				// Toggle "Why So Cool?" question
-				var toggle = function toggle() {;
-					$(cool).filter(':checked').val() === 'Y' ? $(whyCool).show() : $(whyCool).hide();
-					return toggle;
-				}();
-
-				// Run toggle function on change
-				$(cool).live('change', function() {
-					toggle();
-				});
-			})();
-
-			// Toggle code
-			$('legend a').click(function(e) {
-				e.preventDefault();
-				$( $(this).attr('href') ).toggle();
-			});
-		});
-	</script>
 
 	<style type="text/css">
 		form {
@@ -90,128 +32,130 @@
 
 <body>
 
-<div>
+<div class="row-fluid">
+	<div class="span12">
+		<form id="form-1" method="post" action="" class="form-horizontal">
+			<fieldset>
+				<legend>Example Form Number One <a href="#example-1" class="btn btn-mini"><i class="icon-eye-close"></i> Code</a></legend>
 
-	<form id="form-1" method="post" action="" class="form-horizontal">
-		<fieldset>
-			<legend>Example Form Number One <a href="#example-1" class="btn btn-mini"><i class="icon-eye-close"></i> Code</a></legend>
-
-			<div class="control-group">
-				<label for="required" class="control-label">Anything</label>
-				<div class="controls">
-					<input type="text" id="required" name="required" data-trim data-min-length="2" title="Anything" class="required" maxlength="128">
+				<div class="control-group">
+					<label for="required" class="control-label">Anything</label>
+					<div class="controls">
+						<input type="text" id="required" name="required" data-trim data-min-length="2" title="Anything" class="required" maxlength="128">
+					</div>
 				</div>
-			</div>
 
-			<div class="control-group">
-				<label for="optional" class="control-label">Optional</label>
-				<div class="controls">
-					<input type="text" id="optional" name="optional" title="Optional" maxlength="128">
+				<div class="control-group">
+					<label for="optional" class="control-label">Optional</label>
+					<div class="controls">
+						<input type="text" id="optional" name="optional" title="Optional" maxlength="128">
+					</div>
 				</div>
-			</div>
 
-			<div class="control-group">
-				<div class="controls">
-					<input type="submit" class="btn btn-small btn-primary" id="submit-1" value="Submit">
+				<div class="control-group">
+					<div class="controls">
+						<input type="submit" class="btn btn-small btn-primary" id="submit-1" value="Submit">
+					</div>
 				</div>
-			</div>
 <pre id="example-1">
 // Validate on form submission
 $(&#39;#form_1&#39;).submit(function(e) {
   e.preventDefault();
-    $(this).formvalidate({
-      onSuccess: function(O) {
-        alert(&#39;Form #1 is valid!&#39;);
-      },
-      language: &#39;de&#39;
+	$(this).formvalidate({
+	  onSuccess: function(O) {
+		alert(&#39;Form #1 is valid!&#39;);
+	  },
+	  language: &#39;de&#39;
   });
 });</pre>
-		</fieldset>
-	</form>
+			</fieldset>
+		</form>
+	
+		<form id="form-2" method="post" action="" class="form-horizontal">
+			<fieldset>
+				<legend>Example Form Number Two <a href="#example-2" class="btn btn-mini"><i class="icon-eye-close"></i> Code</a></legend>
+				
+				<div class="control-group">
+					<label class="control-label" for="name">Name</label>
+					<div class="controls">
+						<input type="text" id="name" name="name" title="Name" data-trim data-min-chars="5" data-max-length="128" class="required" maxlength="128">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label"  for="age">Age</label>
+					<div class="controls">
+						<input type="text" id="age" name="age" title="Age" class="int between_numeric-1-101" maxlength="128">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label"  for="birth_date">Birth Date</label>
+					<div class="controls">
+						<input type="text" id="birth_date" name="birth_date" title="Birth Date" data-date="YYYY-MM-DD" maxlength="128" placeholder="YYYY-MM-DD">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label"  for="email">Email</label>
+					<div class="controls">
+						<input type="text" id="email" name="email" title="Email" data-min-chars="5" data-email class="required" maxlength="128">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label"  for="continent">Continent</label>
+					<div class="controls">
+						<select id="continent" name="continent" title="Continent" class="required">
+							<option value="">&mdash; Please Select &mdash;</option>
+							<option value="na">North America</option>
+							<option value="sa">South America</option>
+							<option value="an">Antarctica</option>
+							<option value="af">Africa</option>
+							<option value="eu">Europe</option>
+							<option value="as">Asia</option>
+							<option value="au">Australia</option>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Are You Cool?</label>
+					<div class="controls">
+						<label><input type="radio" name="cool" value="Y" id="cool_yes" class="required" title="Are you cool?"> Yes</label>
+						<label><input type="radio" name="cool" value="N" id="cool_no"> No</label>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="why_cool">Why So Cool?</label>
+					<div class="controls">
+						<textarea id="why_cool" name="why_cool" class="trim min_length-4 max_length-512 required_if-cool_yes" title="Why So Cool?" cols="64" rows="8"></textarea>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">What 2 colors do you like?</label>
+					<div class="controls">
+						<select multiple="multiple" id="colors" name="colors[]" title="Colors" class="required options-2">
+							<option value="red">Red</option>
+							<option value="orange">Orange</option>
+							<option value="yellow">Yellow</option>
+							<option value="green">Green</option>
+							<option value="blue">Blue</option>
+							<option value="purple">Purple</option>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">What Do You Like?</label>
+					<div class="controls">
+						<label><input type="checkbox" name="like[]" value="ci" title="What do you like?" class="required"> CodeIgniter</label>
+						<label><input type="checkbox" name="like[]" value="fuel" data-min-options="2" data-max-options="4"> Fuel</label>
+						<label><input type="checkbox" name="like[]" value="kohana"> Kohana</label>
+						<label><input type="checkbox" name="like[]" value="laravel"> Laravel</label>
+						<label><input type="checkbox" name="like[]" value="zend"> Zend</label>
+					</div>
+				</div>
+				<div class="control-group">
+					<div class="controls">
+						<input type="submit" class="btn btn-small btn-primary" id="submit-2" value="Submit">
+					</div>
+				</div>
 
-	<form id="form-2" method="post" action="" class="form-horizontal">
-		<fieldset>
-			<legend>Example Form Number Two <a href="#example-2" class="btn btn-mini"><i class="icon-eye-close"></i> Code</a></legend>
-			<div class="control-group">
-				<label class="control-label" for="name">Name</label>
-				<div class="controls">
-					<input type="text" id="name" name="name" title="Name" data-trim data-min-chars="5" data-max-length="128" class="required" maxlength="128">
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label"  for="age">Age</label>
-				<div class="controls">
-					<input type="text" id="age" name="age" title="Age" class="int between_numeric-1-101" maxlength="128">
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label"  for="birth_date">Birth Date</label>
-				<div class="controls">
-					<input type="text" id="birth_date" name="birth_date" title="Birth Date" data-date="YYYY-MM-DD" maxlength="128" placeholder="YYYY-MM-DD">
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label"  for="email">Email</label>
-				<div class="controls">
-					<input type="text" id="email" name="email" title="Email" data-min-chars="5" data-email class="required" maxlength="128">
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label"  for="continent">Continent</label>
-				<div class="controls">
-					<select id="continent" name="continent" title="Continent" class="required">
-						<option value="">&mdash; Please Select &mdash;</option>
-						<option value="na">North America</option>
-						<option value="sa">South America</option>
-						<option value="an">Antarctica</option>
-						<option value="af">Africa</option>
-						<option value="eu">Europe</option>
-						<option value="as">Asia</option>
-						<option value="au">Australia</option>
-					</select>
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label">Are You Cool?</label>
-				<div class="controls">
-					<label><input type="radio" name="cool" value="Y" id="cool_yes" class="required" title="Are you cool?"> Yes</label>
-					<label><input type="radio" name="cool" value="N" id="cool_no"> No</label>
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="why_cool">Why So Cool?</label>
-				<div class="controls">
-					<textarea id="why_cool" name="why_cool" class="trim min_length-4 max_length-512 required_if-cool_yes" title="Why So Cool?" cols="64" rows="8"></textarea>
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label">What 2 colors do you like?</label>
-				<div class="controls">
-					<select multiple="multiple" id="colors" name="colors[]" title="Colors" class="required options-2">
-						<option value="red">Red</option>
-						<option value="orange">Orange</option>
-						<option value="yellow">Yellow</option>
-						<option value="green">Green</option>
-						<option value="blue">Blue</option>
-						<option value="purple">Purple</option>
-					</select>
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label">What Do You Like?</label>
-				<div class="controls">
-					<label><input type="checkbox" name="like[]" value="ci" title="What do you like?" class="required"> CodeIgniter</label>
-					<label><input type="checkbox" name="like[]" value="fuel" class="min_options-2 max_options-3"> Fuel</label>
-					<label><input type="checkbox" name="like[]" value="kohana"> Kohana</label>
-					<label><input type="checkbox" name="like[]" value="laravel"> Laravel</label>
-					<label><input type="checkbox" name="like[]" value="zend"> Zend</label>
-				</div>
-			</div>
-			<div class="control-group">
-				<div class="controls">
-					<input type="submit" class="btn btn-small btn-primary" id="submit-2" value="Submit">
-				</div>
-			</div>
 <pre id="example-2">
 // Validate when the submit button is clicked
 $(&#39;#submit_2&#39;).click(function(e) {
@@ -227,9 +171,70 @@ $(&#39;#submit_2&#39;).click(function(e) {
 		}
 	});
 });</pre>
-		</fieldset>
-	</form>
+			</fieldset>
+		</form>
+	</div>
 </div>
 
+<script type="text/javascript">
+	$(document).ready(function() {
+
+		// Validate on form submission
+		$('#form-1').submit(function(e) {
+			e.preventDefault();
+			$(this).formvalidate({
+				onSuccess: function(O) {
+					alert('Form #1 is valid!');
+				},
+				language: 'de'
+			});
+		});
+
+		// Validate when the submit button is clicked
+		$('#submit-2').click(function(e) {
+			e.preventDefault();
+
+			// From the anchor element find the closest form element
+			$(this).closest('form').formvalidate({
+				cssFailureClass: 'text-error',
+				messageContainer: '.controls',
+				validations: {
+					/**
+					 * Add a custom validation
+					 *
+					 * @todo  'Your {0} cannot be "{2}" because this is a custom validation method and I said so.'
+					 */
+					middle_name: function(input, params) {
+						return input.toLowerCase() === params[0].toLowerCase() ? false : true;
+					}
+				}
+			});
+		});
+
+		// Toggle "Why So Cool?"
+		(function () {
+			var cool = $('input[name="cool"]');
+			var whyCool = $('#why_cool').closest('.control-group');
+
+			// Toggle "Why So Cool?" question
+			var toggle = function toggle() {;
+				$(cool).filter(':checked').val() === 'Y' ? $(whyCool).show() : $(whyCool).hide();
+				return toggle;
+			}();
+
+			// Run toggle function on change
+			$(cool).live('change', function() {
+				toggle();
+			});
+		})();
+
+		// Toggle code
+		$('legend a').click(function(e) {
+			e.preventDefault();
+			$( $(this).attr('href') ).toggle();
+		});
+	});
+</script>
+	
 </body>
 </html>

@@ -37,6 +37,16 @@
 	$.fn.findAndSelf = function(selector) {
 		return this.find(selector).add(this.filter(selector))
 	}
+	
+	/**
+	 * Find an element and include current element in selection
+	 *
+	 * @author Jeoff Wilks
+	 * @url http://stackoverflow.com/a/3742019
+	 */
+	$.fn.closestAndSelf = function(selector) {
+		return this.closest(selector).add(this.filter(selector))
+	}
 
 	/**
 	 * Super simple JavaScript sprintf method
@@ -321,13 +331,11 @@
 			 * @param object	jQuery form object
 			 * @param string	CSS class added to inputs that did not pass validation
 			 * @param string	CSS class added to inputs that did pass validation
-			 * @param string	CSS class prefix to designate filter rules
-			 * @param string	CSS class prefix to designate validation rules
 			 * @param string	CSS validation rule delimiter
 			 * @param string	HTML element to wrap error messages
 			 * @return object 
 			 */
-			preProcess: function(form, cssFailureClass, cssSuccessClass, cssFilterPrefix, cssValidationPrefix, cssParamDelimiter, failureWrapper) {
+			preProcess: function(form, cssFailureClass, cssSuccessClass, messageElement) {
 				var cssFailureClassString = typeof cssFailureClass === 'object' ? cssFailureClass.join('.') : cssFailureClass;
 				
 				// Remove success and failure classes from inputs
@@ -563,7 +571,7 @@
 			 * @return bool
 			 */
 			onSuccess: function(form, inputs, O) {
-				alert('Great Success!');
+				form.submit();
 				return true;
 			},
 			/**
@@ -575,7 +583,7 @@
 			 * @param object	Complete form object
 			 * @return void
 			 */
-			onFailure: function(form, inputs, O) {
+			onFailure: function(form, inputs) {
 				// Loop through each form input form our validation object
 				$.each(inputs, function(inputIndex, inputObj) {
 					// If this input did not pass validation
@@ -583,20 +591,19 @@
 						// Add failure class to input(s)
 						$(form).find(':input[name="' + inputIndex + '"]').addClass( settings.cssFailureClass );
 						// New error message element
-						var el = $( settings.failureWrapper ).addClass( settings.cssFailureClass ).text( inputObj.errors[0] );
-						$(form).find(':input[name="' + inputIndex + '"]:last').closest('div').append(el);
+						var el = $( settings.messageElement ).addClass( settings.cssFailureClass ).text( inputObj.errors[0] );
+						$(form).find(':input[name="' + inputIndex + '"]:last').closestAndSelf( settings.messageParent ).append(el);
 					}
 					else {
 						$(form).find(':input[name="' + inputIndex + '"]').addClass( settings.cssSuccessClass );
 					}
 				});
 			},
+			messageParent: 'div', // CSS selector of parent element of message (success or failure) messages
+			messageElement: '<span />', // Wrap error (maybe even success?) messages inside
 			cssFailureClass: 'error', // CSS class added to inputs that did not pass validation
 			cssSuccessClass: 'success', // CSS class added to inputs that did pass validation
-			cssFilterPrefix: '', // CSS class prefix to designate filter rules
-			cssValidationPrefix: '', // CSS class prefix to designate validation rules
 			cssParamDelimiter: '-', // CSS validation rule delimiter
-			failureWrapper: '<span />', // Wrap error messages inside
 			filters: {}, // Merged in from $.formvalidate later
 			validations: {} // Merged in from $.formvalidate later
 		}, options);
@@ -606,24 +613,25 @@
 
 		// Loop through each selected element
 		return this.each(function() {
+			this.settings = settings;
 
 			// If a language code was provided make sure its lowercase, if no language code provided default to "en"
-			settings.language = settings.language ? settings.language.toLowerCase() : 'en';
+			this.settings.language = this.settings.language ? this.settings.language.toLowerCase() : 'en';
 
-			// Run preProcess function (can be overwritten by user)
-			settings.preProcess(this, settings.cssFailureClass, settings.cssSuccessClass, settings.cssFilterPrefix, settings.cssValidationPrefix, settings.cssParamDelimiter, settings.failureWrapper);
+			// Run function before we do any processing (can be overwritten by user)
+			this.settings.preProcess.call(this, this, this.settings.cssFailureClass, this.settings.cssSuccessClass, this.settings.messageElement, this.settings.messageParent);
 
 			// Process form inputs
-			settings._process.call(this);
+			this.settings._process.call(this);
 
 			// Validate form
-			settings._validate.call(this);
+			this.settings._validate.call(this);
 
 			// Run postProcess function
-			settings.postProcess(this, this.inputs);
+			this.settings.postProcess.call(this, this, this.inputs);
 
 			// On form validation success
-			this.result === true ? settings.onSuccess(this, this.inputs) : settings.onFailure(this, this.inputs);
+			this.result === true ? this.settings.onSuccess(this, this.inputs) : this.settings.onFailure(this, this.inputs);
 		});
 	}
 
