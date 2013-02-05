@@ -265,12 +265,13 @@
 					return false;
 				}
 			},
-			// http://stackoverflow.com/questions/3885817/how-to-check-if-a-number-is-float-or-integer#answer-3886106
+			// http://stackoverflow.com/a/3886106/1525008
 			'int': function(input, params) {
 				return input % 1 == 0;
 			},
+			// http://stackoverflow.com/a/9327165/1525008
 			'float': function(input, params) {
-				return input % 1 !== 0 ? true : false; // @todo this needs (to) work...
+				return !isNaN(parseFloat(input)) && isFinite(input);
 			},
 			required: function(input, params) {
 				// If this is an array
@@ -284,7 +285,6 @@
 				}
 			},
 			required_if: function(input, params) {
-				console.log(input, params);
 				// Dependent element
 				var el = $('#' + params[0]);
 
@@ -292,8 +292,8 @@
 
 				// If dependent element is a checkbox or radio
 				if ( $(el).is(':checkbox') || $(el).is(':radio') ) {
-						// If dependent checkbox or radio is checked set value to TRUE, else NULL
-						dependent = $(el).is(':checked') ? true : null;
+					// If dependent checkbox or radio is checked set value to TRUE, else NULL
+					dependent = $(el).is(':checked') ? true : null;
 				}
 				else {
 					dependent = $.trim( $(el).val() ) === '' ? null : $.trim( $(el).val() );
@@ -459,7 +459,6 @@
 						else if (typeof params !== 'undefined') {
 							inputs[attrName].validations[ validation ] = params.toString().split(' ');
 						}
-						
 					});
 
 					$.each(settings.filters, function(filter, method) {
@@ -603,7 +602,10 @@
 						$(form).find(':input[name="' + inputIndex + '"]:last').closestAndSelf( settings.messageParent ).append(el);
 					}
 					else {
-						$(form).find(':input[name="' + inputIndex + '"]').addClass( settings.cssSuccessClass );
+						$(form).find(':input[name="' + inputIndex + '"]').addClass( settings.inputSuccessClass );
+						var text = 'Valid'; // Look for success message in localization object
+						var el = $( settings.messageElement ).addClass( settings.messageSuccessClass ).text( text );
+						$(form).find(':input[name="' + inputIndex + '"]:last').closestAndSelf( settings.messageParent ).append(el);
 					}
 				});
 			},
