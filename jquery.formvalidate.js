@@ -284,6 +284,7 @@
 				}
 			},
 			required_if: function(input, params) {
+				console.log(input, params);
 				// Dependent element
 				var el = $('#' + params[0]);
 
@@ -335,14 +336,18 @@
 			 * @param string	HTML element to wrap error messages
 			 * @return object 
 			 */
-			preProcess: function(form, cssFailureClass, cssSuccessClass, messageElement) {
-				var cssFailureClassString = typeof cssFailureClass === 'object' ? cssFailureClass.join('.') : cssFailureClass;
-				
+			preProcess: function(form, inputFailureClass, inputSuccessClass, messageFailureClass, messageSuccessClass, messageElement) {
+				var inputFailureClassString = inputFailureClass.replace(' ', '.');
+				var inputSuccessClassString = inputSuccessClass.replace(' ', '.');
+
 				// Remove success and failure classes from inputs
-				$(form).find(':input.' + cssFailureClassString + ', :input.' + cssSuccessClass).removeClass(cssFailureClass + ' ' + cssSuccessClass);
+				$(form).find(':input.' + inputFailureClassString + ', :input.' + inputSuccessClassString).removeClass(inputFailureClass + ' ' + inputSuccessClass);
+
+				var messageFailureClassString = messageFailureClass.replace(' ', '.');
+				var messageSuccessClassString = messageSuccessClass.replace(' ', '.');
 
 				// Remove all error messages
-				$(form).find('.' + cssFailureClassString).remove();
+				$(form).find('.' + messageFailureClassString).remove();
 			},
 			/**
 			 * Process the form
@@ -445,7 +450,10 @@
 						}
 						// If this is the required_if validation
 						else if (validation === 'required_if') {
-							
+							var required_if = $(element).data('required-if');
+							if (typeof required_if !== 'undefined') {
+								inputs[attrName].validations.required_if = [required_if];
+							}
 						}
 						// Default validation, if set by user
 						else if (typeof params !== 'undefined') {
@@ -589,9 +597,9 @@
 					// If this input did not pass validation
 					if (inputObj.failure === true) {
 						// Add failure class to input(s)
-						$(form).find(':input[name="' + inputIndex + '"]').addClass( settings.cssFailureClass );
+						$(form).find(':input[name="' + inputIndex + '"]').addClass( settings.inputFailureClass );
 						// New error message element
-						var el = $( settings.messageElement ).addClass( settings.cssFailureClass ).text( inputObj.errors[0] );
+						var el = $( settings.messageElement ).addClass( settings.messageFailureClass ).text( inputObj.errors[0] );
 						$(form).find(':input[name="' + inputIndex + '"]:last').closestAndSelf( settings.messageParent ).append(el);
 					}
 					else {
@@ -601,8 +609,12 @@
 			},
 			messageParent: 'div', // CSS selector of parent element of message (success or failure) messages
 			messageElement: '<span />', // Wrap error (maybe even success?) messages inside
-			cssFailureClass: 'error', // CSS class added to inputs that did not pass validation
-			cssSuccessClass: 'success', // CSS class added to inputs that did pass validation
+			messageFailureClass: 'error',
+			messageSuccessClass: 'success',
+			inputFailureClass: 'error',
+			inputSuccessClass: 'success',
+			inputFailureClass: 'error', // CSS class added to inputs that did not pass validation
+			inputSuccessClass: 'success', // CSS class added to inputs that did pass validation
 			cssParamDelimiter: '-', // CSS validation rule delimiter
 			filters: {}, // Merged in from $.formvalidate later
 			validations: {} // Merged in from $.formvalidate later
@@ -619,7 +631,7 @@
 			this.settings.language = this.settings.language ? this.settings.language.toLowerCase() : 'en';
 
 			// Run function before we do any processing (can be overwritten by user)
-			this.settings.preProcess.call(this, this, this.settings.cssFailureClass, this.settings.cssSuccessClass, this.settings.messageElement, this.settings.messageParent);
+			this.settings.preProcess.call(this, this, this.settings.inputFailureClass, this.settings.inputSuccessClass, this.settings.messageFailureClass, this.settings.messageSuccessClass, this.settings.messageElement, this.settings.messageParent);
 
 			// Process form inputs
 			this.settings._process.call(this);

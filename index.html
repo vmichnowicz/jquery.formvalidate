@@ -88,7 +88,7 @@ $(&#39;#form_1&#39;).submit(function(e) {
 				<div class="control-group">
 					<label class="control-label"  for="age">Age</label>
 					<div class="controls">
-						<input type="text" id="age" name="age" title="Age" class="int between_numeric-1-101" maxlength="128">
+						<input type="text" id="age" name="age" title="Age" data-int data-between-numeric="1 101" maxlength="128">
 					</div>
 				</div>
 				<div class="control-group">
@@ -121,14 +121,14 @@ $(&#39;#form_1&#39;).submit(function(e) {
 				<div class="control-group">
 					<label class="control-label">Are You Cool?</label>
 					<div class="controls">
-						<label class="radio inline"><input type="radio" name="cool" value="Y" id="cool_yes" class="required" title="Are you cool?"> Yes</label>
-						<label class="radio inline"><input type="radio" name="cool" value="N" id="cool_no"> No</label>
+						<label class="radio inline"><input type="radio" name="cool" value="Y" id="cool-yes" class="required" title="Are you cool?"> Yes</label>
+						<label class="radio inline"><input type="radio" name="cool" value="N" id="cool-no"> No</label>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="why_cool">Why So Cool?</label>
 					<div class="controls">
-						<textarea id="why_cool" name="why_cool" class="trim min_length-4 max_length-512 required_if-cool_yes" title="Why So Cool?" cols="64" rows="8"></textarea>
+						<textarea id="why_cool" name="why_cool" data-trim data-min-length="4" data-max-length="512" data-required-if="cool-yes" title="Why So Cool?" cols="64" rows="8"></textarea>
 					</div>
 				</div>
 				<div class="control-group">
@@ -187,6 +187,7 @@ $(&#39;#submit_2&#39;).click(function(e) {
 		$('#form-1').submit(function(e) {
 			e.preventDefault();
 			$(this).formvalidate({
+				messageFailureClass: 'label label-important',
 				onSuccess: function(O) {
 					alert('Form #1 is valid!');
 				},
@@ -200,8 +201,7 @@ $(&#39;#submit_2&#39;).click(function(e) {
 
 			// From the anchor element find the closest form element
 			$(this).closest('form').formvalidate({
-				cssFailureClass: 'text-error',
-				messageContainer: '.controls',
+				messageFailureClass: 'label label-important',
 				validations: {
 					/**
 					 * Add a custom validation
