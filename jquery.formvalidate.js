@@ -169,7 +169,7 @@
 				num_chars: '{0} must be exactly {2} characters.',
 				min_chars: '{0} must be at least {2} characters.',
 				max_chars: '{0} cannot be more than {2} characters.',
-				options: 'Must select exactly {2} options.',
+				num_options: 'Must select exactly {2} options.',
 				min_options: 'Must select at least {2} options.',
 				max_options: 'Cannot select more than {2} options.',
 				'int': '{0} must be a whole number (integer).',

@@ -9,6 +9,11 @@
 	<script type="text/javascript" src="localization/de.js"></script>
 
 	<style type="text/css">
+		body {
+			background-color: #333;
+			padding-right: 0px; 
+			padding-left: 0px;
+		}
 		form {
 			position: relative;
 			margin: 15px;
@@ -70,11 +75,10 @@ $(&#39;#form_1&#39;).submit(function(e) {
 });</pre>
 			</fieldset>
 		</form>
-	
+
 		<form id="form-2" method="post" action="" class="form-horizontal">
 			<fieldset>
 				<legend>Example Form Number Two <a href="#example-2" class="btn btn-mini"><i class="icon-eye-close"></i> Code</a></legend>
-				
 				<div class="control-group">
 					<label class="control-label" for="name">Name</label>
 					<div class="controls">
@@ -117,8 +121,8 @@ $(&#39;#form_1&#39;).submit(function(e) {
 				<div class="control-group">
 					<label class="control-label">Are You Cool?</label>
 					<div class="controls">
-						<label><input type="radio" name="cool" value="Y" id="cool_yes" class="required" title="Are you cool?"> Yes</label>
-						<label><input type="radio" name="cool" value="N" id="cool_no"> No</label>
+						<label class="radio inline"><input type="radio" name="cool" value="Y" id="cool_yes" class="required" title="Are you cool?"> Yes</label>
+						<label class="radio inline"><input type="radio" name="cool" value="N" id="cool_no"> No</label>
 					</div>
 				</div>
 				<div class="control-group">
@@ -130,7 +134,7 @@ $(&#39;#form_1&#39;).submit(function(e) {
 				<div class="control-group">
 					<label class="control-label">What 2 colors do you like?</label>
 					<div class="controls">
-						<select multiple="multiple" id="colors" name="colors[]" title="Colors" class="required options-2">
+						<select multiple="multiple" id="colors" name="colors[]" title="Colors" data-num-options="2" class="required">
 							<option value="red">Red</option>
 							<option value="orange">Orange</option>
 							<option value="yellow">Yellow</option>
@@ -143,11 +147,11 @@ $(&#39;#form_1&#39;).submit(function(e) {
 				<div class="control-group">
 					<label class="control-label">What Do You Like?</label>
 					<div class="controls">
-						<label><input type="checkbox" name="like[]" value="ci" title="What do you like?" class="required"> CodeIgniter</label>
-						<label><input type="checkbox" name="like[]" value="fuel" data-min-options="2" data-max-options="4"> Fuel</label>
-						<label><input type="checkbox" name="like[]" value="kohana"> Kohana</label>
-						<label><input type="checkbox" name="like[]" value="laravel"> Laravel</label>
-						<label><input type="checkbox" name="like[]" value="zend"> Zend</label>
+						<label class="checkbox inline"><input type="checkbox" name="like[]" value="ci" title="What do you like?" class="required"> CodeIgniter</label>
+						<label class="checkbox inline"><input type="checkbox" name="like[]" value="fuel" data-min-options="2" data-max-options="4"> Fuel</label>
+						<label class="checkbox inline"><input type="checkbox" name="like[]" value="kohana"> Kohana</label>
+						<label class="checkbox inline"><input type="checkbox" name="like[]" value="laravel"> Laravel</label>
+						<label class="checkbox inline"><input type="checkbox" name="like[]" value="zend"> Zend</label>
 					</div>
 				</div>
 				<div class="control-group">
