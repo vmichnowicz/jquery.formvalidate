@@ -59,8 +59,8 @@
 	 * Array: ["Victor", "dinos"]
 	 * Return: "My name is Victor and I like dinos."
 	 *
-	 * @param array		Array of stirngs to replace in target string
-	 * @return object	JavaScript string object
+	 * @param {Array} params Array of strings to replace in target string
+	 * @return {String} JavaScript string object
 	 */
 	String.prototype.sprintf = function(params) {
 		var string = this;
@@ -75,11 +75,12 @@
 	 *
 	 * This method will create a date object based on the date string
 	 * and format provided. If an invalid date is provided it will
-	 * thow an exception.
+	 * throw an exception.
 	 *
-	 * @param string	Date string such as "2011-11-11"
-	 * @param string	Date format such as "YYYY-MM-DD"
-	 * @return object	JavaScript date object
+	 * @param {String} input Date string such as "2011-11-11"
+	 * @param {String} format Date format such as "YYYY-MM-DD"
+	 * @returns {Date} JavaScript date object
+	 * @throws {Error}
 	 */
 	Date.prototype.createFromFormat = function(input, format) {
 
@@ -328,13 +329,13 @@
 			/**
 			 * Processing before everything else takes place
 			 *
-			 * @access public
-			 * @param object	jQuery form object
-			 * @param string	CSS class added to inputs that did not pass validation
-			 * @param string	CSS class added to inputs that did pass validation
-			 * @param string	CSS validation rule delimiter
-			 * @param string	HTML element to wrap error messages
-			 * @return object 
+			 * @param {Object} form jQuery form object
+			 * @param {String} inputFailureClass CSS class added to inputs that did not pass validation
+			 * @param {String} inputSuccessClass CSS class added to inputs that did pass validation
+			 * @param {String} messageFailureClass CSS class(es) added to message elements signaling failure
+			 * @param {String} messageSuccessClass CSS class(es) added to message elements signaling success
+			 * @param {String} messageElement HTML element to wrap messages
+			 * @return {undefined}
 			 */
 			preProcess: function(form, inputFailureClass, inputSuccessClass, messageFailureClass, messageSuccessClass, messageElement) {
 				var inputFailureClassString = inputFailureClass.replace(' ', '.');
@@ -346,8 +347,8 @@
 				var messageFailureClassString = messageFailureClass.replace(' ', '.');
 				var messageSuccessClassString = messageSuccessClass.replace(' ', '.');
 
-				// Remove all error messages
-				$(form).find('.' + messageFailureClassString).remove();
+				// Remove all success and failure message elements
+				$(form).find('.' + messageFailureClassString + ', .' + messageSuccessClassString).remove();
 			},
 			/**
 			 * Process the form
@@ -355,9 +356,7 @@
 			 * This function will process our form and grab all input data such
 			 * as input name, value, and all associated validations.
 			 *
-			 * @access private
-			 * @param object	jQuery object containing our form that we will attempt to process
-			 * @return object	Validation object containing form input data
+			 * @return {undefined}
 			 */
 			_process: function() {
 
