@@ -311,7 +311,10 @@
 				inputs[attrName].failure = null;
 
 				// Set value in object
-				inputs[attrName].errors = [];
+				inputs[attrName].messages = {
+					failure: [],
+					success: []
+				};
 
 				// Validations object for this input
 				if ( ! ('validations' in inputs[attrName]) )  { inputs[attrName].validations = {}; }
@@ -410,8 +413,24 @@
 								if (inputObj.value === null && validationName !== 'required' && validationName !== 'required_if') {
 									return true; // Skip current validation and continue with $.each()
 								}
+
+								// If validation did pass
+								if ( options.validations[ validationName ](inputObj.value, validationParams) === true ) {
+									var successMessage = null;
+
+									// If error message is in localized language object
+									if ( inputName in options.localization[ options.language ]['success'] ) {
+										successMessage = options.localization[ options.language ]['success'][ inputName ].sprintf(validationParams);
+									}
+									// Else if default localized error message is available
+									else if ( 'default' in options.localization[ options.language ]['success'] ) {
+										successMessage = options.localization[ options.language ]['success'][ 'default' ].sprintf(validationParams);
+									}
+
+									inputObj.messages.success.push(successMessage); // Add error to errors array
+								}
 								// If validation did not pass
-								if ( options.validations[ validationName ](inputObj.value, validationParams) !== true ) {
+								else {
 									validationParams.unshift(inputObj.title, inputObj.value); // Add title and value(s) to beginning of array
 
 									var errorMessage = null;
@@ -421,19 +440,15 @@
 										errorMessage = options.localization[ options.language ]['failure'][ validationName ].sprintf(validationParams);
 									}
 									// Else if default localized error message is available
-									else if ( 'default' in options.localization[ settings.language ]['failure'] ) {
+									else if ( 'default' in options.localization[ options.language ]['failure'] ) {
 										errorMessage = options.localization[ options.language ]['failure'][ 'default' ].sprintf(validationParams);
-									}
-									// Else throw an error
-									else {
-										throw new Error('No error message available for validation method "' + validationName + '" with language "' + options.language + '".');
 									}
 
 									//var errorMessage = settings.validations[ validationName ].text.sprintf(validationParams);
 									result = false; // We are no longer good, we found an error!
 									inputObj.success = false; // This form input is no longer valid
 									inputObj.failure = true; // Epic fail
-									inputObj.errors.push(errorMessage); // Add error to errors array
+									inputObj.messages.failure.push(errorMessage); // Add error to errors array
 								}
 							}
 						}
@@ -471,19 +486,13 @@
 					// Add failure class to input(s)
 					$(form).find(':input[name="' + inputIndex + '"]').addClass( form.options.inputFailureClass );
 					// New error message element
-					var el = $( form.options.messageElement ).addClass( form.options.messageFailureClass ).text( inputObj.errors[0] );
+					var el = $( form.options.messageElement ).addClass( form.options.messageFailureClass ).text( inputObj.messages.failure[0] );
 					$(form).find(':input[name="' + inputIndex + '"]:last').closestAndSelf( form.options.messageParent ).append(el);
 				}
 				else {
-					try {
-						var text = form.options.localization[ form.options.language ]['success']['default'].sprintf([inputObj.title]);
-						//var text = form.options.localization[ form.options.language ]['success'][inputIndex].sprintf([inputObj.title]);
-					} catch (e) {
-						var text = 'Valid';
-					}
 					$(form).find(':input[name="' + inputIndex + '"]').addClass( form.options.inputSuccessClass );
 
-					var el = $( form.options.messageElement ).addClass( form.options.messageSuccessClass ).text( text );
+					var el = $( form.options.messageElement ).addClass( form.options.messageSuccessClass ).text( inputObj.messages.success[0] );
 					$(form).find(':input[name="' + inputIndex + '"]:last').closestAndSelf( form.options.messageParent ).append(el);
 				}
 			});

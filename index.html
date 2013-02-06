@@ -187,7 +187,8 @@ $(&#39;#submit_2&#39;).click(function(e) {
 		$('#form-1').submit(function(e) {
 			e.preventDefault();
 			$(this).formvalidate({
-                hippos: 'hell no',
+                failureMessages: true,
+                successMessages: true,
 				messageFailureClass: 'label label-important',
                 messageSuccessClass: 'label label-success',
 				onSuccess: function(O) {
@@ -203,10 +204,21 @@ $(&#39;#submit_2&#39;).click(function(e) {
 
 			// From the anchor element find the closest form element
 			$(this).closest('form').formvalidate({
+                failureMessages: true,
+                successMessages: true,
 				messageFailureClass: 'label label-important',
 				messageSuccessClass: 'label label-success',
                 onSuccess: function(form) {
                     console.log(form.options);
+                },
+                localization: {
+                    en: {
+                        success: {
+                            email: 'You know your email!',
+                            birth_date: 'You are old enough!',
+                            why_cool: 'Ya, u got it!'
+                        }
+                    }
                 },
 				validations: {
 					/**
