@@ -33,6 +33,8 @@
 	 *
 	 * @author Jeoff Wilks
 	 * @url http://stackoverflow.com/a/3742019
+	 * @param {String} selector
+	 * @returns {jQuery}
 	 */
 	$.fn.findAndSelf = function(selector) {
 		return this.find(selector).add(this.filter(selector))
@@ -43,6 +45,8 @@
 	 *
 	 * @author Jeoff Wilks
 	 * @url http://stackoverflow.com/a/3742019
+	 * @param {String} selector
+	 * @returns {jQuery}
 	 */
 	$.fn.closestAndSelf = function(selector) {
 		return this.closest(selector).add(this.filter(selector))
@@ -60,7 +64,7 @@
 	 * Return: "My name is Victor and I like dinos."
 	 *
 	 * @param {Array} params Array of strings to replace in target string
-	 * @return {String} JavaScript string object
+	 * @return {String}
 	 */
 	String.prototype.sprintf = function(params) {
 		var string = this;
@@ -177,6 +181,8 @@
 		return this.each(function () {
 
 			this.options = options;
+			this.result = false;
+			this.inputs = {};
 
 			// If a language code was provided make sure its lowercase, if no language code provided default to "en"
 			//options.language = this.settings.language ? this.settings.language.toLowerCase() : 'en';
@@ -188,7 +194,7 @@
 			this.options._process.call(this, this, this.options);
 
 			// Validate form
-			this.options._validate.call(this);
+			this.options._validate.call(this, this, this.options);
 
 			// Run postProcess function
 			this.options.postProcess.call(this, this, this.inputs);
@@ -200,7 +206,6 @@
 
 	// Form validate object
 	$.fn.formvalidate.options = {
-		language: 'en', // English error messages by default
 		/**
 		 * Processing before everything else takes place
 		 *
@@ -232,6 +237,8 @@
 		 * This function will process our form and grab all input data such
 		 * as input name, value, and all associated validations.
 		 *
+		 * @param {jQuery} form
+		 * @param {Object} options
 		 * @return {undefined}
 		 */
 		_process: function(form, options) {
@@ -358,26 +365,24 @@
 		 * Processing after form validation (be sure to return form
 		 * validation object!)
 		 *
-		 * @access public
-		 * @param object	jQuery object of form element
-		 * @param object	Object containing all form inputs
-		 * @param object	Complete form object
-		 * @return object	Form validation object
+		 * @param {jQuery} form jQuery object of form element
+		 * @param {Object} inputs Object containing all form inputs
+		 * @return {undefined}
 		 */
-		postProcess: function(form, inputs, O) {
+		postProcess: function(form, inputs) {
 			return form;
 		},
 		/**
 		 * Validate the form!
 		 *
-		 * @access private
-		 * @param object	Form validation object
-		 * @return object	Form validation object with a bunch of additional properties
+		 * @param {Object} form Our form
+		 * @param {Object} options Form options
+		 * @returns {undefined}
 		 */
-		_validate: function() {
+		_validate: function(form, options) {
 			// So are we good? We will assume yes, for now...
 			var result = true;
-			var form = this;
+
 			// Loop through each form element
 			$.each(form.inputs, function(inputName, inputObj) {
 
@@ -386,8 +391,8 @@
 					// Loop through each filter for this input
 					$.each(inputObj.filters, function(filterName, filterParams) {
 						// If this filter exists and this inputs value is not null
-						if ( filterName in form.options.filters && inputObj.value !== null ) {
-							inputObj.value = form.options.filters[filterName](inputObj.value, filterParams);
+						if ( filterName in options.filters && inputObj.value !== null ) {
+							inputObj.value = options.filters[filterName](inputObj.value, filterParams);
 						}
 					});
 				}
@@ -399,29 +404,29 @@
 						// If success or failure has yet to be determined
 						if (inputObj.failure === null) {
 							// If this validation method is defined
-							if (validationName in form.options.validations) {
+							if (validationName in options.validations) {
 
 								// If the form input is null we will skip validations UNLESS the current validation is checking that this inputs required status has been met
 								if (inputObj.value === null && validationName !== 'required' && validationName !== 'required_if') {
 									return true; // Skip current validation and continue with $.each()
 								}
 								// If validation did not pass
-								if ( form.options.validations[ validationName ](inputObj.value, validationParams) !== true ) {
+								if ( options.validations[ validationName ](inputObj.value, validationParams) !== true ) {
 									validationParams.unshift(inputObj.title, inputObj.value); // Add title and value(s) to beginning of array
 
 									var errorMessage = null;
 
 									// If error message is in localized language object
-									if ( validationName in form.options.localization[ form.options.language ] ) {
-										errorMessage = form.options.localization[ form.options.language ][ validationName ].sprintf(validationParams);
+									if ( validationName in options.localization[ options.language ] ) {
+										errorMessage = options.localization[ options.language ][ validationName ].sprintf(validationParams);
 									}
 									// Else if default localized error message is available
-									else if ( 'default' in form.options.localization[ settings.language ] ) {
-										errorMessage = form.options.localization[ form.options.language ][ 'default' ].sprintf(validationParams);
+									else if ( 'default' in options.localization[ settings.language ] ) {
+										errorMessage = options.localization[ options.language ][ 'default' ].sprintf(validationParams);
 									}
 									// Else throw an error
 									else {
-										throw new Error('No error message available for validation method "' + validationName + '" with language "' + form.options.language + '".');
+										throw new Error('No error message available for validation method "' + validationName + '" with language "' + options.language + '".');
 									}
 
 									//var errorMessage = settings.validations[ validationName ].text.sprintf(validationParams);
@@ -444,24 +449,19 @@
 		/**
 		 * Run after succussful form validation
 		 *
-		 * @access public
-		 * @param object	jQuery object of form element
-		 * @param object	Object containing all form inputs
-		 * @param object	Complete form object
-		 * @return bool
+		 * @param {Object} form jQuery object of form element
+		 * @param {Object} options Object containing all form inputs
+		 * @return {undefined}
 		 */
-		onSuccess: function(form, inputs, O) {
+		onSuccess: function(form, options) {
 			form.submit();
-			return true;
 		},
 		/**
 		 * Run after form validation failed
 		 *
-		 * @access public
-		 * @param object	jQuery object of form element
-		 * @param object	Object containing all form inputs
-		 * @param object	Complete form object
-		 * @return void
+		 * @param {jQuery} form jQuery object of form element
+		 * @param {Object} inputs Object containing all form inputs
+		 * @return {undefined}
 		 */
 		onFailure: function(form, inputs) {
 			// Loop through each form input form our validation object
@@ -491,8 +491,7 @@
 		inputFailureClass: 'error', // CSS class added to inputs that did not pass validation
 		inputSuccessClass: 'success', // CSS class added to inputs that did pass validation
 		cssParamDelimiter: '-', // CSS validation rule delimiter
-		//filters: {}, // Merged in from $.formvalidate later
-		//validations: {} // Merged in from $.formvalidate later
+		language: 'en', // English error messages by default
 		localization: {
 			en: {
 				'default': '{0} is invalid.',
@@ -514,7 +513,14 @@
 			}
 		},
 		filters: {
-			trim: function(input, parmas) {
+			/**
+			 * Trim whitespace
+			 *
+			 * @param {String} input
+			 * @param {Array} params
+			 * @return {String}
+			 */
+			trim: function(input, params) {
 				if (typeof input == 'string') {
 					return $.trim(input) === '' ? null : $.trim(input);
 				}
