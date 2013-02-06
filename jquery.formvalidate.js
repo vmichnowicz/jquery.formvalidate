@@ -416,6 +416,8 @@
 
 								// If validation did pass
 								if ( options.validations[ validationName ](inputObj.value, validationParams) === true ) {
+									validationParams.unshift(inputObj.title, inputObj.value);
+
 									var successMessage = null;
 
 									// If error message is in localized language object
