@@ -417,12 +417,12 @@
 									var errorMessage = null;
 
 									// If error message is in localized language object
-									if ( validationName in options.localization[ options.language ] ) {
-										errorMessage = options.localization[ options.language ][ validationName ].sprintf(validationParams);
+									if ( validationName in options.localization[ options.language ]['failure'] ) {
+										errorMessage = options.localization[ options.language ]['failure'][ validationName ].sprintf(validationParams);
 									}
 									// Else if default localized error message is available
-									else if ( 'default' in options.localization[ settings.language ] ) {
-										errorMessage = options.localization[ options.language ][ 'default' ].sprintf(validationParams);
+									else if ( 'default' in options.localization[ settings.language ]['failure'] ) {
+										errorMessage = options.localization[ options.language ]['failure'][ 'default' ].sprintf(validationParams);
 									}
 									// Else throw an error
 									else {
@@ -475,8 +475,14 @@
 					$(form).find(':input[name="' + inputIndex + '"]:last').closestAndSelf( form.options.messageParent ).append(el);
 				}
 				else {
+					try {
+						var text = form.options.localization[ form.options.language ]['success']['default'].sprintf([inputObj.title]);
+						//var text = form.options.localization[ form.options.language ]['success'][inputIndex].sprintf([inputObj.title]);
+					} catch (e) {
+						var text = 'Valid';
+					}
 					$(form).find(':input[name="' + inputIndex + '"]').addClass( form.options.inputSuccessClass );
-					var text = 'Valid'; // Look for success message in localization object
+
 					var el = $( form.options.messageElement ).addClass( form.options.messageSuccessClass ).text( text );
 					$(form).find(':input[name="' + inputIndex + '"]:last').closestAndSelf( form.options.messageParent ).append(el);
 				}
@@ -494,22 +500,27 @@
 		language: 'en', // English error messages by default
 		localization: {
 			en: {
-				'default': '{0} is invalid.',
-				between_numeric: '{0} must be between {2} and {3}.',
-				date: '{0} must be a valid date.',
-				email: '{1} is not a valid email.',
-				num_chars: '{0} must be exactly {2} characters.',
-				min_chars: '{0} must be at least {2} characters.',
-				max_chars: '{0} cannot be more than {2} characters.',
-				num_options: 'Must select exactly {2} options.',
-				min_options: 'Must select at least {2} options.',
-				max_options: 'Cannot select more than {2} options.',
-				'int': '{0} must be a whole number (integer).',
-				'float': '{0} must be a valid number.',
-				required: '{0} is required.',
-				required_if: '{0} is required.',
-				less_than: '{0} must be less than {2}.',
-				greater_than: '{0} must be greater than {2}.'
+				failure: {
+					'default': '{0} is invalid.',
+					between_numeric: '{0} must be between {2} and {3}.',
+					date: '{0} must be a valid date.',
+					email: '{1} is not a valid email.',
+					num_chars: '{0} must be exactly {2} characters.',
+					min_chars: '{0} must be at least {2} characters.',
+					max_chars: '{0} cannot be more than {2} characters.',
+					num_options: 'Must select exactly {2} options.',
+					min_options: 'Must select at least {2} options.',
+					max_options: 'Cannot select more than {2} options.',
+					'int': '{0} must be a whole number (integer).',
+					'float': '{0} must be a valid number.',
+					required: '{0} is required.',
+					required_if: '{0} is required.',
+					less_than: '{0} must be less than {2}.',
+					greater_than: '{0} must be greater than {2}.'
+				},
+				success: {
+					'default': '{0} is valid'
+				}
 			}
 		},
 		filters: {
