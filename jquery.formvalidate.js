@@ -484,14 +484,14 @@
 			// Loop through each form input form our validation object
 			$.each(inputs, function(inputIndex, inputObj) {
 				// If this input did not pass validation
-				if (inputObj.failure === true) {
+				if (form.options.failureMessages === true && inputObj.failure === true) {
 					// Add failure class to input(s)
 					$(form).find(':input[name="' + inputIndex + '"]').addClass( form.options.inputFailureClass );
 					// New error message element
 					var el = $( form.options.messageElement ).addClass( form.options.messageFailureClass ).text( inputObj.messages.failure[0] );
 					$(form).find(':input[name="' + inputIndex + '"]:last').closestAndSelf( form.options.messageParent ).append(el);
 				}
-				else {
+				else if (form.options.successMessages === true) {
 					$(form).find(':input[name="' + inputIndex + '"]').addClass( form.options.inputSuccessClass );
 
 					var el = $( form.options.messageElement ).addClass( form.options.messageSuccessClass ).text( inputObj.messages.success[0] );
@@ -501,6 +501,8 @@
 		},
 		messageParent: 'div', // CSS selector of parent element of message (success or failure) messages
 		messageElement: '<span />', // Wrap error (maybe even success?) messages inside
+		failureMessages: true,
+		successMessages: false,
 		messageFailureClass: 'error',
 		messageSuccessClass: 'success',
 		inputFailureClass: 'error',
