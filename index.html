@@ -187,12 +187,13 @@ $(&#39;#submit_2&#39;).click(function(e) {
 		$('#form-1').submit(function(e) {
 			e.preventDefault();
 			$(this).formvalidate({
+                hippos: 'hell no',
 				messageFailureClass: 'label label-important',
                 messageSuccessClass: 'label label-success',
 				onSuccess: function(O) {
 					alert('Form #1 is valid!');
 				},
-				language: 'de'
+				//language: 'de'
 			});
 		});
 
@@ -204,6 +205,9 @@ $(&#39;#submit_2&#39;).click(function(e) {
 			$(this).closest('form').formvalidate({
 				messageFailureClass: 'label label-important',
 				messageSuccessClass: 'label label-success',
+                onSuccess: function(form) {
+                    console.log(form.options);
+                },
 				validations: {
 					/**
 					 * Add a custom validation
