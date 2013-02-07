@@ -340,8 +340,8 @@
 						}
 					}
 					// Default validation, if set by user
-					else if ('validation' in data) {
-						inputs[attrName].validations[ validation ] = data.validation.toString().split(' ');
+					else if (validation in data) {
+						inputs[attrName].validations[ validation ] = data[validation].toString().split(' ');
 					}
 				});
 
