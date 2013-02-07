@@ -415,7 +415,7 @@
 									// Add title and value(s) to beginning of params array
 									validationParams.unshift(inputObj.title, inputObj.value);
 
-									// If error message is in localized language object
+									// If success message is in localized language object
 									if ( inputName in options.localization[ options.language].success ) {
 										if ( typeof options.localization[ options.language ].success[ inputName ] === 'function' ) {
 											message = options.localization[ options.language ].success[ inputName ](inputObj.title, inputObj.value, inputName, inputObj).sprintf(validationParams);
@@ -424,7 +424,7 @@
 											message = options.localization[ options.language ].success[ inputName ].sprintf(validationParams);
 										}
 									}
-									// Else if default localized error message is available
+									// Else if default localized success message is available
 									else if ( 'default' in options.localization[ options.language ].success ) {
 										message = options.localization[ options.language ].success.default.sprintf(validationParams);
 									}

@@ -33,6 +33,15 @@
 		pre {
 			display: none;
 		}
+		#languages {
+			text-align: right;
+			margin: 0px 15px 15px 15px;
+		}
+		#languages a {
+			margin: 0px 5px;
+			font-size: 11px;
+			color: #999;
+		}
 	</style>
 
 </head>
@@ -202,6 +211,13 @@ $('#form-1').submit(function(e) {
 });</pre>
 			</fieldset>
 		</form>
+
+		<div id="languages">
+			<a href="javascript:void(0);" data-language="pirate">Pirate</a>
+			<a href="javascript:void(0);" data-language="de">Deutsch</a>
+			<a href="javascript:void(0);" data-language="en">English</a>
+			<a href="javascript:void(0);" data-language="es">Espanol</a>
+		</div>
 	</div>
 </div>
 
@@ -235,7 +251,6 @@ $('#form-1').submit(function(e) {
 				onSuccess: function(form) {
 					alert('Form #2 is valid!');
 				},
-				language: 'pirate',
 				localization: {
 					en: {
 						success: {
@@ -282,6 +297,12 @@ $('#form-1').submit(function(e) {
 		$('legend a').click(function(e) {
 			e.preventDefault();
 			$( $(this).attr('href') ).toggle();
+		});
+
+		// Toggle language
+		$('#languages a').click(function(e) {
+			e.preventDefault();
+			$.extend(true, jQuery.fn.formvalidate.options.language = $(this).data('language'));
 		});
 	});
 </script>

@@ -18,10 +18,10 @@ jQuery.extend(true, jQuery.fn.formvalidate.options.localization, {
 			maxOptions: 'Cannot select more than {2} options.',
 			'int': '{0} must be a whole number (integer).',
 			'float': '{0} must be a valid number.',
-			required: '{0} is required.',
-			requiredIf: '{0} is required.',
-			lessThan: '{0} must be less than {2}.',
-			greaterThan: '{0} must be greater than {2}.'
+			required: '{0} se requiere.',
+			requiredIf: '{0} se requiere.',
+			lessThan: '{0} debe ser inferior a {2}.',
+			greaterThan: '{0} debe ser más de {2}.'
 		},
 		success: {
 			'default': '{0} esta bien!'
