@@ -9,26 +9,6 @@
 (function($) {
 
 	/**
-	 * Create fake console object if not defined
-	 * 
-	 * @author Joseph Silber
-	 * @url http://stackoverflow.com/a/7585409
-	 */
-	if ( ! window.console ) {
-		(function() {
-			var names = ["log", "debug", "info", "warn", "error", "assert",
-			"dir", "dirxml", "group", "groupEnd", "time", "timeEnd", "count",
-			"trace", "profile", "profileEnd"], i, l = names.length;
-
-			window.console = {};
-
-			for ( i = 0; i < l; i++ ) {
-				window.console[ names[i] ] = function() {};
-			}
-		}());
-	}
-
-	/**
 	 * Find an element and include current element in selection
 	 *
 	 * @author Jeoff Wilks
@@ -37,8 +17,8 @@
 	 * @returns {jQuery}
 	 */
 	$.fn.findAndSelf = function(selector) {
-		return this.find(selector).add(this.filter(selector))
-	}
+		return this.find(selector).add(this.filter(selector));
+	};
 
 	/**
 	 * Find an element and include current element in selection
@@ -49,8 +29,8 @@
 	 * @returns {jQuery}
 	 */
 	$.fn.closestAndSelf = function(selector) {
-		return this.closest(selector).add(this.filter(selector))
-	}
+		return this.closest(selector).add(this.filter(selector));
+	};
 
 	/**
 	 * Super simple JavaScript sprintf method
@@ -72,7 +52,7 @@
 			string = string.replace('{' + index + '}', param);
 		});
 		return string;
-	}
+	};
 
 	/**
 	 * Date create from format method
@@ -92,7 +72,7 @@
 		var now = new Date();
 
 		// Split date string by ".", "," "/", and "-"
-		var dateArray = input.split(/[.,\/ -]/);
+		var dateArray = input.split(/[.,\/ \-]/);
 
 		// Make sure we have exactly three parts to our date
 		if ( dateArray.length === 3 ) {
@@ -102,11 +82,10 @@
 				// If date segment is not an integer
 				if ( dateArray[dateSegment] % 1 != 0 ) {
 					throw new Error('Invalid date segment provided.');
-					return false;
 				}
 				// If date segment is an integer
 				else {
-					dateArray[dateSegment] = parseInt( dateArray[dateSegment] );
+					dateArray[dateSegment] = parseInt( dateArray[dateSegment] , 10);
 				}
 			}
 
@@ -161,7 +140,7 @@
 		}
 
 		return this;
-	}
+	};
 
 	/**
 	 * jQuery form validation plugin
@@ -202,7 +181,7 @@
 			// On form validation success
 			this.result === true ? this.options.onSuccess(this, this.inputs) : this.options.onFailure(this, this.inputs);
 		});
-	}
+	};
 
 	/**
 	 * Form validation options
@@ -444,17 +423,17 @@
 									validationParams.unshift(inputObj.title, inputObj.value);
 
 									// If error message is in localized language object
-									if ( inputName in options.localization[ options.language ]['success'] ) {
-										if ( typeof options.localization[ options.language ]['success'][ inputName ] === 'function' ) {
-											message = options.localization[ options.language ]['success'][ inputName ](inputObj.title, inputObj.value, inputName, inputObj).sprintf(validationParams);
+									if ( inputName in options.localization[ options.language].success ) {
+										if ( typeof options.localization[ options.language ].success[ inputName ] === 'function' ) {
+											message = options.localization[ options.language ].success[ inputName ](inputObj.title, inputObj.value, inputName, inputObj).sprintf(validationParams);
 										}
 										else {
-											message = options.localization[ options.language ]['success'][ inputName ].sprintf(validationParams);
+											message = options.localization[ options.language ].success[ inputName ].sprintf(validationParams);
 										}
 									}
 									// Else if default localized error message is available
-									else if ( 'default' in options.localization[ options.language ]['success'] ) {
-										message = options.localization[ options.language ]['success'][ 'default' ].sprintf(validationParams);
+									else if ( 'default' in options.localization[ options.language ].success ) {
+										message = options.localization[ options.language ].success.default.sprintf(validationParams);
 									}
 
 									inputObj.success = true;
@@ -467,17 +446,17 @@
 									validationParams.unshift(inputObj.title, inputObj.value);
 
 									// If error message is in localized language object
-									if ( validationName in options.localization[ options.language ]['failure'] ) {
-										if ( typeof options.localization[ options.language ]['failure'][ validationName ] === 'function' ) {
-											message = options.localization[ options.language ]['failure'][ validationName ](inputObj.title, inputObj.value, inputName, inputObj).sprintf(validationParams);
+									if ( validationName in options.localization[ options.language ].failure ) {
+										if ( typeof options.localization[ options.language ].failure[ validationName ] === 'function' ) {
+											message = options.localization[ options.language ].failure[ validationName ](inputObj.title, inputObj.value, inputName, inputObj).sprintf(validationParams);
 										}
 										else {
-											message = options.localization[ options.language ]['failure'][ validationName ].sprintf(validationParams);
+											message = options.localization[ options.language ].failure[ validationName ].sprintf(validationParams);
 										}
 									}
 									// Else if default localized error message is available
-									else if ( 'default' in options.localization[ options.language ]['failure'] ) {
-										message = options.localization[ options.language ]['failure'][ 'default' ].sprintf(validationParams);
+									else if ( 'default' in options.localization[ options.language ].failure ) {
+										message = options.localization[ options.language ].failure[ 'default' ].sprintf(validationParams);
 									}
 
 									result = false; // We are no longer good, we found an error!
@@ -587,7 +566,7 @@
 			 * @return {String}
 			 */
 			trim: function(input, params) {
-				if (typeof input == 'string') {
+				if (typeof input === 'string') {
 					return $.trim(input) === '' ? null : $.trim(input);
 				}
 				else {
@@ -595,7 +574,7 @@
 				}
 			},
 			strtoupper: function(input, params) {
-				if (typeof input == 'string') {
+				if (typeof input === 'string') {
 					return input.toUpperCase();
 				}
 				else {
@@ -603,7 +582,7 @@
 				}
 			},
 			strtolower: function(input, params) {
-				if (typeof input == 'string') {
+				if (typeof input === 'string') {
 					return input.toLowerCase();
 				}
 				else {
@@ -638,17 +617,17 @@
 				return input.search(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i) == -1 ? false : true;
 			},
 			num_chars: function(input, params) {
-				return input.length === parseInt(params[0]);
+				return input.length === parseInt(params[0], 10);
 			},
 			min_chars: function(input, params) {
-				return input.length >= parseInt(params[0]);
+				return input.length >= parseInt(params[0], 10);
 			},
 			max_chars: function(input, params) {
-				return input.length < parseInt(params[0]);
+				return input.length < parseInt(params[0], 10);
 			},
 			num_options: function(input, params) {
 				if (input instanceof Array) {
-					return input.length === parseInt(params[0]) ? true : false;
+					return input.length === parseInt(params[0], 10) ? true : false;
 				}
 				else {
 					return false;
@@ -656,7 +635,7 @@
 			},
 			min_options: function(input, params) {
 				if (input instanceof Array) {
-					return input.length >= parseInt(params[0]) ? true : false;
+					return input.length >= parseInt(params[0], 10) ? true : false;
 				}
 				else {
 					return false;
@@ -664,7 +643,7 @@
 			},
 			max_options: function(input, params) {
 				if (input instanceof Array) {
-					return input.length > parseInt(params[0]) ? false : true;
+					return input.length > parseInt(params[0], 10) ? false : true;
 				}
 				else {
 					return false;
