@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<title>jQuery Form Validate</title>
 	<link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 	<script type="text/javascript" src="jquery.formvalidate.js"></script>
 	<script type="text/javascript" src="localization/de.js"></script>
 	<script type="text/javascript" src="localization/es.js"></script>
@@ -55,7 +55,7 @@
 	<div class="span12">
 		<form id="form-1" method="post" action="" class="form-horizontal">
 			<fieldset>
-				<legend>Example Form Number One <a href="#example-1" class="btn btn-mini"><i class="icon-eye-close"></i> Code</a></legend>
+				<legend>Basic Form <a href="#example-1" class="btn btn-mini"><i class="icon-eye-close"></i> Code</a></legend>
 
 				<div class="control-group">
 					<label for="required" class="control-label">Anything</label>
@@ -84,7 +84,7 @@ $('#form-1').submit(function(e) {
       successMessages: true,
       messageFailureClass: 'label label-important',
       messageSuccessClass: 'label label-success',
-      onSuccess: function(O) {
+      onSuccess: function(form) {
         alert('Form #1 is valid!');
       }
     });
@@ -94,7 +94,7 @@ $('#form-1').submit(function(e) {
 
 		<form id="form-2" method="post" action="" class="form-horizontal">
 			<fieldset>
-				<legend>Example Form Number Two <a href="#example-2" class="btn btn-mini"><i class="icon-eye-close"></i> Code</a></legend>
+				<legend>Advanced Form <a href="#example-2" class="btn btn-mini"><i class="icon-eye-close"></i> Code</a></legend>
 				<div class="control-group">
 					<label class="control-label" for="name">Name</label>
 					<div class="controls">
@@ -218,7 +218,7 @@ $('#form-1').submit(function(e) {
 		<div id="languages">
 			<a href="javascript:void(0);" data-language="de">Deutsch</a>
 			<a href="javascript:void(0);" data-language="en" class="current">English</a>
-			<a href="javascript:void(0);" data-language="es">Espanol</a>
+			<a href="javascript:void(0);" data-language="es">Espa&ntilde;ol</a>
 			<a href="javascript:void(0);" data-language="pirate">Pirate</a>
 		</div>
 	</div>
@@ -259,7 +259,11 @@ $('#form-1').submit(function(e) {
 						success: {
 							name: 'Good, you know your name.',
 							age: 'Ahh, {1}, a wise age.',
-							birth_date: 'The year of the tiger!',
+							birth_date: function() {
+								var animals = ['rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake', 'horse', 'sheep', 'monkey', 'rooster', 'dog', 'pig']
+								var animal = animals[Math.floor(Math.random()*animals.length)];
+								return 'The year of the ' + animal + '!';
+							},
 							email: 'We promise not to stalk you.',
 							continent: function(title, value, name, input) {
 								var text = $(':input[name="' + name + '"] option[value="' + value + '"]').text();
@@ -291,7 +295,7 @@ $('#form-1').submit(function(e) {
 			}();
 
 			// Run toggle function on change
-			$(cool).live('change', function() {
+			$(document).on('change', $(cool), function() {
 				toggle();
 			});
 		})();

@@ -133,6 +133,9 @@
 				}
 			}
 		}
+		else {
+			throw new Error('Invalid date provided.');
+		}
 
 		// If our date created from our format is the same as our cloned date it is invalid
 		if ( this.getTime() === now.getTime() ) {
@@ -179,7 +182,7 @@
 			this.options._displayMessages(this, this.inputs);
 
 			// On form validation success
-			this.result === true ? this.options.onSuccess(this, this.inputs) : this.options.onFailure(this, this.inputs);
+			this.result === true ? this.options.onSuccess(this, this.inputs, this.options) : this.options.onFailure(this, this.inputs, this.options);
 		});
 	};
 
@@ -504,7 +507,7 @@
 		 * @param {Object} options All form inputs
 		 * @return {undefined}
 		 */
-		onSuccess: function(form, options) {
+		onSuccess: function(form, inputs, options) {
 			if ('submit' in form) {
 				form.submit();
 			}
@@ -516,7 +519,7 @@
 		 * @param {Object} inputs All form inputs
 		 * @return {undefined}
 		 */
-		onFailure: function(form, inputs) { },
+		onFailure: function(form, inputs, options) { },
 		messageParent: 'div', // CSS selector of parent element of message (success or failure) messages
 		messageElement: '<span />', // Wrap success and failure messages inside this element
 		failureMessages: true, // Display failure messages?
@@ -525,7 +528,6 @@
 		messageSuccessClass: 'success', // CSS class(es) applied to success messages
 		inputFailureClass: 'error', // CSS class added to inputs that did not pass validation
 		inputSuccessClass: 'success', // CSS class added to inputs that did pass validation
-		cssParamDelimiter: '-', // CSS validation rule delimiter
 		language: 'en', // English error messages by default
 		localization: {
 			en: {
