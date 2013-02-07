@@ -39,7 +39,7 @@
 	$.fn.findAndSelf = function(selector) {
 		return this.find(selector).add(this.filter(selector))
 	}
-	
+
 	/**
 	 * Find an element and include current element in selection
 	 *
@@ -184,9 +184,6 @@
 			this.result = false;
 			this.inputs = {};
 
-			// If a language code was provided make sure its lowercase, if no language code provided default to "en"
-			//options.language = this.settings.language ? this.settings.language.toLowerCase() : 'en';
-
 			// Run function before we do any processing (can be overwritten by user)
 			this.options.preProcess.call(this, this, this.options, this.options.inputFailureClass, this.options.inputSuccessClass, this.options.messageFailureClass, this.options.messageSuccessClass, this.options.messageElement, this.options.messageParent);
 
@@ -204,7 +201,30 @@
 		});
 	}
 
-	// Form validate object
+	/**
+	 * Form validation options
+	 *
+	 * All of these options can be overwritten by the user. However, it is recommended that the underscored methods
+	 * remain private and unmodified. User can overwrite these options by passing a custom object to the form validation
+	 * plugin:
+	 *
+	 * $('form').submit(function(e) {
+	 *   e.preventDefault();
+	 *     $(this).formvalidate({
+     *       failureMessages: true,
+     *       successMessages: true
+     *   });
+     * });
+	 *
+	 * Or, a user can provide global overrides that will affect all forms. This can be done, for example, by including
+	 * a bit of JavaScript after including the jQuery Form Validate plugin.
+	 *
+	 * jQuery.extend(true, jQuery.fn.formvalidate.options, {
+	 *   postProcess: function() { alert('We are done processing!!!'); }
+	 * });
+	 *
+	 * @type {Object}
+	 */
 	$.fn.formvalidate.options = {
 		/**
 		 * Processing before everything else takes place
@@ -234,8 +254,8 @@
 		/**
 		 * Process the form
 		 *
-		 * This function will process our form and grab all input data such
-		 * as input name, value, and all associated validations.
+		 * This function will process our form and grab all input data such as input name, value, and all associated
+		 * validations.
 		 *
 		 * @param {jQuery} form
 		 * @param {Object} options
@@ -271,8 +291,8 @@
 					// Checkbox
 					if ( $(element).is(':checkbox') ) {
 						value = []; // This will be an array of values
-						$(':input[name="' + attrName + '"]:checked').each(function(checkbox_index, checkbox_element) {
-							value[checkbox_index] = $(checkbox_element).val();
+						$(':input[name="' + attrName + '"]:checked').each(function(checkboxIndex, checkboxElement) {
+							value[checkboxIndex] = $(checkboxElement).val();
 						});
 					}
 					// Radio
@@ -365,8 +385,7 @@
 			return this;
 		},
 		/**
-		 * Processing after form validation (be sure to return form
-		 * validation object!)
+		 * Processing after form validation
 		 *
 		 * @param {jQuery} form jQuery object of form element
 		 * @param {Object} inputs Object containing all form inputs
@@ -422,7 +441,12 @@
 
 									// If error message is in localized language object
 									if ( inputName in options.localization[ options.language ]['success'] ) {
-										successMessage = options.localization[ options.language ]['success'][ inputName ].sprintf(validationParams);
+										if ( typeof options.localization[ options.language ]['success'][ inputName ] === 'function' ) {
+											successMessage = options.localization[ options.language ]['success'][ inputName ](inputName, inputObj.value, inputObj).sprintf(validationParams);
+										}
+										else {
+											successMessage = options.localization[ options.language ]['success'][ inputName ].sprintf(validationParams);
+										}
 									}
 									// Else if default localized error message is available
 									else if ( 'default' in options.localization[ options.language ]['success'] ) {
@@ -439,7 +463,12 @@
 
 									// If error message is in localized language object
 									if ( validationName in options.localization[ options.language ]['failure'] ) {
-										errorMessage = options.localization[ options.language ]['failure'][ validationName ].sprintf(validationParams);
+										if ( typeof options.localization[ options.language ]['failure'][ validationName ] === 'function' ) {
+											errorMessage = options.localization[ options.language ]['failure'][ validationName ](inputName, inputObj.value, inputObj).sprintf(validationParams);
+										}
+										else {
+											errorMessage = options.localization[ options.language ]['failure'][ validationName ].sprintf(validationParams);
+										}
 									}
 									// Else if default localized error message is available
 									else if ( 'default' in options.localization[ options.language ]['failure'] ) {
@@ -464,7 +493,7 @@
 			return this;
 		},
 		/**
-		 * Run after succussful form validation
+		 * Run after successful form validation
 		 *
 		 * @param {Object} form jQuery object of form element
 		 * @param {Object} options Object containing all form inputs
@@ -500,13 +529,11 @@
 			});
 		},
 		messageParent: 'div', // CSS selector of parent element of message (success or failure) messages
-		messageElement: '<span />', // Wrap error (maybe even success?) messages inside
-		failureMessages: true,
-		successMessages: false,
-		messageFailureClass: 'error',
-		messageSuccessClass: 'success',
-		inputFailureClass: 'error',
-		inputSuccessClass: 'success',
+		messageElement: '<span />', // Wrap success and failure messages inside this element
+		failureMessages: true, // Display failure messages?
+		successMessages: false, // Display success messages?
+		messageFailureClass: 'error', // CSS class(es) applied to failure messages
+		messageSuccessClass: 'success', // CSS class(es) applied to success messages
 		inputFailureClass: 'error', // CSS class added to inputs that did not pass validation
 		inputSuccessClass: 'success', // CSS class added to inputs that did pass validation
 		cssParamDelimiter: '-', // CSS validation rule delimiter

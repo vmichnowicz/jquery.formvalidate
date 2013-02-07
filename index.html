@@ -211,17 +211,26 @@ $(&#39;#submit_2&#39;).click(function(e) {
                 onSuccess: function(form) {
                     console.log(form.options);
                 },
-                localization: {
+				localization: {
                     en: {
                         success: {
-                            name: 'Good, you know your name',
+                            name: 'Good, you know your name.',
                             age: 'Ahh, {1}, a wise age.',
                             birth_date: 'The year of the tiger!',
-                            email: 'We promise not to stalk you',
+                            email: 'We promise not to stalk you.',
+							continent: function(name, value, input) {
+								var text = $(':input[name="' + name + '"] option[value="' + value + '"]').text();
+								return text + ', really? Me too!';
+							},
                             'colors[]': 'O, wow good choices!',
                             why_cool: 'Ya, u got it!',
-                            'like[]': 'Those are my favorite framework too!'
-                        }
+                            'like[]': 'Those are my favorite framework too.!'
+                        },
+						failure: {
+							email: function(name, value, input) {
+								return 'There is no way that is valid.';
+							}
+						}
                     }
                 },
 				validations: {
