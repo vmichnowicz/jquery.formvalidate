@@ -405,7 +405,7 @@
 							if (validationName in options.validations) {
 
 								// If the form input is null we will skip validations UNLESS the current validation is checking that this inputs required status has been met
-								if (inputObj.value === null && validationName !== 'required' && validationName !== 'required_if') {
+								if (inputObj.value === null && validationName !== 'required' && validationName !== 'requiredIf') {
 									return true; // Skip current validation and continue with $.each()
 								}
 
@@ -429,8 +429,6 @@
 										message = options.localization[ options.language ].success.default.sprintf(validationParams);
 									}
 
-									inputObj.success = true;
-									inputObj.failure = false;
 									inputObj.messages.success.push(message); // Add success message to success messages array
 								}
 								// If validation did not pass
@@ -460,6 +458,10 @@
 							}
 						}
 					});
+
+					// If we have gone through all validation for this input with no errors then we can assume success
+					inputObj.success = inputObj.success === null ? true : false;
+					inputObj.failure = inputObj.failure === null ? false : true;
 				}
 			});
 

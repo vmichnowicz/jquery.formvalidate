@@ -18,7 +18,7 @@ jQuery.extend(true, jQuery.fn.formvalidate.options.localization, {
 			maxOptions: 'Yee cannot select more than {2} options.',
 			'int': 'Scuttle this input. {0} arr not an integer.',
 			'float': 'Son of a Biscuit Eater! {0} arr not a valid number.',
-			required: '{0} arr required, lest you dare be keelhauled.',
+			required: '{0} arr required!',
 			requiredIf: '{0} arr required - no prey, no pay.',
 			lessThan: '{0} must be less than {2} or yee risk mutiny.',
 			greaterThan: '{0} must be greater than {2} me matey.'
