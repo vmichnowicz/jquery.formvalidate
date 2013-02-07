@@ -60,34 +60,10 @@ jQuery Form Validate uses the data attributes applied to your form inputs input 
 * language
 * localization
   * en
-  * success
-    * default
-    * betweenNumeric
-    * date
-    * email
-    * numChars
-    * minChars
-    * maxChars
-    * numOptions
-    * minOptions
-    * maxOptions
-    * int
-    * float
-    * required
-    * requiredIf
-    * lessThan
-    * greaterThan
-  * failure
-	* default
-  * filters
-    * trim
-    * strtoupper
-    * strtolower
-    * validations
+    * success
+      * default
       * betweenNumeric
       * date
-      * dateAfter
-      * dateBefore
       * email
       * numChars
       * minChars
@@ -101,6 +77,30 @@ jQuery Form Validate uses the data attributes applied to your form inputs input 
       * requiredIf
       * lessThan
       * greaterThan
+    * failure
+      * default
+* filters
+  * trim
+  * strtoupper
+  * strtolower
+* validations
+  * betweenNumeric
+  * date
+  * dateAfter
+  * dateBefore
+  * email
+  * numChars
+  * minChars
+  * maxChars
+  * numOptions
+  * minOptions
+  * maxOptions
+  * int
+  * float
+  * required
+  * requiredIf
+  * lessThan
+  * greaterThan
 
 ### preProcess [ function *function(form, cssFailureClass, cssSuccessClass, cssFilterPrefix, cssValidationPrefix, cssParamDelimiter, failureWrapper )* ]
 
