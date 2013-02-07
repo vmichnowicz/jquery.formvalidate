@@ -42,6 +42,9 @@
 			font-size: 11px;
 			color: #999;
 		}
+		#languages a.current {
+			color: #bbb;
+		}
 	</style>
 
 </head>
@@ -215,7 +218,7 @@ $('#form-1').submit(function(e) {
 		<div id="languages">
 			<a href="javascript:void(0);" data-language="pirate">Pirate</a>
 			<a href="javascript:void(0);" data-language="de">Deutsch</a>
-			<a href="javascript:void(0);" data-language="en">English</a>
+			<a href="javascript:void(0);" data-language="en" class="current">English</a>
 			<a href="javascript:void(0);" data-language="es">Espanol</a>
 		</div>
 	</div>
@@ -303,6 +306,7 @@ $('#form-1').submit(function(e) {
 		$('#languages a').click(function(e) {
 			e.preventDefault();
 			$.extend(true, jQuery.fn.formvalidate.options.language = $(this).data('language'));
+			$(this).siblings().removeClass('current').end().addClass('current');
 		});
 	});
 </script>
