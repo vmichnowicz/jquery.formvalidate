@@ -326,37 +326,29 @@
 				if ( ! ('filters' in inputs[attrName]) )  { inputs[attrName].filters = {}; }
 
 				$.each(options.validations, function(validation, method) {
-					var params = $(element).data( validation.replace('_', '-') );
 					// If this is the required validation
 					if (validation === 'required') {
-						var required = $(element).hasClass('required') || typeof $(element).data('required') === 'string';
+						var required = $(element).hasClass('required') || 'required' in data;
 						if (required === true) {
 							inputs[attrName].validations.required = [true];
 						}
 					}
 					// If this is the required_if validation
-					else if (validation === 'required_if') {
-						var required_if = $(element).data('required-if');
-						if (typeof required_if !== 'undefined') {
-							inputs[attrName].validations.required_if = [required_if];
+					else if (validation === 'requiredIf') {
+						if ('requiredIf' in data) {
+							inputs[attrName].validations.requiredIf = [ data.requiredIf ];
 						}
 					}
 					// Default validation, if set by user
-					else if (typeof params !== 'undefined') {
-						inputs[attrName].validations[ validation ] = params.toString().split(' ');
+					else if ('validation' in data) {
+						inputs[attrName].validations[ validation ] = data.validation.toString().split(' ');
 					}
 				});
 
 				$.each(options.filters, function(filter, method) {
-					var prefixed = filter.replace('_', '-');
-					var params = $(element).data(prefixed);
-					if (typeof params !== 'undefined') {
-
-						// Params will start out as an empty array
+					if (filter in data) {
 						var filterParams = [attrName];
-
-						filterParams.push(typeof param === 'string' ? params.split(' ') : null);
-
+						filterParams.push(typeof param === 'string' ? data[filter].split(' ') : null);
 						inputs[attrName].filters[ filter ] = filterParams;
 					}
 				});
@@ -537,21 +529,21 @@
 			en: {
 				failure: {
 					'default': '{0} is invalid.',
-					between_numeric: '{0} must be between {2} and {3}.',
+					betweenNumeric: '{0} must be between {2} and {3}.',
 					date: '{0} must be a valid date.',
 					email: '{1} is not a valid email.',
-					num_chars: '{0} must be exactly {2} characters.',
-					min_chars: '{0} must be at least {2} characters.',
-					max_chars: '{0} cannot be more than {2} characters.',
-					num_options: 'Must select exactly {2} options.',
-					min_options: 'Must select at least {2} options.',
-					max_options: 'Cannot select more than {2} options.',
+					numChars: '{0} must be exactly {2} characters.',
+					minChars: '{0} must be at least {2} characters.',
+					maxChars: '{0} cannot be more than {2} characters.',
+					numOptions: 'Must select exactly {2} options.',
+					minOptions: 'Must select at least {2} options.',
+					maxOptions: 'Cannot select more than {2} options.',
 					'int': '{0} must be a whole number (integer).',
 					'float': '{0} must be a valid number.',
 					required: '{0} is required.',
-					required_if: '{0} is required.',
-					less_than: '{0} must be less than {2}.',
-					greater_than: '{0} must be greater than {2}.'
+					requiredIf: '{0} is required.',
+					lessThan: '{0} must be less than {2}.',
+					greaterThan: '{0} must be greater than {2}.'
 				},
 				success: {
 					'default': '{0} is valid'
@@ -592,7 +584,7 @@
 			}
 		},
 		validations: {
-			between_numeric: function(input, params) {
+			betweenNumeric: function(input, params) {
 				// Make sure our input is greater than or equal to first paramater and less than or equal to our second paramater
 				return ( parseFloat(input) >= parseFloat(params[0]) && parseFloat(input) <= parseFloat(params[1]) ) ? true : false;
 			},
@@ -608,25 +600,25 @@
 					return false;
 				}
 			},
-			date_after: function(input, params) {
+			dateAfter: function(input, params) {
 
 			},
-			date_before: function(input, params) {
+			dateBefore: function(input, params) {
 
 			},
 			email: function(input, params) {
 				return input.search(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i) == -1 ? false : true;
 			},
-			num_chars: function(input, params) {
+			numChars: function(input, params) {
 				return input.length === parseInt(params[0], 10);
 			},
-			min_chars: function(input, params) {
+			minChars: function(input, params) {
 				return input.length >= parseInt(params[0], 10);
 			},
-			max_chars: function(input, params) {
+			maxChars: function(input, params) {
 				return input.length < parseInt(params[0], 10);
 			},
-			num_options: function(input, params) {
+			numOptions: function(input, params) {
 				if (input instanceof Array) {
 					return input.length === parseInt(params[0], 10) ? true : false;
 				}
@@ -634,7 +626,7 @@
 					return false;
 				}
 			},
-			min_options: function(input, params) {
+			minOptions: function(input, params) {
 				if (input instanceof Array) {
 					return input.length >= parseInt(params[0], 10) ? true : false;
 				}
@@ -642,7 +634,7 @@
 					return false;
 				}
 			},
-			max_options: function(input, params) {
+			maxOptions: function(input, params) {
 				if (input instanceof Array) {
 					return input.length > parseInt(params[0], 10) ? false : true;
 				}
@@ -669,7 +661,7 @@
 					return input === '' || input === null || input === false ? false : true;
 				}
 			},
-			required_if: function(input, params) {
+			requiredIf: function(input, params) {
 				// Dependent element
 				var el = $('#' + params[0]);
 
@@ -685,10 +677,10 @@
 				}
 				return (dependent !== null || dependent === []) && input === null ? false : true;
 			},
-			less_than: function(input, params) {
+			lessThan: function(input, params) {
 				return parseFloat(input) < parseFloat(params[0]);
 			},
-			greater_than: function(input, params) {
+			greaterThan: function(input, params) {
 				return parseFloat(input) > parseFloat(params[0]);
 			}
 		}

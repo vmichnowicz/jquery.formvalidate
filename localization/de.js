@@ -7,21 +7,21 @@ jQuery.extend(true, jQuery.fn.formvalidate.options.localization, {
 	de: {
 		failure: {
 			'default': '{0} ist ungültig.',
-			between_numeric: '{0} muss zwischen {2} und {3} liegen.',
+			betweenNumeric: '{0} muss zwischen {2} und {3} liegen.',
 			date: '{0} ist kein gültiges Datum.',
 			email: '{1} ist keine gültige Email Adresse.',
-			length: '{0} muss aus genau {2} Zeichen bestehen.',
-			min_length: '{0} muss aus mindestens {2} Zeichen bestehen.',
-			max_length: '{0} kann maximal {2} Zeichen haben.',
-			options: 'Bitte genau {2} Optionen auswählen.',
-			min_options: 'Bitte mindestens {2} Optionen auswählen.',
-			max_options: 'Bitte maximal {2} Optionen auswählen.',
+			numChars: '{0} muss aus genau {2} Zeichen bestehen.',
+			minChars: '{0} muss aus mindestens {2} Zeichen bestehen.',
+			maxChars: '{0} kann maximal {2} Zeichen haben.',
+			numOptions: 'Bitte genau {2} Optionen auswählen.',
+			minOptions: 'Bitte mindestens {2} Optionen auswählen.',
+			maxOptions: 'Bitte maximal {2} Optionen auswählen.',
 			'int': '{0} ist keine ganze Zahl(Integer)',
 			'float': '{0} ist keine gültige Nummer.',
 			required: '{0} ist ein Pflichtfeld.',
-			required_if: '{0} ist ein Pflichtfeld.',
-			less_than: '{0} muss kleiner sein als {2}.',
-			greater_than: '{0} muss größer sein als {2}.'
+			requiredIf: '{0} ist ein Pflichtfeld.',
+			lessThan: '{0} muss kleiner sein als {2}.',
+			greaterThan: '{0} muss größer sein als {2}.'
 		},
 		success: {
 			'default': '{0} ist gut.'
