@@ -20,29 +20,87 @@ jQuery Form Validate is a jQuery plugin that helps validate your HTML forms. It 
 
 jQuery Form Validate includes two main groups of functions, "filters" and "validations". Filters modify the value of an input before it is validated. The most common filter is `trim`. This function will remove all the leading and trailing white space of a form inputs value. This is most commonly used to make sure that a user actually entered something instead of just spaces. The full list of filters is as follows:
 
-* *trim*(): Remove all leading and trailing white space
-* *strtoupper*()`: Convert text to upper case
-* *strtolower*(): Convert text to lower case
+* *trim*() - Remove all leading and trailing white space
+* *strtoupper*() - Convert text to upper case
+* *strtolower*() - Convert text to lower case
 
 After all filters have been processed, then the validations are run. A validation looks at the value of the form input and an optional list of parameters, and then does some processing. The full list of validation functions along with their parameter requirements is as follows:
 
-* *required*() -- Make it so form input is required.
-* *required_if*( string **element id** ) -- Require an input only if a dependent element has a value.
-* *between_numeric*( float **minimum**, float **maximum** ) -- See if a value is between a minimum and maximum value.
-* *num_chars*( int **length** ) -- Validate that a string is exactly a certain number of characters in length.
-* *min_chars*( int **minimum** ) -- Validate that a string is at least a certain number of characters in length.
-* *max_chars*( int **maximum** ) -- Validate that a string is no more than a certain number of characters in length.
-* *num_options*( int **minimum** ) -- Make sure a user selects exactly the provided number of checkboxes or multi-select form inputs.
-* *min_options*( int **minimum** ) -- Make sure a user selects at least a provided number of checkboxes or multi-select form inputs.
-* *max_options*( int **maximum** ) -- Make sure a user selects no more than a provided number of checkboxes or multi-select form inputs.
-* *email*()`: Make sure a user entered a valid email
-* *date*( string **format** ) -- Make sure the user entered a valid date in a valid date format. Format must be written as either "YYYY-MM-DD", "MM-DD-YYYY", or "DD-MM-YYYY".
+* *required*() - Make it so form input is required.
+* *requiredIf*( string **element id** ) - Require an input only if a dependent element has a value.
+* *betweenNumeric*( float **minimum**, float **maximum** ) - See if a value is between a minimum and maximum value.
+* *numChars*( int **length** ) - Validate that a string is exactly a certain number of characters in length.
+* *minChars*( int **minimum** ) - Validate that a string is at least a certain number of characters in length.
+* *maxChars*( int **maximum** ) - Validate that a string is no more than a certain number of characters in length.
+* *numOptions*( int **minimum** ) - Make sure a user selects exactly the provided number of checkboxes or multi-select form inputs.
+* *minOptions*( int **minimum** ) - Make sure a user selects at least a provided number of checkboxes or multi-select form inputs.
+* *maxOptions*( int **maximum** ) - Make sure a user selects no more than a provided number of checkboxes or multi-select form inputs.
+* *email*() - Make sure a user entered a valid email
+* *date*( string **format** ) - Make sure the user entered a valid date in a valid date format. Format must be written as either "YYYY-MM-DD", "MM-DD-YYYY", or "DD-MM-YYYY".
 
 ## Breaking Down The Data Attributes
 
 jQuery Form Validate uses the data attributes applied to your form inputs input to figure out which form validations to run.
 
-## Complete Object Reference
+## Complete Object Reference (Tree)
+
+* preProcess
+* postProcess
+* onSuccess
+* onFailure
+* messageParent
+* messageElement
+* failureMessages
+* successMessages
+* messageFailureClass
+* messageSuccessClass
+* inputFailureClass
+* inputSuccessClass
+* cssParamDelimiter
+* language
+* localization
+  * en
+  * success
+    * default
+    * betweenNumeric
+    * date
+    * email
+    * numChars
+    * minChars
+    * maxChars
+    * numOptions
+    * minOptions
+    * maxOptions
+    * int
+    * float
+    * required
+    * requiredIf
+    * lessThan
+    * greaterThan
+  * failure
+	* default
+  * filters
+    * trim
+    * strtoupper
+    * strtolower
+    * validations
+      * betweenNumeric
+      * date
+      * dateAfter
+      * dateBefore
+      * email
+      * numChars
+      * minChars
+      * maxChars
+      * numOptions
+      * minOptions
+      * maxOptions
+      * int
+      * float
+      * required
+      * requiredIf
+      * lessThan
+      * greaterThan
 
 ### preProcess [ function *function(form, cssFailureClass, cssSuccessClass, cssFilterPrefix, cssValidationPrefix, cssParamDelimiter, failureWrapper )* ]
 
