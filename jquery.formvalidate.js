@@ -253,6 +253,7 @@
 
 				// Form validation rules will be applied to elements grouped by their name attribute
 				var attrName = $(element).attr('name');
+				var data = $(element).data(); // Data attributes converted to camelCase by jQuery
 
 				// If element does not have a name attribute
 				if ( ! attrName ) { return; }
@@ -262,7 +263,7 @@
 
 				// Check CSS class and then data-required attribute
 				if ( ! ('required' in inputs[attrName]) || inputs[attrName].required === false )  {
-					inputs[attrName].required = $(element).hasClass('required') || typeof $(element).data('required') === 'string';
+					inputs[attrName].required = $(element).hasClass('required') || 'required' in data;
 				}
 
 				// If input value had not yet been created for this input
@@ -298,8 +299,8 @@
 				// If title had not yet been created for this input
 				if ( ! ('title' in inputs[attrName]) ) {
 					// Check for title data-title attribute
-					if ( $(element).data('title') ) {
-						inputs[attrName].title = $(element).data('title');
+					if ('title' in data) {
+						inputs[attrName].title = data.title;
 					}
 					// If no title data-title attribute is found, use the inputs name attribute
 					else {
