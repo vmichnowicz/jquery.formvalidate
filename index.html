@@ -62,16 +62,18 @@
 						<input type="submit" class="btn btn-small btn-primary" id="submit-1" value="Submit">
 					</div>
 				</div>
-<pre id="example-1">
-// Validate on form submission
-$(&#39;#form_1&#39;).submit(function(e) {
+<pre id="example-1">// Validate on form submission
+$('#form-1').submit(function(e) {
   e.preventDefault();
-	$(this).formvalidate({
-	  onSuccess: function(O) {
-		alert(&#39;Form #1 is valid!&#39;);
-	  },
-	  language: &#39;de&#39;
-  });
+    $(this).formvalidate({
+      failureMessages: true,
+      successMessages: true,
+      messageFailureClass: 'label label-important',
+      messageSuccessClass: 'label label-success',
+      onSuccess: function(O) {
+        alert('Form #1 is valid!');
+      }
+    });
 });</pre>
 			</fieldset>
 		</form>
@@ -82,7 +84,7 @@ $(&#39;#form_1&#39;).submit(function(e) {
 				<div class="control-group">
 					<label class="control-label" for="name">Name</label>
 					<div class="controls">
-						<input type="text" id="name" name="name" title="Name" data-trim data-min-chars="5" data-max-length="128" class="required" maxlength="128">
+						<input type="text" id="name" name="name" title="Name" data-trim data-min-chars="5" class="required" maxlength="128">
 					</div>
 				</div>
 				<div class="control-group">
@@ -160,20 +162,41 @@ $(&#39;#form_1&#39;).submit(function(e) {
 					</div>
 				</div>
 
-<pre id="example-2">
-// Validate when the submit button is clicked
-$(&#39;#submit_2&#39;).click(function(e) {
-	e.preventDefault();
+<pre id="example-2">$('#submit-2').click(function(e) {
+  e.preventDefault();
 
-	// From the anchor element find the closest form element
-	$(this).closest(&#39;form&#39;).formvalidate({
-		validations: {
-			// Add a custom validation
-			middle_name: function(input, params) {
-				return input.toLowerCase() === params[0].toLowerCase() ? false : true;
-			}
-		}
-	});
+  // From the anchor element find the closest form element
+  $(this).closest('form').formvalidate({
+    failureMessages: true,
+    successMessages: true,
+    messageFailureClass: 'label label-important',
+    messageSuccessClass: 'label label-success',
+    onSuccess: function(form) {
+      alert('Form #2 is valid!');
+    },
+    localization: {
+      en: {
+        success: {
+          name: 'Good, you know your name.',
+          age: 'Ahh, {1}, a wise age.',
+          birth_date: 'The year of the tiger!',
+          email: 'We promise not to stalk you.',
+          continent: function(title, value, name, input) {
+            var text = $(':input[name=&quot;' + name + '&quot;] option[value=&quot;' + value + '&quot;]').text();
+            return text + ', really? Me too!';
+          },
+          'colors[]': 'O, wow good choices!',
+          why_cool: 'Ya, u got it!',
+            'like[]': 'Those are my favorite frameworks too.!'
+          },
+          failure: {
+            email: function(title, value, name, input) {
+            return 'There is no way that email ' + value + ' is valid.';
+          }
+        }
+      }
+    }
+  });
 });</pre>
 			</fieldset>
 		</form>
@@ -187,14 +210,13 @@ $(&#39;#submit_2&#39;).click(function(e) {
 		$('#form-1').submit(function(e) {
 			e.preventDefault();
 			$(this).formvalidate({
-                failureMessages: true,
-                successMessages: true,
+				failureMessages: true,
+				successMessages: true,
 				messageFailureClass: 'label label-important',
-                messageSuccessClass: 'label label-success',
+				messageSuccessClass: 'label label-success',
 				onSuccess: function(O) {
 					alert('Form #1 is valid!');
-				},
-				language: 'de'
+				}
 			});
 		});
 
@@ -204,43 +226,33 @@ $(&#39;#submit_2&#39;).click(function(e) {
 
 			// From the anchor element find the closest form element
 			$(this).closest('form').formvalidate({
-                failureMessages: true,
-                successMessages: true,
+				failureMessages: true,
+				successMessages: true,
 				messageFailureClass: 'label label-important',
 				messageSuccessClass: 'label label-success',
-                onSuccess: function(form) {
-                    console.log(form.options);
-                },
+				onSuccess: function(form) {
+					alert('Form #2 is valid!');
+				},
 				localization: {
-                    en: {
-                        success: {
-                            name: 'Good, you know your name.',
-                            age: 'Ahh, {1}, a wise age.',
-                            birth_date: 'The year of the tiger!',
-                            email: 'We promise not to stalk you.',
-							continent: function(name, value, input) {
+					en: {
+						success: {
+							name: 'Good, you know your name.',
+							age: 'Ahh, {1}, a wise age.',
+							birth_date: 'The year of the tiger!',
+							email: 'We promise not to stalk you.',
+							continent: function(title, value, name, input) {
 								var text = $(':input[name="' + name + '"] option[value="' + value + '"]').text();
 								return text + ', really? Me too!';
 							},
-                            'colors[]': 'O, wow good choices!',
-                            why_cool: 'Ya, u got it!',
-                            'like[]': 'Those are my favorite framework too.!'
-                        },
+							'colors[]': 'O, wow good choices!',
+							why_cool: 'Ya, u got it!',
+							'like[]': 'Those are my favorite frameworks too.!'
+						},
 						failure: {
-							email: function(name, value, input) {
-								return 'There is no way that is valid.';
+							email: function(title, value, name, input) {
+								return 'There is no way that email ' + value + ' is valid.';
 							}
 						}
-                    }
-                },
-				validations: {
-					/**
-					 * Add a custom validation
-					 *
-					 * @todo  'Your {0} cannot be "{2}" because this is a custom validation method and I said so.'
-					 */
-					middle_name: function(input, params) {
-						return input.toLowerCase() === params[0].toLowerCase() ? false : true;
 					}
 				}
 			});

@@ -196,6 +196,9 @@
 			// Run postProcess function
 			this.options.postProcess.call(this, this, this.inputs);
 
+			// Display success and failure messages
+			this.options._displayMessages(this, this.inputs);
+
 			// On form validation success
 			this.result === true ? this.options.onSuccess(this, this.inputs) : this.options.onFailure(this, this.inputs);
 		});
@@ -404,6 +407,7 @@
 		_validate: function(form, options) {
 			// So are we good? We will assume yes, for now...
 			var result = true;
+			var message = null;
 
 			// Loop through each form element
 			$.each(form.inputs, function(inputName, inputObj) {
@@ -435,81 +439,72 @@
 
 								// If validation did pass
 								if ( options.validations[ validationName ](inputObj.value, validationParams) === true ) {
-									validationParams.unshift(inputObj.title, inputObj.value);
 
-									var successMessage = null;
+									// Add title and value(s) to beginning of params array
+									validationParams.unshift(inputObj.title, inputObj.value);
 
 									// If error message is in localized language object
 									if ( inputName in options.localization[ options.language ]['success'] ) {
 										if ( typeof options.localization[ options.language ]['success'][ inputName ] === 'function' ) {
-											successMessage = options.localization[ options.language ]['success'][ inputName ](inputName, inputObj.value, inputObj).sprintf(validationParams);
+											message = options.localization[ options.language ]['success'][ inputName ](inputObj.title, inputObj.value, inputName, inputObj).sprintf(validationParams);
 										}
 										else {
-											successMessage = options.localization[ options.language ]['success'][ inputName ].sprintf(validationParams);
+											message = options.localization[ options.language ]['success'][ inputName ].sprintf(validationParams);
 										}
 									}
 									// Else if default localized error message is available
 									else if ( 'default' in options.localization[ options.language ]['success'] ) {
-										successMessage = options.localization[ options.language ]['success'][ 'default' ].sprintf(validationParams);
+										message = options.localization[ options.language ]['success'][ 'default' ].sprintf(validationParams);
 									}
 
-									inputObj.messages.success.push(successMessage); // Add error to errors array
+									inputObj.success = true;
+									inputObj.failure = false;
+									inputObj.messages.success.push(message); // Add success message to success messages array
 								}
 								// If validation did not pass
 								else {
-									validationParams.unshift(inputObj.title, inputObj.value); // Add title and value(s) to beginning of array
-
-									var errorMessage = null;
+									// Add title and value(s) to beginning of params array
+									validationParams.unshift(inputObj.title, inputObj.value);
 
 									// If error message is in localized language object
 									if ( validationName in options.localization[ options.language ]['failure'] ) {
 										if ( typeof options.localization[ options.language ]['failure'][ validationName ] === 'function' ) {
-											errorMessage = options.localization[ options.language ]['failure'][ validationName ](inputName, inputObj.value, inputObj).sprintf(validationParams);
+											message = options.localization[ options.language ]['failure'][ validationName ](inputObj.title, inputObj.value, inputName, inputObj).sprintf(validationParams);
 										}
 										else {
-											errorMessage = options.localization[ options.language ]['failure'][ validationName ].sprintf(validationParams);
+											message = options.localization[ options.language ]['failure'][ validationName ].sprintf(validationParams);
 										}
 									}
 									// Else if default localized error message is available
 									else if ( 'default' in options.localization[ options.language ]['failure'] ) {
-										errorMessage = options.localization[ options.language ]['failure'][ 'default' ].sprintf(validationParams);
+										message = options.localization[ options.language ]['failure'][ 'default' ].sprintf(validationParams);
 									}
 
-									//var errorMessage = settings.validations[ validationName ].text.sprintf(validationParams);
 									result = false; // We are no longer good, we found an error!
 									inputObj.success = false; // This form input is no longer valid
 									inputObj.failure = true; // Epic fail
-									inputObj.messages.failure.push(errorMessage); // Add error to errors array
+									inputObj.messages.failure.push(message); // Add failure message to failure messages array
 								}
 							}
 						}
 					});
 				}
-
 			});
 
 			this.result = result;
-
 			return this;
 		},
 		/**
-		 * Run after successful form validation
+		 * Run after form validation to display success and failure messages
 		 *
-		 * @param {Object} form jQuery object of form element
-		 * @param {Object} options Object containing all form inputs
+		 * @param {jQuery} form jQuery form element
+		 * @param {Object} inputs All form inputs
 		 * @return {undefined}
 		 */
-		onSuccess: function(form, options) {
-			form.submit();
-		},
-		/**
-		 * Run after form validation failed
-		 *
-		 * @param {jQuery} form jQuery object of form element
-		 * @param {Object} inputs Object containing all form inputs
-		 * @return {undefined}
-		 */
-		onFailure: function(form, inputs) {
+		_displayMessages: function(form, inputs) {
+			// Only continue if we have any messages to display
+			if ( form.options.failureMessages === false && form.options.successMessages === false ) { return false; }
+
 			// Loop through each form input form our validation object
 			$.each(inputs, function(inputIndex, inputObj) {
 				// If this input did not pass validation
@@ -528,6 +523,26 @@
 				}
 			});
 		},
+		/**
+		 * Run after successful form validation
+		 *
+		 * @param {jQuery} form jQuery form element
+		 * @param {Object} options All form inputs
+		 * @return {undefined}
+		 */
+		onSuccess: function(form, options) {
+			if ('submit' in form) {
+				form.submit();
+			}
+		},
+		/**
+		 * Run after form validation failed
+		 *
+		 * @param {jQuery} form jQuery form element
+		 * @param {Object} inputs All form inputs
+		 * @return {undefined}
+		 */
+		onFailure: function(form, inputs) { },
 		messageParent: 'div', // CSS selector of parent element of message (success or failure) messages
 		messageElement: '<span />', // Wrap success and failure messages inside this element
 		failureMessages: true, // Display failure messages?
