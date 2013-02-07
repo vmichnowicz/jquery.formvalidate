@@ -46,7 +46,7 @@ jQuery Form Validate uses the data attributes applied to your form inputs input 
 
 ### messageParent
 
-CSS selector of parent element of message (success or failure) messages. By default this is `div`.
+CSS selector of parent element of success and failure message. By default this is `div`. This selector is relative to each input. Starting at the input we go through each parent and see if it matches the provided selector. This will tell us were to place each error and success messages. For this reason it is nice to wrap each set of labels and inputs in some sort of container element.
 
 ### messageElement
 
@@ -62,25 +62,25 @@ Boolean option to display success messages. Defaults to `false`.
 
 ### messageFailureClass
 
-CSS class(es) applied to failure messages. Defaults to `error`. Multiple CSS classes can be applied by through space deliineation i.e. `error error-text`.
+CSS class(es) applied to failure messages. Defaults to `error`. Multiple CSS classes can be applied by through space delineation i.e. `error error-text`.
 
 ### messageSuccessClass
 
-CSS class(es) applied to success messages. Defaults to `success`. Multiple CSS classes can be applied by through space deliineation i.e. `success success-text`.
+CSS class(es) applied to success messages. Defaults to `success`. Multiple CSS classes can be applied by through space delineation i.e. `success success-text`.
 
 ### inputFailureClass
 
-CSS class(es) added to inputs that did not pass validation. Defaults to `error`. Multiple CSS classes can be applied by through space deliineation i.e. `error error-text`.
+CSS class(es) added to inputs that did not pass validation. Defaults to `error`. Multiple CSS classes can be applied by through space delineation i.e. `error error-text`.
 
 ### inputSuccessClass
 
-CSS class added to inputs that did pass validation. Defaults to `success`. Multiple CSS classes can be applied by through space deliineation i.e. `success success-text`.
+CSS class added to inputs that did pass validation. Defaults to `success`. Multiple CSS classes can be applied by through space delineation i.e. `success success-text`.
 
 ### language
 
-Set the language for error and success messages. Defaults to `en` for English. Deutsch `de`, English `en`, Español `es`, and Pirate `pirage` are available.
+Set the language for error and success messages. Defaults to `en` for English. Deutsch `de`, English `en`, Espa&ntilde;ol `es`, and Pirate `pirate` are available.
 
-## Publically Available Methods
+## Publicly Available Methods
 
 ### preProcess [ function *function(form, options, inputFailureClass, inputSuccessClass, messageFailureClass, messageSuccessClass, messageElement)* ]
 
