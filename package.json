@@ -8,8 +8,8 @@
 	},
 	"licenses": [
 		{
-		"type": "CC BY-NC 3.0",
-		"url": "http://creativecommons.org/licenses/by-nc/3.0/"
+		"type": "MIT",
+		"url": "http://opensource.org/licenses/MIT"
 		}
 	],
 	"dependencies": {
@@ -33,6 +33,8 @@
 		"jquery.formvalidate.js",
 		"LICENSE.txt",
 		"localization/de.js",
-		"README.md",
+		"localization/es.js",
+		"localization/pirate.js",
+		"README.md"
 	]
 }

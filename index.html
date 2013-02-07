@@ -216,10 +216,10 @@ $('#form-1').submit(function(e) {
 		</form>
 
 		<div id="languages">
-			<a href="javascript:void(0);" data-language="pirate">Pirate</a>
 			<a href="javascript:void(0);" data-language="de">Deutsch</a>
 			<a href="javascript:void(0);" data-language="en" class="current">English</a>
 			<a href="javascript:void(0);" data-language="es">Espanol</a>
+			<a href="javascript:void(0);" data-language="pirate">Pirate</a>
 		</div>
 	</div>
 </div>
@@ -282,11 +282,11 @@ $('#form-1').submit(function(e) {
 		// Toggle "Why So Cool?"
 		(function () {
 			var cool = $('input[name="cool"]');
-			var whyCool = $('#why_cool').closest('.control-group');
+			var why = $('#why_cool').closest('.control-group');
 
 			// Toggle "Why So Cool?" question
 			var toggle = function toggle() {;
-				$(cool).filter(':checked').val() === 'Y' ? $(whyCool).show() : $(whyCool).hide();
+				$(cool).filter(':checked').val() === 'Y' ? $(why).show() : $(why).hide();
 				return toggle;
 			}();
 

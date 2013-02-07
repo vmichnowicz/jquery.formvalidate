@@ -2,7 +2,7 @@
 
 ## License
 
-jQuery Form Validate is licensed under [Creative Commons Attribution-NonCommercial 3.0](http://creativecommons.org/licenses/by-nc/3.) license. You are free to use jQuery Form Validate for your personal or non-profit website projects. You can get my permission to use jQuery Form Validate for commercial websites by paying a fee.
+jQuery Form Validate is licensed under the [MIT](http://opensource.org/licenses/MIT) license.
 
 ## Demo / Example
 
@@ -10,19 +10,11 @@ Access a [live demo](http://www.vmichnowicz.com/examples/formvalidate/index.html
 
 ## Introduction
 
-jQuery Form Validate is a jQuery plugin that helps validate your HTML forms. It takes validation rules from the CSS styles that you apply to each input. For example, let's assume we have a `first_name` text input in our form. We want our first name field to be required, have a length of at least 5 characters and a maximum length of 128 characters. The CSS classes that would would apply to this input would be as follows:
-
-* **Required**: `required`
-* **Minimum length of 5 characters**: `min_length-5`
-* **Maximum length of 128 characters**: `max_length-128`
-
-Our HTML input element would look like this:
+jQuery Form Validate is a jQuery plugin that helps validate your HTML forms. It takes validation rules from the HTML 5 data attributes applied to each input. For example, let's assume we have a `first_name` text input in our form. We want our first name field to be required and have a length of at least 5 characters. The HTML markup would look like this:
 
 ````
-<input type="text" name="first_name" class="required min_length-5 max_length-128" />
+<input type="text" id="first_name" name="first_name" class="required"  data-min-chars="5">
 ````
-
-If we decided that instead of a minimum length of 5 characters we wanted a minimum length of 4 characters, our CSS class would instead be `min_length-4`.
 
 ## Filters & Validations
 
@@ -32,38 +24,23 @@ jQuery Form Validate includes two main groups of functions, "filters" and "valid
 * *strtoupper*()`: Convert text to upper case
 * *strtolower*(): Convert text to lower case
 
-After all filters have been processed, then the validations are run. A validation takes the value of the form input, an optional list of parameters, and then does some processing. If the input is valid it returns `true`, else, if the validation fails, it returns `false`. The full list of validation functions along with their parameter requirements is as follows:
+After all filters have been processed, then the validations are run. A validation looks at the value of the form input and an optional list of parameters, and then does some processing. The full list of validation functions along with their parameter requirements is as follows:
 
 * *required*() -- Make it so form input is required.
 * *required_if*( string **element id** ) -- Require an input only if a dependent element has a value.
 * *between_numeric*( float **minimum**, float **maximum** ) -- See if a value is between a minimum and maximum value.
-* *length*( int **length** ) -- Validate that a string is exactly a certain number of characters in length.
-* *min_length*( int **minimum** ) -- Validate that a string is at least a certain number of characters in length.
-* *max_length*( int **maximum** ) -- Validate that a string is no more than a certain number of characters in length.
-* *options*( int **minimum** ) -- Make sure a user selects exactly the provided number of checkboxes or multi-select form inputs.
+* *num_chars*( int **length** ) -- Validate that a string is exactly a certain number of characters in length.
+* *min_chars*( int **minimum** ) -- Validate that a string is at least a certain number of characters in length.
+* *max_chars*( int **maximum** ) -- Validate that a string is no more than a certain number of characters in length.
+* *num_options*( int **minimum** ) -- Make sure a user selects exactly the provided number of checkboxes or multi-select form inputs.
 * *min_options*( int **minimum** ) -- Make sure a user selects at least a provided number of checkboxes or multi-select form inputs.
 * *max_options*( int **maximum** ) -- Make sure a user selects no more than a provided number of checkboxes or multi-select form inputs.
 * *email*()`: Make sure a user entered a valid email
-* *date*( string **format** ) -- Make sure the user entered a valid date in a valid date format. Format must be written as either "YYYYMMDD", "MMDDYYYY", or "DDMMYYYY".
+* *date*( string **format** ) -- Make sure the user entered a valid date in a valid date format. Format must be written as either "YYYY-MM-DD", "MM-DD-YYYY", or "DD-MM-YYYY".
 
-## Breaking Down The CSS Classes
+## Breaking Down The Data Attributes
 
-jQuery Form Validate uses the CSS classes assigned to your input elements to figure out which form validations to run. If you wish to prefix your form filter and validation CSS prefixes you may with the `cssFilterPrefix` and `cssValidationPrefix` properties:
-
-````
-$(document).ready(function() {
-  $('form').formvalidate({
-		cssFilterPrefix: 'new_filter_prefix_', // Add prefix of "new_filter_prefix_" for all filter functions
-		cssValidationPrefix: '', // No CSS prefix (default setting)
-	});
-});
-````
-
-With these new prefixes defined above in place making an element required and running the trim filter would look like this:
-
-````
-<input type="text" name="middle_name" class="new_filter_prefix_trim required" />
-````
+jQuery Form Validate uses the data attributes applied to your form inputs input to figure out which form validations to run.
 
 ## Complete Object Reference
 
