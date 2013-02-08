@@ -99,7 +99,7 @@ $('#form-1').submit(function(e) {
 				<div class="control-group">
 					<label class="control-label" for="name">Name</label>
 					<div class="controls">
-						<input type="text" id="name" name="name" title="Name" data-trim data-min-chars="5" class="required" maxlength="128">
+						<input type="text" id="name" name="name" title="Name" data-trim data-min-chars="3" data-is-not="vic bob tom sam" class="required" maxlength="128">
 					</div>
 				</div>
 				<div class="control-group">
@@ -255,6 +255,11 @@ $('#form-1').submit(function(e) {
 				onSuccess: function(form) {
 					alert('Form #2 is valid!');
 				},
+				validations: {
+					isNot: function(input, params) {
+						return $.inArray(input.toLowerCase(), params);
+					}
+				},
 				localization: {
 					en: {
 						success: {
@@ -277,6 +282,9 @@ $('#form-1').submit(function(e) {
 						failure: {
 							email: function(title, value, name, input) {
 								return 'There is no way that email ' + value + ' is valid.';
+							},
+							isNot: function(title, value, name, input) {
+								return 'That name is not original enough.';
 							}
 						}
 					}
