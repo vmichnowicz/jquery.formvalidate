@@ -12,9 +12,9 @@ Access a [live demo](http://www.vmichnowicz.com/examples/formvalidate/index.html
 
 jQuery Form Validate is a jQuery plugin that helps validate your HTML forms. It takes validation rules from the HTML 5 data attributes applied to each input. For example, let's assume we have a `first_name` text input in our form. We want our first name field to be required and have a length of at least 5 characters. The HTML markup would look like this:
 
-````
+```
 <input type="text" id="first_name" name="first_name" class="required"  data-min-chars="5">
-````
+```
 
 ## Filters & Validations
 
