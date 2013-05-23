@@ -301,15 +301,31 @@
 
 				// If title had not yet been created for this input
 				if ( ! ('title' in inputs[attrName]) ) {
+					var title = null;
+
 					// Check for title data-title attribute
 					if ('title' in data) {
-						inputs[attrName].title = data.title;
+						title = data.title;
 					}
-					// If no title data-title attribute is found, use the inputs name attribute
-					else {
+
+					// If still no title, use the inputs title attribute
+					if ( ! title ) {
 						// Look for the first input that has this same name attribe and a title attribute and grab its title
-						inputs[attrName].title = $(':input[name="' + attrName + '"][title!=""]:first').attr('title');
+						title = $(':input[name="' + attrName + '"][title!=""]:first').attr('title');
 					}
+
+					// If still no title, check associated label
+					if ( ! title ) {
+						var id = $(':input[name="' + attrName + '"][id!=""]:first').attr('id');
+						title = $('label[for="' + id + '"]').text();
+					}
+
+					// If still no title, check parent label
+					if ( ! title ) {
+						title = $('label :input[name="' + attrName + '"]:first').closest('label').text();
+					}
+
+					inputs[attrName].title = title;
 				}
 
 				// Set success and failure in object
