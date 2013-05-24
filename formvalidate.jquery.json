@@ -2,7 +2,7 @@
 	"name": "formvalidate",
 	"title": "jQuery Form Validate",
 	"description": "jQuery Form Validate is a simple form validation plugin that allows you to easily validate your forms by applying various HTML data attributes.",
-	"version": "0.3.2",
+	"version": "0.4.2",
 	"author": {
 		"name": "Victor Michnowicz",
 		"url": "http://www.vmichnowicz.com/"
