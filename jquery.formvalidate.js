@@ -455,8 +455,18 @@
 									// Add title and value(s) to beginning of params array
 									validationParams.unshift(inputObj.title, inputObj.value);
 
+									// If an input-specific failure message has been provided (may be collisions with other failure messages)
+									if ( inputName in options.localization[ options.language ].failure ) {
+										if ( typeof options.localization[ options.language ].failure[ inputName ] === 'function' ) {
+											message = options.localization[ options.language ].failure[ inputName ](inputObj.title, inputObj.value, inputName, inputObj).sprintf(validationParams);
+										}
+										else {
+											console.log(options.localization[ options.language ].failure);
+											message = options.localization[ options.language ].failure[ inputName ].sprintf(validationParams);
+										}
+									}
 									// If error message is in localized language object
-									if ( validationName in options.localization[ options.language ].failure ) {
+									else if ( validationName in options.localization[ options.language ].failure ) {
 										if ( typeof options.localization[ options.language ].failure[ validationName ] === 'function' ) {
 											message = options.localization[ options.language ].failure[ validationName ](inputObj.title, inputObj.value, inputName, inputObj).sprintf(validationParams);
 										}
